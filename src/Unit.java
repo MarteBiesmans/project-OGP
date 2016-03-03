@@ -32,29 +32,45 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @version 1.0
  */
 public class Unit {
-
-
-	/**
-	 * Initialize this new unit with given position.
-	 *
-	 * @param  x,y,z
-	 *         The position for this new unit.
-	 * @effect The position of this new unit is set to
-	 *         the given position.
-	 *       | this.setPosition(x,y,z)
-	 */
-	public Unit(double x,y,z)
-			throws IllegalPositionException {
+	
+	public Unit(double x, double y, double z, String name, 
+			int weight, int strength, int agility, int toughness)
+			throws IllegalPositionException, IllegalNameException {
 		this.setPosition(x,y,z);
+		this.setName(name);
+		this.setWeight(weight);
+		this.setStrength(strength);
+		this.setAgility(agility);
+		this.setToughness(toughness);
+		this.setNbStaminaPoints(this.getMaxStaminaPoints());
+		this.setNbHitpoints(this.getMaxHitpoints());
+	}
+
+	
+	/**
+	 * Return the position on the x-axis of this unit.
+	 */
+	@Basic @Raw
+	public double getPositionX() {
+		return this.x;
 	}
 	
 	/**
-	 * Return the position of this unit.
+	 * Return the position on the y-axis of this unit.
 	 */
 	@Basic @Raw
-	public double getPosition() {
-		return this.x,y,z;
+	public double getPositionY() {
+		return this.y;
 	}
+	
+	/**
+	 * Return the position on the z-axis of this unit.
+	 */
+	@Basic @Raw
+	public double getPositionZ() {
+		return this.z;
+	}
+
 	
 	/**
 	 * Check whether the given position is a valid position for
@@ -66,7 +82,7 @@ public class Unit {
 	 *       | result ==
 	 *       | TODO xyz
 	*/
-	public static boolean isValidPosition(double x,y,z) {
+	public static boolean isValidPosition(double x, double y, double z) {
 		return false;
 	}
 	
@@ -84,11 +100,13 @@ public class Unit {
 	 *       | ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setPosition(double x,y,z) 
+	public void setPosition(double x,double y, double z) 
 			throws IllegalPositionException {
 		if (! isValidPosition(x,y,z))
 			throw new IllegalPositionException();
-		this.x,y,z = x,y,z;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 		/**
@@ -177,24 +195,6 @@ public class Unit {
 	
 	
 	
-	/**
-	 * Initialize this new unit with given strength.
-	 * 
-	 * @param  givenStrength
-	 *         The strength for this new unit.
-	 * @post   If the given strength is a valid strength for any unit,
-	 *         the strength of this new unit is equal to the given
-	 *         strength. Otherwise, the strength of this new unit is equal
-	 *         to 25 or 100.
-	 *       | if (isValidStrength(givenStrength))
-	 *       |   then new.getStrength() == givenStrength
-	 *       |   else new.getStrength() == 25 or 100
-	 */
-	public Unit(int givenStrength) {
-		if (! isValidStrength(givenStrength))
-			givenStrength = 25 or 100;
-		setStrength(givenStrength);
-	}
 	
 		/**
 		 * Return the strength of this unit.
@@ -244,24 +244,8 @@ public class Unit {
 	
 
 
-	/**
-	 * Initialize this new unit with given agility.
-	 * 
-	 * @param  givenAgility
-	 *         The agility for this new unit.
-	 * @post   If the given agility is a valid agility for any unit,
-	 *         the agility of this new unit is equal to the given
-	 *         agility. Otherwise, the agility of this new unit is equal
-	 *         to 25 or 100.
-	 *       | if (isValidAgility(givenAgility))
-	 *       |   then new.getAgility() == givenAgility
-	 *       |   else new.getAgility() == 25 or 100
-	 */
-	public Unit(int givenAgility) {
-		if (! isValidAgility(givenAgility))
-			givenAgility = 25 or 100;
-		setAgility(givenAgility);
-	}
+
+
 	
 	/**
 	 * Return the agility of this unit.
@@ -316,25 +300,7 @@ public class Unit {
 	
 
 
-	/**
-	 * Initialize this new unit with given weight.
-	 * 
-	 * @param  givenWeight
-	 *         The weight for this new unit.
-	 * @post   If the given weight is a valid weight for any unit,
-	 *         the weight of this new unit is equal to the given
-	 *         weight. Otherwise, the weight of this new unit is equal
-	 *         to (strenght+agility)/2 or 100.
-	 *       | if (isValidWeight(givenWeight))
-	 *       |   then new.getWeight() == givenWeight
-	 *       |   else new.getWeight() == (strenght+agility)/2
-	 */
-	public Unit(int givenWeight) {
-		if (! isValidWeight(givenWeight))
-			givenWeight = (strenght+agility)/2;
-		setWeight(givenWeight);
-	}
-	
+
 	/**
 	 * Return the weight of this unit.
 	 */
@@ -394,24 +360,7 @@ public class Unit {
 	
 
 
-	/**
-	 * Initialize this new unit with given toughness.
-	 * 
-	 * @param  givenToughness
-	 *         The toughness for this new unit.
-	 * @post   If the given toughness is a valid toughness for any unit,
-	 *         the toughness of this new unit is equal to the given
-	 *         toughness. Otherwise, the toughness of this new unit is equal
-	 *         to 25 or 100.
-	 *       | if (isValidToughness(givenToughness))
-	 *       |   then new.getToughness() == givenToughness
-	 *       |   else new.getToughness() == 25 or 100
-	 */
-	public Unit(int givenToughness) {
-		if (! isValidToughness(givenToughness))
-			givenToughness = 25 or 100;
-		setToughness(givenToughness);
-	}
+
 	
 	/**
 	 * Return the toughness of this unit.
@@ -455,6 +404,7 @@ public class Unit {
 	 * Variable registering the toughness of this unit.
 	 */
 	private int givenToughness;
+	private int NbHitpoints;
 	
 	
 	
@@ -478,27 +428,18 @@ public class Unit {
 	}
 	
 
-	/**
-	 * Initialize this new unit with given number of hitpoints.
-	 * 
-	 * @param  givenNbHitpoints
-	 *         The number of hitpoints for this new unit.
-	 * @pre    The given number of hitpoints must be a valid number of hitpoints for any unit.
-	 *       | isValidNbHitpoints(number of hitpoints)
-	 * @post   The number of hitpoints of this new unit is equal to the given
-	 *         number of hitpoints.
-	 *       | new.getNbHitpoints() == givenNbHitpoints
-	 */
-	public Unit(int givenNbHitpoints) {
-		this.setNbHitpoints(givenNbHitpoints);
+
+	public void setNbHitpoints(int hitpoints) {
+		this.NbHitpoints = 	hitpoints;
 	}
+	
 	
 	/**
 	 * Return the number of hitpoints of this unit.
 	 */
 	@Basic @Raw
 	public int getNbHitpoints() {
-		return this.givenNbHitpoints;
+		return 2/100*this.getWeight()*this.getToughness(); //TODO round up to next integer
 	}
 	
 	/**
@@ -514,23 +455,7 @@ public class Unit {
 		return false;
 	}
 	
-	/**
-	 * Set the number of hitpoints of this unit to the given number of hitpoints.
-	 * 
-	 * @param  givenNbHitpoints
-	 *         The new number of hitpoints for this unit.
-	 * @pre    The given number of hitpoints must be a valid number of hitpoints for any
-	 *         unit.
-	 *       | isValidNbHitpoints(givenNbHitpoints)
-	 * @post   The number of hitpoints of this unit is equal to the given
-	 *         number of hitpoints.
-	 *       | new.getNbHitpoints() == givenNbHitpoints
-	 */
-	@Raw
-	public void setNbHitpoints(int givenNbHitpoints) {
-		assert isValidNbHitpoints(givenNbHitpoints);
-		this.givenNbHitpoints = givenNbHitpoints;
-	}
+	
 	
 	/**
 	 * Variable registering the number of hitpoints of this unit.
@@ -547,21 +472,6 @@ public class Unit {
 	
 
 
-	/**
-	 * Initialize this new unit with given number of stamina points.
-	 * 
-	 * @param  givenNbStaminaPoints
-	 *         The number of stamina points for this new unit.
-	 * @pre    The given number of stamina points must be a valid number of stamina points for any unit.
-	 *       | isValidNbStaminaPoints(number of stamina points)
-	 * @post   The number of stamina points of this new unit is equal to the given
-	 *         number of stamina points.
-	 *       | new.getNbStaminaPoints() == givenNbStaminaPoints
-	 */
-	public Unit(int givenNbStaminaPoints) {
-		this.setNbStaminaPoints(givenNbStaminaPoints);
-	}
-	
 	/**
 	 * Return the number of stamina points of this unit.
 	 */
@@ -618,24 +528,6 @@ public class Unit {
 	
 
 
-	/**
-	 * Initialize this new unit with given orientation.
-	 * 
-	 * @param  theta
-	 *         The orientation for this new unit.
-	 * @post   If the given orientation is a valid orientation for any unit,
-	 *         the orientation of this new unit is equal to the given
-	 *         orientation. Otherwise, the orientation of this new unit is equal
-	 *         to PI/2.
-	 *       | if (isValidOrientation(theta))
-	 *       |   then new.getOrientation() == theta
-	 *       |   else new.getOrientation() == PI/2
-	 */
-	public Unit(float theta) {
-		if (! isValidOrientation(theta))
-			theta = PI/2;
-		setOrientation(theta);
-	}
 	
 	/**
 	 * Return the orientation of this unit.
