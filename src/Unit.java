@@ -177,18 +177,7 @@ public class Unit {
 	
 	
 	
-	/**
-	 * Initialize this new unit with given name.
-	 *
-	 * @param givenName
-	 *            The name for this new unit.
-	 * @effect The name of this new unit is set to the given name. |
-	 *         this.setName(givenName)
-	 */
-	public Unit(String givenName) throws IllegalNameException {
-		this.setName(givenName);
-	}
-
+	
 	/**
 	 * Return the name of this unit.
 	 */
@@ -201,16 +190,18 @@ public class Unit {
 	/**
 	 * Check whether the given name is a valid name for any unit.
 	 * 
-	 * @param name
-	 *            The name to check.
+	 * @param	name
+	 * 			The name to check.
 	 * @return Each name is at least two characters long and must start with an
 	 *         uppercase letter. Names can only use letters (both upper- and
-	 *         lowercase), quotes (both single and double) and spaces. |if
-	 *         (length(givenName) < 2) | result == False |if (! isUpperCase(char
-	 *         givenName.charAt(0))) | return == False |TODO only letters,
-	 *         spaces, quotes in name
+	 *         lowercase), quotes (both single and double) and spaces.
+	 *         |if (length(givenName) < 2)
+	 *         |	result == False
+	 *         |if (! isUpperCase(chargivenName.charAt(0)))
+	 *         |	return == False
+	 *         |TODO only letters, spaces, quotes in name
 	 */
-	public static boolean isValidName(String givenName) {
+	public static boolean isValidName(String name) {
 		return false;
 	}
 
