@@ -35,7 +35,7 @@ public class Unit {
 	
 	public Unit(double x, double y, double z, String name, 
 			int weight, int strength, int agility, int toughness)
-			throws IllegalPositionException, IllegalNameException {
+			throws IllegalArgumentException {
 		this.setPosition(x,y,z);
 		this.setName(name);
 		this.setWeight(weight);
@@ -115,7 +115,7 @@ public class Unit {
 	 * 			| result == (! ((x<0) || (x>xMax) || (y<0) || (y>yMax) || (z<0) || (z>zMax)) )
 	 */
 	public static boolean isValidPosition(double x, double y, double z) {
-		return (! ((x<0) || (x>X_MAX) || (y<0) || (y>Y_MAX) || (z<0) || (z>Z_MAX)) );
+		return (! ((x<0) || (x>=X_MAX) || (y<0) || (y>=Y_MAX) || (z<0) || (z>=Z_MAX)) );
 	}
 	
 	private static final int X_MAX = 50;
@@ -184,9 +184,10 @@ public class Unit {
 	@Basic
 	@Raw
 	public String getName() {
-		return this.givenName;
+		return this.name;
 	}
 
+	
 	/**
 	 * Check whether the given name is a valid name for any unit.
 	 * 
@@ -195,87 +196,105 @@ public class Unit {
 	 * @return Each name is at least two characters long and must start with an
 	 *         uppercase letter. Names can only use letters (both upper- and
 	 *         lowercase), quotes (both single and double) and spaces.
-	 *         |if (length(givenName) < 2)
-	 *         |	result == False
-	 *         |if (! isUpperCase(chargivenName.charAt(0)))
-	 *         |	return == False
-	 *         |TODO only letters, spaces, quotes in name
+	 *         |if (length(name) < 2)
+	 *         |	result == false
+	 *         |if (! isUpperCase(name.charAt(0)))
+	 *         |	return == false
+	 *         |TODO moet hier de for-loop uit de implementatie komen?
 	 */
 	public static boolean isValidName(String name) {
+		if (name.length() < 2)
+			return false;
+		if (! Character.isUpperCase(name.charAt(0)))
+			return false;
+		
+		//a loop over the name which changes VALID_CHARACTERS to false if it recognizes characters
+		// that are not allowed.
+		boolean VALID_CHARACTERS = true;
+		for(int i = 0; i < name.length(); i++) {
+	        if (   (! Character.isLetter(name.charAt(i)))      //is it a letter?
+	        	&& (! (name.charAt(i) == '"'))                 //is it a double quote?
+	        	&& (! (name.charAt(i) == '\''))                //is it a single quote/apostrophe?
+	        	&& (! (name.charAt(i) == ' '))                 //is it a space?
+	        	)
+	            VALID_CHARACTERS = false;
+		}
+		return VALID_CHARACTERS;
+	}
+
+	
+	/**
+	 * Set the name of this unit to the given name.
+	 * 
+	 * @param	name
+	 * 			The new name for this unit.
+	 * @post	The name of this unit is equal to the given name.
+	 * 			| new.getName() == name
+	 * @throws	IllegalArgumentException
+	 * 			The given name is not a valid name for this unit.
+	 * 			| (! isValidName(name))
+	 */
+	@Raw
+	public void setName(String name) throws IllegalArgumentException {
+		if (!isValidName(name))
+			throw new IllegalArgumentException();
+		this.name = name;
+	}
+
+	
+	/**
+	 * Variable registering the name of this unit.
+	 */
+	private String name;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Return the strength of this unit.
+	 */
+	@Basic
+	@Raw
+	public int getStrength() {
+		return this.givenStrength;
+	}
+
+	/**
+	 * Check whether the given strength is a valid strength for any unit.
+	 * 
+	 * @param givenStrength
+	 *            The strength to check.
+	 * @return | result == TODO
+	 */
+	public static boolean isValidStrength(int givenStrength) {
 		return false;
 	}
 
 	/**
-	 * Set the name of this unit to the given name.
+	 * Set the strength of this unit to the given strength.
 	 * 
-	 * @param givenName
-	 *            The new name for this unit.
-	 * @post The name of this new unit is equal to the given name. |
-	 *       new.getName() == givenName
-	 * @throws IllegalNameException
-	 *             The given name is not a valid name for any unit. | !
-	 *             isValidName(getName())
+	 * @param givenStrength
+	 *            The new strength for this unit.
+	 * @post If the given strength is a valid strength for any unit, the
+	 *       strength of this new unit is equal to the given strength. | if
+	 *       (isValidStrength(givenStrength)) | then new.getStrength() ==
+	 *       givenStrength
 	 */
 	@Raw
-	public void setName(String givenName) throws IllegalNameException {
-		if (!isValidName(givenName))
-			throw new IllegalNameException();
-		this.givenName = givenName;
+	public void setStrength(int givenStrength) {
+		if (isValidStrength(givenStrength))
+			this.givenStrength = givenStrength;
 	}
 
 	/**
-	 * Variable registering the name of this unit.
+	 * Variable registering the strength of this unit.
 	 */
-	private String givenName;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		/**
-		 * Return the strength of this unit.
-		 */
-		@Basic
-		@Raw
-		public int getStrength() {
-			return this.givenStrength;
-		}
-	
-		/**
-		 * Check whether the given strength is a valid strength for any unit.
-		 * 
-		 * @param givenStrength
-		 *            The strength to check.
-		 * @return | result == TODO
-		 */
-		public static boolean isValidStrength(int givenStrength) {
-			return false;
-		}
-	
-		/**
-		 * Set the strength of this unit to the given strength.
-		 * 
-		 * @param givenStrength
-		 *            The new strength for this unit.
-		 * @post If the given strength is a valid strength for any unit, the
-		 *       strength of this new unit is equal to the given strength. | if
-		 *       (isValidStrength(givenStrength)) | then new.getStrength() ==
-		 *       givenStrength
-		 */
-		@Raw
-		public void setStrength(int givenStrength) {
-			if (isValidStrength(givenStrength))
-				this.givenStrength = givenStrength;
-		}
-	
-		/**
-		 * Variable registering the strength of this unit.
-		 */
-		private int givenStrength;
+	private int givenStrength;
 
 	
 	
