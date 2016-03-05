@@ -44,6 +44,7 @@ public class Unit {
 		this.setToughness(toughness);
 		this.setNbStaminaPoints(this.getMaxStaminaPoints());
 		this.setNbHitpoints(this.getMaxHitpoints());
+		this.setOrientation((float) (Math.PI/2));
 	}
 
 	
@@ -593,43 +594,52 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public float getOrientation() {
-		return this.theta;
+		return this.orientation;
 	}
+	
 	
 	/**
 	 * Check whether the given orientation is a valid orientation for
 	 * any unit.
 	 *  
-	 * @param  theta
-	 *         The orientation to check.
-	 * @return 
-	 *       | result == TODO
+	 * @param	theta
+	 * 			The orientation to check.
+	 * @return	true if and only if theta lies between 0 and 2*PI
+	 * 			| result == (theta>=0 && theta<(2*Math.PI))
 	*/
 	public static boolean isValidOrientation(float theta) {
-		return false;
+		return (theta>=0.0 && theta<(2.0*Math.PI));
 	}
+	
 	
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
-	 * @param  theta
-	 *         The new orientation for this unit.
-	 * @post   If the given orientation is a valid orientation for any unit,
-	 *         the orientation of this new unit is equal to the given
-	 *         orientation.
-	 *       | if (isValidOrientation(theta))
-	 *       |   then new.getOrientation() == theta
+	 * @param	theta
+	 *			The new orientation for this unit.
+	 * @post	If the given orientation theta is a valid orientation,
+	 *			the new orientation of this unit is equal to the given orientation theta.
+	 *			| if (isValidOrientation(theta))
+	 *			|   then new.getOrientation() == theta
+	 * @post	If the given orientation theta lies outside the interval [0, 2*PI[,
+	 * 			the new orientation of this unit is equal to the equivalent
+	 * 			angle in this interval with the same sinus and cosinus.
+	 * 			|TODO moeten hier ook de 2 while-lussen komen?
 	 */
 	@Raw
 	public void setOrientation(float theta) {
-		if (isValidOrientation(theta))
-			this.theta = theta;
+		while ((! isValidOrientation(theta)) && theta<0)
+			theta += 2.0*Math.PI;
+		while ((! isValidOrientation(theta)) && theta>0)
+			theta -= 2.0*Math.PI;
+		this.orientation = theta;
 	}
+	
 	
 	/**
 	 * Variable registering the orientation of this unit.
 	 */
-	private float theta;
+	private float orientation;
 
 	
 	
