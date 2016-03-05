@@ -3,15 +3,15 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
- * @invar The name of each unit must be a valid name for any unit. |
- *        isValidName(getName())
+ * @invar The name of each unit must be a valid name for any unit.
+ * 		 | isValidName(getName())
  * @invar  The position of each unit must be a valid position for any unit.
  *       | isValidPosition(getPosition())
  * @invar  The weight of each unit must be a valid weight for any
  *         unit.
  *       | isValidWeight(getWeight())
- * @invar The strength of each unit must be a valid strength for any unit. |
- *        isValidStrength(getStrength())
+ * @invar The strength of each unit must be a valid strength for any unit.
+ *       | isValidStrength(getStrength())
  * @invar  The agility of each unit must be a valid agility for any
  *         unit.
  *       | isValidAgility(getAgility())
@@ -70,49 +70,98 @@ public class Unit {
 	public double getPositionZ() {
 		return this.z;
 	}
+	
+	/**
+	 * Return the position on the x-axis of the cube that is occupied by this unit.
+	 * @return	the position on the x-axis of this unit rounded down to an integer
+	 * 			|result == (int) this.getPositionX()
+	 */
+	public int getCubePositionX() {
+		return (int) this.getPositionX();
+	}
+	
+	
+	/**
+	 * Return the position on the y-axis of the cube that is occupied by this unit.
+	 * @return	the position on the y-axis of this unit rounded down to an integer
+	 * 			|result == (int) this.getPositionY()
+	 */
+	public int getCubePositionY() {
+		return (int) this.getPositionY();
+	}
+
+	
+	/**
+	 * Return the position on the z-axis of the cube that is occupied by this unit.
+	 * @return	the position on the z-axis of this unit rounded down to an integer
+	 * 			|result == (int) this.getPositionZ()
+	 */
+	public int getCubePositionZ() {
+		return (int) this.getPositionZ();
+	}
 
 	
 	/**
 	 * Check whether the given position is a valid position for
 	 * any unit.
-	 *  
-	 * @param  position
-	 *         The position to check.
-	 * @return 
-	 *       | result ==
-	 *       | TODO xyz
-	*/
+	 * 
+	 * @param	x
+	 * 			position on the x-axis
+	 * @param	y
+	 * 			position on the y-axis
+	 * @param	z
+	 * 			position on the z-axis
+	 * @return	false if at least one of the coordinates is outside the boundaries of the game world.
+	 * 			| result == (! ((x<0) || (x>xMax) || (y<0) || (y>yMax) || (z<0) || (z>zMax)) )
+	 */
 	public static boolean isValidPosition(double x, double y, double z) {
-		return false;
+		return (! ((x<0) || (x>X_MAX) || (y<0) || (y>Y_MAX) || (z<0) || (z>Z_MAX)) );
 	}
 	
+	private static final int X_MAX = 50;
+	private static final int Y_MAX = 50;
+	private static final int Z_MAX = 50;
+	
+	
+	
 	/**
-	 * Set the position of this unit to the given position.
+	 * Set the position of this unit to the given coordinates.
 	 * 
-	 * @param  x,y,z
-	 *         The new position for this unit.
-	 * @post   The position of this new unit is equal to
-	 *         the given position.
-	 *       | new.getPosition() == x,y,z
-	 * @throws IllegalPositionException
-	 *         The given position is not a valid position for any
-	 *         unit.
-	 *       | ! isValidPosition(getPosition())
+	 * @param	x
+	 * 			the new position on the x-axis for this unit
+	 * @param	y
+	 * 			the new position on the y-axis for this unit
+	 * @param	z
+	 * 			the new position on the z-axis for this unit
+	 * @post	the new position on the x-axis of this unit is equal to the given x-coordinate.
+	 * 			|new.getPositionX() = x
+	 * @post	the new position on the y-axis of this unit is equal to the given y-coordinate.
+	 * 			|new.getPositionY() = y
+	 * @post	the new position on the z-axis of this unit is equal to the given z-coordinate.
+	 * 			|new.getPositionZ() = z
+	 * @throws	IllegalArgumentException
+	 * 			At least one of the given coordinates is not within the boundaries of the game world.
+	 * 			| (! isValidPosition(x,y,z))
 	 */
 	@Raw
 	public void setPosition(double x,double y, double z) 
-			throws IllegalPositionException {
+			throws IllegalArgumentException {
 		if (! isValidPosition(x,y,z))
-			throw new IllegalPositionException();
+			throw new IllegalArgumentException();
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 	
-		/**
-		 * Variable registering the position of this unit.
-		 */
-		private double x, y, z;
+	
+	/**
+	 * Variables registering the position of this unit.
+	 */
+	private double x;
+	private double y;
+	private double z;
+		
+		
 	
 	
 	
