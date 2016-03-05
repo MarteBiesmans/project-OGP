@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *       | isValidPosition(getPosition())
  * @invar  The weight of each unit must be a valid weight for any
  *         unit.
- *       | isValidWeight(getWeight())
+ *       | this.canHaveAsWeight(getWeight())
  * @invar The strength of each unit must be a valid strength for any unit.
  *       | isValidStrength(getStrength())
  * @invar  The agility of each unit must be a valid agility for any
@@ -35,6 +35,14 @@ public class Unit {
 	
 	public static final double CUBE_SIDE_LENGTH = 1;
 	
+	/**
+	 * @pre		The given hitpoints must be a valid hitpoints for any unit.
+	 *			| isValidHitpoints(hitpoints)
+	 * @post	The hitpoints of this new unit is equal to the given hitpoints.
+	 *			| new.getHitpoints() == hitpoints
+	 * TODO andere post-condities, iets met @param
+	 * 
+	 */
 	public Unit(double x, double y, double z, String name, 
 			int weight, int strength, int agility, int toughness)
 			throws IllegalArgumentException {
@@ -485,7 +493,7 @@ public class Unit {
 	 * 			|result == ((weight >= this.getMinimumWeight())
 	 * 						&& (weight <= MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	public boolean isValidWeight(int weight) {
+	public boolean canHaveAsWeight(int weight) {
 		return ((weight >= this.getMinimumWeight())
 				&& (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
@@ -497,7 +505,7 @@ public class Unit {
 	 * 			The new weight for this unit.
 	 * @post	If the given weight is a valid weight for this unit, the new
 	 * 			weight of this unit is equal to the given weight.
-	 * 			| if (isValidWeight(weight))
+	 * 			| if (this.canHaveAsWeight(weight))
 	 * 			| then new.getWeight() == weight
 	 * @post	If the given weight lies beyond the limits of the specified minimum and maximum
 	 * 			value, the new weight will be this limit value.
@@ -509,7 +517,7 @@ public class Unit {
 	 */
 	@Raw
 	public void setWeight(int weight) {
-		if (isValidWeight(weight))
+		if (this.canHaveAsWeight(weight))
 			this.weight = weight;
 		if (weight < this.getMinimumWeight())
 			this.weight = this.getMinimumWeight();
@@ -602,111 +610,122 @@ public class Unit {
 	
 	
 	
+
+	/**
+	 * Return the hitpoints of this unit.
+	 */
+	@Basic
+	@Raw
+	public int getHitpoints() {
+		return this.hitpoints;
+	}
+
 	
-	
-	
-	
-	
+	/**
+	 * Return the maximum number of hitpoints of this unit.
+	 * @return
+	 */
 	private int getMaxHitpoints() {
-		return 2*this.getWeight()*this.getToughness()/100; // TODO round up
-	}
-	
-	private int getMaxStaminaPoints() {
-		return 2*this.getWeight()*this.getToughness()/100; // TODO round up
-	}
-	
-
-
-	public void setNbHitpoints(int hitpoints) {
-		this.hitpoints = 	hitpoints;
-	}
-	
-	
-	/**
-	 * Return the number of hitpoints of this unit.
-	 */
-	@Basic @Raw
-	public int getNbHitpoints() {
-		return 2/100*this.getWeight()*this.getToughness(); //TODO round up to next integer
-	}
-	
-	/**
-	 * Check whether the given number of hitpoints is a valid number of hitpoints for
-	 * any unit.
-	 *  
-	 * @param  number of hitpoints
-	 *         The number of hitpoints to check.
-	 * @return 
-	 *       | result == TODO
-	*/
-	public static boolean isValidNbHitpoints(int givenNbHitpoints) {
-		return false;
+		return (int) Math.ceil( (2*this.getWeight()*this.getToughness())/100.0);
 	}
 	
 	
 	
 	/**
-	 * Variable registering the number of hitpoints of this unit.
-	 */
-	private int hitpoints;
-		
-
-	
-	
-	
-	
-	
-	
-	
-
-
-	/**
-	 * Return the number of stamina points of this unit.
-	 */
-	@Basic @Raw
-	public int getNbStaminaPoints() {
-		return this.stamina;
-	}
-	
-	/**
-	 * Check whether the given number of stamina points is a valid number of stamina points for
-	 * any unit.
-	 *  
-	 * @param  number of stamina points
-	 *         The number of stamina points to check.
-	 * @return 
-	 *       | result == TODO
-	*/
-	public static boolean isValidNbStaminaPoints(int givenNbStaminaPoints) {
-		return false;
-	}
-	
-	/**
-	 * Set the number of stamina points of this unit to the given number of stamina points.
+	 * Check whether the given hitpoints are valid hitpoints for this unit.
 	 * 
-	 * @param  givenNbStaminaPoints
-	 *         The new number of stamina points for this unit.
-	 * @pre    The given number of stamina points must be a valid number of stamina points for any
-	 *         unit.
-	 *       | isValidNbStaminaPoints(givenNbStaminaPoints)
-	 * @post   The number of stamina points of this unit is equal to the given
-	 *         number of stamina points.
-	 *       | new.getNbStaminaPoints() == givenNbStaminaPoints
+	 * @param	hitpoints
+	 * 			The hitpoints to check.
+	 * @return	true if and only if hitpoints lie between zero and the maximum value
+	 * 			| result == ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) )
+	 */
+	public boolean canHaveAsHitpoints(int hitpoints) {
+				return ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) );
+	}
+
+	/**
+	 * Set the hitpoints of this unit to the given hitpoints.
+	 * 
+	 * @param	hitpoints
+	 * 			The new hitpoints for this unit.
+	 * @pre		The given hitpoints must be valid hitpoints for this unit.
+	 * 			| this.canHaveAsHitpoints(hitpoints)
+	 * @post	The hitpoints of this unit is equal to the given hitpoints.
+	 * 			| new.getHitpoints() == hitpoints
 	 */
 	@Raw
-	public void setNbStaminaPoints(int givenNbStaminaPoints) {
-		assert isValidNbStaminaPoints(givenNbStaminaPoints);
-		this.stamina = givenNbStaminaPoints;
+	public void setHitpoints(int hitpoints) {
+		assert this.canHaveAsHitpoints(hitpoints);
+		this.hitpoints = hitpoints;
 	}
+
+	/**
+	 * Variable registering the hitpoints of this unit.
+	 */
+	private int hitpoints;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
-	 * Variable registering the number of stamina points of this unit.
+	 * Return the stamina points of this unit.
 	 */
-	private int stamina;
+	@Basic
+	@Raw
+	public int getStaminaPoints() {
+		return this.staminaPoints;
+	}
+
+	
+	/**
+	 * Return the maximum number of stamina points of this unit.
+	 * @return
+	 */
+	private int getMaxStaminaPoints() {
+		return (int) Math.ceil( (2*this.getWeight()*this.getToughness())/100.0);
+	}
 	
 	
 	
-	
+	/**
+	 * Check whether the given stamina points are a valid value for this unit.
+	 * 
+	 * @param	staminaPoints
+	 * 			The staminaPoints to check.
+	 * @return	true if and only if stamina points lie between zero and the maximum value
+	 * 			| result == ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxHitpoints()) )
+	 */
+	public boolean canHaveAsStaminaPoints(int staminaPoints) {
+				return ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()) );
+	}
+
+	/**
+	 * Set the stamina points of this unit to the given stamina points.
+	 * 
+	 * @param	staminaPoints
+	 * 			The new stamina points for this unit.
+	 * @pre		The given stamina points must be valid stamina points for this unit.
+	 * 			| this.canHaveAsStaminaPoints(staminaPoints)
+	 * @post	The stamina points of this unit are equal to the given stamina points.
+	 * 			| new.getStaminaPoints() == staminaPoints
+	 */
+	@Raw
+	public void setStaminaPoints(int staminaPoints) {
+		assert this.canHaveAsStaminaPoints(staminaPoints);
+		this.staminaPoints = staminaPoints;
+	}
+
+	/**
+	 * Variable registering the stamina points of this unit.
+	 */
+	private int staminaPoints;
 	
 	
 	
