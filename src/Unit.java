@@ -33,18 +33,22 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 public class Unit {
 	
+	public static final double CUBE_SIDE_LENGTH = 1;
+	
 	public Unit(double x, double y, double z, String name, 
 			int weight, int strength, int agility, int toughness)
 			throws IllegalArgumentException {
 		this.setPosition(x,y,z);
 		this.setName(name);
-		this.setWeight(weight);
 		this.setStrength(strength);
 		this.setAgility(agility);
+		this.setWeight(weight);
 		this.setToughness(toughness);
 		this.setNbStaminaPoints(this.getMaxStaminaPoints());
 		this.setNbHitpoints(this.getMaxHitpoints());
 		this.setOrientation((float) (Math.PI/2));
+		
+		this.isMoving = 0;
 	}
 
 	
@@ -262,7 +266,7 @@ public class Unit {
 	@Basic
 	@Raw
 	public int getStrength() {
-		return this.givenStrength;
+		return this.strength;
 	}
 
 	/**
@@ -289,13 +293,13 @@ public class Unit {
 	@Raw
 	public void setStrength(int givenStrength) {
 		if (isValidStrength(givenStrength))
-			this.givenStrength = givenStrength;
+			this.strength = givenStrength;
 	}
 
 	/**
 	 * Variable registering the strength of this unit.
 	 */
-	private int givenStrength;
+	private int strength;
 
 	
 	
@@ -312,7 +316,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public int getAgility() {
-		return this.givenAgility;
+		return this.agility;
 	}
 	
 	/**
@@ -342,13 +346,13 @@ public class Unit {
 	@Raw
 	public void setAgility(int givenAgility) {
 		if (isValidAgility(givenAgility))
-			this.givenAgility = givenAgility;
+			this.agility = givenAgility;
 	}
 	
 	/**
 	 * Variable registering the agility of this unit.
 	 */
-	private int givenAgility;
+	private int agility;
 
 
 
@@ -366,7 +370,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public int getWeight() {
-		return this.givenWeight;
+		return this.weight;
 	}
 	
 	/**
@@ -396,13 +400,13 @@ public class Unit {
 	@Raw
 	public void setWeight(int givenWeight) {
 		if (isValidWeight(givenWeight))
-			this.givenWeight = givenWeight;
+			this.weight = givenWeight;
 	}
 	
 	/**
 	 * Variable registering the weight of this unit.
 	 */
-	private int givenWeight;
+	private int weight;
 
 	
 	
@@ -427,7 +431,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public int getToughness() {
-		return this.givenToughness;
+		return this.toughness;
 	}
 	
 	/**
@@ -457,14 +461,13 @@ public class Unit {
 	@Raw
 	public void setToughness(int givenToughness) {
 		if (isValidToughness(givenToughness))
-			this.givenToughness = givenToughness;
+			this.toughness = givenToughness;
 	}
 	
 	/**
 	 * Variable registering the toughness of this unit.
 	 */
-	private int givenToughness;
-	private int NbHitpoints;
+	private int toughness;
 	
 	
 	
@@ -490,7 +493,7 @@ public class Unit {
 
 
 	public void setNbHitpoints(int hitpoints) {
-		this.NbHitpoints = 	hitpoints;
+		this.hitpoints = 	hitpoints;
 	}
 	
 	
@@ -520,7 +523,7 @@ public class Unit {
 	/**
 	 * Variable registering the number of hitpoints of this unit.
 	 */
-	private int givenNbHitpoints;
+	private int hitpoints;
 		
 
 	
@@ -537,7 +540,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public int getNbStaminaPoints() {
-		return this.givenNbStaminaPoints;
+		return this.stamina;
 	}
 	
 	/**
@@ -568,13 +571,13 @@ public class Unit {
 	@Raw
 	public void setNbStaminaPoints(int givenNbStaminaPoints) {
 		assert isValidNbStaminaPoints(givenNbStaminaPoints);
-		this.givenNbStaminaPoints = givenNbStaminaPoints;
+		this.stamina = givenNbStaminaPoints;
 	}
 	
 	/**
 	 * Variable registering the number of stamina points of this unit.
 	 */
-	private int givenNbStaminaPoints;
+	private int stamina;
 	
 	
 	
@@ -593,7 +596,7 @@ public class Unit {
 	 * Return the orientation of this unit.
 	 */
 	@Basic @Raw
-	public float getOrientation() {
+	public double getOrientation() {
 		return this.orientation;
 	}
 	
@@ -607,7 +610,7 @@ public class Unit {
 	 * @return	true if and only if theta lies between 0 and 2*PI
 	 * 			| result == (theta>=0 && theta<(2*Math.PI))
 	*/
-	public static boolean isValidOrientation(float theta) {
+	public static boolean isValidOrientation(double theta) {
 		return (theta>=0.0 && theta<(2.0*Math.PI));
 	}
 	
@@ -627,7 +630,7 @@ public class Unit {
 	 * 			|TODO moeten hier ook de 2 while-lussen komen?
 	 */
 	@Raw
-	public void setOrientation(float theta) {
+	public void setOrientation(double theta) {
 		while ((! isValidOrientation(theta)) && theta<0)
 			theta += 2.0*Math.PI;
 		while ((! isValidOrientation(theta)) && theta>0)
@@ -639,7 +642,7 @@ public class Unit {
 	/**
 	 * Variable registering the orientation of this unit.
 	 */
-	private float orientation;
+	private double orientation;
 
 	
 	
@@ -666,10 +669,109 @@ public class Unit {
 	 * @throws IllegalSecondsException
 	 */
 	public void advanceTime(float seconds) throws IllegalSecondsException{
+		if (seconds < 0 || seconds >= 0.2) {
+			throw new IllegalSecondsException();
+		}
 		
+		//TODO: aangevallen
+		if (this.isMoving()) {
+			double xDiff = this.getMoveToX() - this.getPositionX();
+			double yDiff = this.getMoveToY() - this.getPositionY();
+			double zDiff = this.getMoveToZ() - this.getPositionZ();
+			double moveDistance = Math.sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
+			
+			double xVelocity = this.getMovementSpeed() * xDiff / moveDistance;
+			double yVelocity = this.getMovementSpeed() * yDiff / moveDistance;
+			double zVelocity = this.getMovementSpeed() * zDiff / moveDistance;
+			
+			this.setOrientation(Math.atan2(yVelocity, xVelocity));
+			
+			// TODO: als variabele opslaan en kijken of het verder is dan targetposition, rekening houden met teken van x,y,zdiff (richting)!!
+			this.setPosition(this.getPositionX() + xVelocity * seconds,
+					this.getPositionY() + yVelocity * seconds,
+					this.getPositionZ() + zVelocity * seconds);
+			//TODO: als aangekomen dan isMoving = 0
+		}
+		//TODO: else if work dan work duration -= seconds, check rusten
 	}
 	
+	public double getMovementSpeed() {
+		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
+		if (this.isSprinting()) {
+			speed *= 2;
+		}
+		
+		//(int) laat alles na komma wegvallen, aka voor positieve getallen rond het naar beneden af
+		int zDiff = this.getCubePositionZ() - (int) this.getMoveToZ();
+		if (zDiff == -1) {
+			speed *= 0.5;
+		} else if (zDiff == 1) {
+			speed *= 1.2;
+		}
+		
+		return speed;
+	}
 	
+	public void toggleSprinting() {
+		if (this.isSprinting()) {
+			this.isMoving = Movement.WALKING;
+		} else if (this.isMoving()) {
+			this.isMoving = Movement.SPRINTING;
+		} 
+	}
+	
+	public boolean isSprinting() {
+		return this.isMoving == Movement.SPRINTING;
+	}
+	
+	//TODO: maak method CanMove: check isMoving == 0, check niet aangevallen enz
+	
+	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
+		//TODO: check x, y en z >= 0 en <= maxX,YenZ
+		if (Math.abs(this.getCubePositionX() - x) > 1
+			&& Math.abs(this.getCubePositionY() - y) > 1
+			&& Math.abs(this.getCubePositionZ() - z) > 1) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (getIsMoving() != Movement.NONE) {
+			throw new IllegalArgumentException();
+		}
+		
+		this.isMoving = 1;
+		this.moveToX = x + CUBE_SIDE_LENGTH / 2;
+		this.moveToY = y + CUBE_SIDE_LENGTH / 2;
+		this.moveToZ = z + CUBE_SIDE_LENGTH / 2;
+	}
+	
+	public double getMoveToX() {
+		return this.moveToX;
+	}
+	
+	public double getMoveToY() {
+		return this.moveToY;
+	}
+	
+	public double getMoveToZ() {
+		return this.moveToZ;
+	}
+	
+	public Movement getIsMoving() {
+		return this.isMoving;
+	}
+	
+	public boolean isMoving() {
+		return this.isMoving != Movement.NONE;
+	}
+	
+	private Movement isMoving;
+	private double moveToX;
+	private double moveToY;
+	private double moveToZ;
+	
+	public void moveTo(int x, int y, int z) {
+		//TODO: zie opgave
+	}
 	
 	
 }
