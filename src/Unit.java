@@ -85,8 +85,8 @@ public class Unit {
 		
 		
 		//hitpoints and stamina points
-		this.setNbStaminaPoints(this.getMaxStaminaPoints());
-		this.setNbHitpoints(this.getMaxHitpoints());
+		this.setStaminaPoints(this.getMaxStaminaPoints());
+		this.setHitpoints(this.getMaxHitpoints());
 		
 		//orientation
 		this.setOrientation((float) (Math.PI/2.0));
@@ -812,9 +812,9 @@ public class Unit {
 	 * @param seconds
 	 * @throws IllegalSecondsException
 	 */
-	public void advanceTime(float seconds) throws IllegalSecondsException{
+	public void advanceTime(float seconds) throws IllegalArgumentException{
 		if (seconds < 0 || seconds >= 0.2) {
-			throw new IllegalSecondsException();
+			throw new IllegalArgumentException();
 		}
 		
 		//TODO: aangevallen
