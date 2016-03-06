@@ -68,7 +68,7 @@ public class Unit {
 
 		// position, orientation
 		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH), (int) (y / Cube.SIDE_LENGTH), (int) (z / Cube.SIDE_LENGTH));
-		this.setPosition(new Position(x % Cube.SIDE_LENGTH, x % Cube.SIDE_LENGTH, x % Cube.SIDE_LENGTH, cube));
+		this.setPosition(new Position(x % Cube.SIDE_LENGTH, y % Cube.SIDE_LENGTH, z % Cube.SIDE_LENGTH, cube));
 
 		this.setOrientation((float) (Math.PI / 2.0));
 
@@ -115,8 +115,6 @@ public class Unit {
 
 	/**
 	 * Return the position of this unit.
-	 * 
-	 * @return	
 	 */
 	@Basic
 	@Raw
@@ -125,12 +123,12 @@ public class Unit {
 	}
 
 	/**
-	 * Return the position on the x-axis of the cube that is occupied by this
-	 * unit.
+	 * Return the position of the upper left corner from the cube that is occupied by this unit.
 	 * 
-	 * @return the position on the x-axis of this unit rounded down to an
-	 *         integer 
-	 *         |result == (int) this.getPositionX()
+	 * @return the x, y en z values of the position of this unit rounded down to an integer 
+	 *         |result == Position((int) this.getPosition.getRealX, 
+	 *         |	(int) this.getPosition().getRealY, 
+	 *         |	(int) this.getPosition().getRealZ())
 	 */
 	public Cube getCube() {
 		return this.position.getCube();
@@ -147,13 +145,13 @@ public class Unit {
 	 *            the new position on the z-axis for this unit
 	 * @post the new position on the x-axis of this unit is equal to the given
 	 *       x-coordinate. 
-	 *       |new.getPositionX() = x
+	 *       |new.getPosition().getXValue = x
 	 * @post the new position on the y-axis of this unit is equal to the given
 	 *       y-coordinate. 
-	 *       |new.getPositionY() = y
+	 *       |new.getPosition().getYValue() = y
 	 * @post the new position on the z-axis of this unit is equal to the given
 	 *       z-coordinate. 
-	 *       |new.getPositionZ() = z
+	 *       |new.getPosition().getZValue() = z
 	 * @throws IllegalArgumentException
 	 *             At least one of the given coordinates is not within the
 	 *             boundaries of the game world. 
