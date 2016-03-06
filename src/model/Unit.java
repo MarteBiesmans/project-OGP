@@ -6,6 +6,18 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
+ * repository
+ * https://github.com/MarteBiesmans/project-OGP.git
+ * 
+ * names
+ * Ellen Anthonissen
+ * Marte Biesmans
+ * 
+ * course of studies
+ * 2Bbi, objectgericht programmeren
+ */
+
+/**
  * 
  * @invar The name of each unit must be a valid name for any unit. 
  * 		| isValidName(getName())
