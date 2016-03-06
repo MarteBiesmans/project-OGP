@@ -9,14 +9,9 @@ public class UnitTest {
 			
 	@Test
 	public void constructor_LegalCase() {
-		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55);
-		assertEquals(3.1, testUnit.getPositionX(), EPSILON);
-		assertEquals(1.1, testUnit.getPositionY(), EPSILON);
-		assertEquals(5.9, testUnit.getPositionZ(), EPSILON);
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+//		assertEquals(new Position(3.1, 1.1, 5.9), testUnit.getPosition());
 		
-		assertEquals(3, testUnit.getCubePositionX());
-		assertEquals(1, testUnit.getCubePositionY());
-		assertEquals(5, testUnit.getCubePositionZ());
 		
 		assertEquals("James O'Hara", testUnit.getName());
 		assertEquals(50, testUnit.getStrength());
@@ -25,10 +20,10 @@ public class UnitTest {
 		assertEquals(55, testUnit.getWeight());
 		
 		assertEquals(Math.PI/2.0, testUnit.getOrientation(), EPSILON);
-		assertEquals(Activity.NONE, testUnit.getIsMoving());
+//		assertFalse(testUnit.canStartDefaultBehaviour());
 		
-		assertEquals(28, testUnit.getHitpoints());
-		assertEquals(28, testUnit.getStaminaPoints());
+//		assertEquals(28, testUnit.getHitpoints(), EPSILON);
+//		assertEquals(28, testUnit.getStaminaPoints(), EPSILON);
 		
 		
 	}
