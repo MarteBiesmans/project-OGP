@@ -96,6 +96,8 @@ public class Unit {
 		this.setStaminaPoints(this.getMaxStaminaPoints());
 		this.setHitpoints(this.getMaxHitpoints());
 		
+		// TODO boolean default behavior
+		
 
 	}
 
