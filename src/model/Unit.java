@@ -509,7 +509,7 @@ public class Unit {
 	/**
 	 * Return the maximum number of hitpoints of this unit.
 	 * 
-	 * @return 
+	 * @return the maximum hitpoints based on the weight and thoughness of this unit
 	 */
 	public int getMaxHitpoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -521,8 +521,8 @@ public class Unit {
 	 * @param hitpoints
 	 *            The hitpoints to check.
 	 * @return true if and only if hitpoints lie between zero and the maximum
-	 *         value | result == ( (hitpoints >= 0) && (hitpoints <=
-	 *         this.getMaxHitpoints()) )
+	 *         value 
+	 *         | result == ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) )
 	 */
 	public boolean canHaveAsHitpoints(double hitpoints) {
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()));
@@ -533,10 +533,10 @@ public class Unit {
 	 * 
 	 * @param hitpoints
 	 *            The new hitpoints for this unit.
-	 * @pre The given hitpoints must be valid hitpoints for this unit. |
-	 *      this.canHaveAsHitpoints(hitpoints)
-	 * @post The hitpoints of this unit is equal to the given hitpoints. |
-	 *       new.getHitpoints() == hitpoints
+	 * @pre The given hitpoints must be valid hitpoints for this unit. 
+	 *      | this.canHaveAsHitpoints(hitpoints)
+	 * @post The hitpoints of this unit is equal to the given hitpoints. 
+	 *       | new.getHitpoints() == hitpoints
 	 */
 	@Raw
 	public void setHitpoints(double hitpoints) {
@@ -561,7 +561,7 @@ public class Unit {
 	/**
 	 * Return the maximum number of stamina points of this unit.
 	 * 
-	 * @return
+	 * @return the maximum stamina points based on the weight and thoughness of this unit
 	 */
 	public int getMaxStaminaPoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -573,8 +573,8 @@ public class Unit {
 	 * @param staminaPoints
 	 *            The staminaPoints to check.
 	 * @return true if and only if stamina points lie between zero and the
-	 *         maximum value | result == ( (staminaPoints >= 0) &&
-	 *         (staminaPoints <= this.getMaxHitpoints()) )
+	 *         maximum value 
+	 *         | result == ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxHitpoints()) )
 	 */
 	public boolean canHaveAsStaminaPoints(double staminaPoints) {
 		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
@@ -588,7 +588,8 @@ public class Unit {
 	 * @pre The given stamina points must be valid stamina points for this unit.
 	 *      | this.canHaveAsStaminaPoints(staminaPoints)
 	 * @post The stamina points of this unit are equal to the given stamina
-	 *       points. | new.getStaminaPoints() == staminaPoints
+	 *       points. 
+	 *       | new.getStaminaPoints() == staminaPoints
 	 */
 	@Raw
 	public void setStaminaPoints(double staminaPoints) {
@@ -615,8 +616,7 @@ public class Unit {
 	 * 
 	 * @param theta
 	 *            The orientation to check.
-	 * @return true if and only if theta lies between 0 and 2*PI | result ==
-	 *         (theta>=0 && theta<(2*Math.PI))
+	 * @return true if and only if theta lies between 0 and 2*PI | result == (theta>=0 && theta<(2*Math.PI))
 	 */
 	public static boolean isValidOrientation(double theta) {
 		return (theta >= 0.0 && theta < (2.0 * Math.PI));
@@ -628,12 +628,12 @@ public class Unit {
 	 * @param theta
 	 *            The new orientation for this unit.
 	 * @post If the given orientation theta is a valid orientation, the new
-	 *       orientation of this unit is equal to the given orientation theta. |
-	 *       if (isValidOrientation(theta)) | then new.getOrientation() == theta
+	 *       orientation of this unit is equal to the given orientation theta. 
+	 *       | if (isValidOrientation(theta)) 
+	 *       | 	then new.getOrientation() == theta
 	 * @post If the given orientation theta lies outside the interval [0, 2*PI[,
 	 *       the new orientation of this unit is equal to the equivalent angle
-	 *       in this interval with the same sinus and cosinus. |TODO moeten hier
-	 *       ook de 2 while-lussen komen?
+	 *       in this interval with the same sinus and cosinus.
 	 */
 	@Raw
 	public void setOrientation(double theta) {
@@ -652,7 +652,7 @@ public class Unit {
 
 	/**
 	 * 
-	 * update the position and activity status of a Unit, based on that Unit's
+	 * update the position, activity status, hitpoints and stamina points of a Unit, based on that Unit's
 	 * current position, attributes and a given duration 'seconds' in seconds of
 	 * game time
 	 * 
@@ -749,7 +749,18 @@ public class Unit {
 			}
 		}
 	}
-
+	
+	/**
+	 * Moves this unit to an adjacent cube.
+	 * @param x 
+	 * 			the relative position on de x-axis
+	 * @param y 
+	 * 			the relative position on de y-axis
+	 * @param z 
+	 * 			the relative position on de z-axis
+	 * @throws IllegalArgumentException
+	 * 			when the x, y and z are not referring to an adjacent cube.
+	 */
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
 
 		if (this.isMoving()) {
@@ -781,6 +792,9 @@ public class Unit {
 
 	private Position moveToAdjacent;
 
+	/**
+	 * returns the movement speed in accordance with the units activity status and primary attributes.
+	 */
 	public double getMovementSpeed() {
 		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
 		if (this.isSprinting()) {
@@ -796,11 +810,20 @@ public class Unit {
 		return speed;
 	}
 
+	/**
+	 * Moves this unit to a cube further away.
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public void moveTo(int x, int y, int z) {
 		this.moveToCube = new Cube(x, y, z);
 		findNextCubeInPath();
 	}
 
+	/**
+	 * Moves this unit to the next cube when it's pathfinding to a cube far away.
+	 */
 	private void findNextCubeInPath() {
 		int adjacentX = -1;
 		int adjacentY = -1;
@@ -827,28 +850,48 @@ public class Unit {
 			this.moveToCube = null;
 	}
 
+	/**
+	 * returns the cube far away where this unit is going.
+	 * @return
+	 */
 	public Cube getMoveToCube() {
 		return this.moveToCube;
 	}
 
 	private Cube moveToCube;
 
+	/**
+	 * returns whether this unit is defending or not.
+	 */
 	public boolean isDefending() {
 		return (this.getActivity() == Activity.DEFENDING);
 	}
 
+	/**
+	 * returns wheter this unit is defending or not.
+	 */
 	public boolean isAttacking() {
 		return (this.getActivity() == Activity.ATTACKING);
 	}
 
+	/**
+	 * returns wheter this unit is moving or not.
+	 */
 	public boolean isMoving() {
 		return (this.getActivity() == Activity.WALKING) || (this.getActivity() == Activity.SPRINTING);
 	}
 
+	/**
+	 * returns wheter this unit is sprinting or not.
+	 */
 	public boolean isSprinting() {
 		return this.getActivity() == Activity.SPRINTING;
 	}
 
+	/**
+	 * if the unit is sprinting, it will start walking. If the unit is walking, it wills tart sprinting.
+	 * if the unit is not moving, this method will do noting.
+	 */
 	public void toggleSprinting() {
 		if (this.isSprinting()) {
 			this.setActivity(Activity.WALKING);
@@ -857,22 +900,40 @@ public class Unit {
 		}
 	}
 
+	/**
+	 * returns whether this unit is working or not.
+	 */
 	public boolean isWorking() {
 		return (this.getActivity() == Activity.WORKING);
 	}
 
+	/**
+	 * returns whether this unit is resting or not.
+	 */
 	public boolean isResting() {
 		return (this.getActivity() == Activity.RESTING);
 	}
 
+	/**
+	 * returns if this unit is doing anything at all.
+	 */
 	public boolean isBeingUseless() {
 		return (this.getActivity() == Activity.NONE);
 	}
 
+	/**
+	 * returns the currenta ctivity of this unit.
+	 */
 	public Activity getActivity() {
 		return this.activity;
 	}
 
+	/**
+	 * sets the activity of this unit to the given activity. Returns true if it succeeded.
+	 * @param activity
+	 * @param busyTime
+	 * @return
+	 */
 	public boolean setActivity(Activity activity, double busyTime) {
 		if (this.setActivity(activity)) {
 			this.setBusyTime(busyTime);
@@ -883,6 +944,11 @@ public class Unit {
 		}
 	}
 
+	/**
+	 * sets the activity of this unit to the given activity.
+	 * @param activity
+	 * @return
+	 */
 	public boolean setActivity(Activity activity) {
 		if (this.isResting() && !this.canStopResting) {
 			return false;
@@ -898,6 +964,10 @@ public class Unit {
 
 	private Activity activity;
 
+	/**
+	 * substracts the given seconds off of the busytime of this unit. returns true if this succeded.
+	 * @param seconds
+	 */
 	public boolean busyTimeMin(double seconds) {
 		this.setBusyTime(this.getBusyTime() - seconds);
 		if (this.getBusyTime() == 0) {
@@ -907,35 +977,57 @@ public class Unit {
 		return false;
 	}
 
+	/**
+	 * sets the busytime of this unit to the given seconds
+	 * @param busyTime
+	 */
 	public void setBusyTime(double busyTime) {
 		this.busyTime = Math.max(busyTime, 0);
 	}
 
+	/**
+	 * returns the busytime of this unit
+	 */
 	public double getBusyTime() {
 		return this.busyTime;
 	}
 
 	private double busyTime;
 	
+	/**
+	 * starts the default behaviour of this unit
+	 */
 	public void startDefaultBehaviour() {
 		this.defaultBehaviour = true;
 	}
 
+	/**
+	 * stops the default behaviour of this unit
+	 */
 	public void stopDefaultBehaviour() {
 		this.defaultBehaviour = false;
 	}
 
+	/**
+	 * returns whether the default behaviour can be started
+	 */
 	public boolean canStartDefaultBehaviour() {
 		return (!this.defaultBehaviour);
 	}
 
 	private boolean defaultBehaviour;
 	
+	/**
+	 * this unit starts working.
+	 */
 	public void work() {
 		this.setActivity(Activity.WORKING);
 		this.setBusyTime(500 / this.getStrength());
 	}
 
+	/**
+	 * this unit starts resting.
+	 */
 	public void rest() {
 		busyTime = 200 * 0.2 / this.getToughness();
 		if (this.setActivity(Activity.RESTING, busyTime)) {
@@ -945,6 +1037,10 @@ public class Unit {
 
 	private boolean canStopResting;
 
+	/**
+	 * this unit starts attacking another unit.
+	 * @param other
+	 */
 	public void attack(Unit other) {
 		if (this.setActivity(Activity.ATTACKING, 1)) {
 			other.defend(this);
@@ -952,6 +1048,10 @@ public class Unit {
 		}
 	}
 
+	/** 
+	 * this unit starts defending.
+	 * @param attacker
+	 */
 	public void defend(Unit attacker) {
 		if (randomGen.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
 			Position nextPosition = null;
