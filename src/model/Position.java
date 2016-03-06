@@ -83,7 +83,7 @@ public class Position extends Vector<Double> {
 	}
 
 	public void setYValue(double y) {
-		this.setX(new Double(y));
+		this.setY(new Double(y));
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class Position extends Vector<Double> {
 	}
 
 	public void setZValue(double z) {
-		this.setX(new Double(z));
+		this.setZ(new Double(z));
 	}
 	
 	public Position min(Position other) {
