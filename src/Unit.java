@@ -48,7 +48,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit(double x, double y, double z, String name, 
-			int weight, int strength, int agility, int toughness)
+			int strength, int agility, int toughness, int weight)
 			throws IllegalArgumentException {
 		
 		//name
