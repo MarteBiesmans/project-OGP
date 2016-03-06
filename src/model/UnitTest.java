@@ -9,10 +9,10 @@ public class UnitTest {
 			
 	@Test
 	public void constructor_LegalCase() {
-		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		assertEquals(3.1, testUnit.getPosition().getRealX(), EPSILON);
-		assertEquals(1.1, testUnit.getPosition().getRealY(), EPSILON);
-		assertEquals(5.9, testUnit.getPosition().getRealZ(), EPSILON);		
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(3.2, testUnit.getPosition().getRealX(), EPSILON);
+		assertEquals(1.3, testUnit.getPosition().getRealY(), EPSILON);
+		assertEquals(5.9, testUnit.getPosition().getRealZ(), EPSILON);
 		
 		assertEquals("James O'Hara", testUnit.getName());
 		assertEquals(50, testUnit.getStrength());
@@ -40,7 +40,7 @@ public class UnitTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionY() throws Exception {
-		new Unit(3.1, 51.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		new Unit(3.1, -1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 	}
 
 }
