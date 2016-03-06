@@ -713,7 +713,7 @@ public class Unit {
 				this.canStopResting = true;
 			}
 		} else if (this.isBeingUseless() && this.canStartDefaultBehaviour()) {
-			int randomGetal = randomGen.nextInt(10);
+			int randomGetal = randomGen.nextInt(3);
 			if (randomGetal == 0) {
 				moveTo(randomGen.nextInt(Cube.X_MAX - Cube.X_MIN) + Cube.X_MIN,
 						randomGen.nextInt(Cube.Y_MAX - Cube.Y_MIN) + Cube.Y_MIN,
@@ -722,10 +722,9 @@ public class Unit {
 				this.work();
 			} else {
 				this.rest();
-				double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) 
-				double StaminaTime =
-				double restingTime = 
-				this.setBusyTime(10);
+				double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200*0.2 / this.getToughness();
+				double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100*0.1 / this.getToughness();
+				this.setBusyTime(hitpointsTime + staminaTime);
 			}
 		}
 	}
@@ -917,8 +916,8 @@ public class Unit {
 	}
 
 	public void rest() {
-		if (this.setActivity(Activity.RESTING, 0.2)) {
-			// TODO: calc busy time
+		busyTime = 200 * 0.2 / this.getToughness();
+		if (this.setActivity(Activity.RESTING, busyTime)) {
 			this.canStopResting = false;
 		}
 	}
@@ -927,17 +926,23 @@ public class Unit {
 
 	public void attack(Unit other) {
 		if (this.setActivity(Activity.ATTACKING, 1)) {
-			//TODO: handle attack (update orientation)
 			other.defend(this);
+			this.setOrientation(Math.atan2(other.getPosition().getRealY()-this.getPosition().getRealY(), other.getPosition().getRealX()-this.getPosition().getRealX()));
 		}
 	}
 
 	public void defend(Unit attacker) {
-		//TODO: handle defense, set orientation
-		/*
-		 * if (randomGen.getDouble() < 0.2*...) {dodge}
-		 * else if (randomGen.getDouble() < 0.25*...) {block}
-		 * else {take damage}
-		 */
+		if (randomGen.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
+			Position nextPosition = null;
+			while (nextPosition == this.getPosition()) {
+				Position minPosition = new Position(randomGen.nextInt(3)-1, 
+						randomGen.nextInt(3)-1, 0);
+				nextPosition = this.getPosition().min(minPosition);
+			}
+			this.setPosition(nextPosition);
+		} else if (randomGen.nextDouble() > 0.25 * (this.getStrength() + this.getAgility()) / (attacker.getStrength() + attacker.getAgility())) {
+			this.setHitpoints(attacker.getStrength()/10);
+		}
+		this.setOrientation(Math.atan2(attacker.getPosition().getRealY()-this.getPosition().getRealY(), attacker.getPosition().getRealX()-this.getPosition().getRealX()));
 	}
 }
