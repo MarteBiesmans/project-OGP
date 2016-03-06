@@ -905,7 +905,7 @@ public class Unit {
 	}
 
 	public boolean canStartDefaultBehaviour() {
-		return this.defaultBehaviour;
+		return (!this.defaultBehaviour);
 	}
 
 	private boolean defaultBehaviour;
