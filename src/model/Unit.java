@@ -7,23 +7,24 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
- * @invar The name of each unit must be a valid name for any unit. |
- *        isValidName(getName())
- * @invar The position of each unit must be a valid position for any unit. |
- *        isValidPosition(getPosition())
- * @invar The weight of each unit must be a valid weight for any unit. |
- *        this.canHaveAsWeight(getWeight())
- * @invar The strength of each unit must be a valid strength for any unit. |
- *        isValidStrength(getStrength())
- * @invar The agility of each unit must be a valid agility for any unit. |
- *        isValidAgility(getAgility())
- * @invar The toughness of each unit must be a valid toughness for any unit. |
- *        isValidToughness(getToughness())
+ * @invar The name of each unit must be a valid name for any unit. 
+ * 		| isValidName(getName())
+ * @invar The position of each unit must be a valid position for any unit. 
+ * 		| isValidPosition(getPosition())
+ * @invar The weight of each unit must be a valid weight for any unit. 
+ * 		| this.canHaveAsWeight(getWeight())
+ * @invar The strength of each unit must be a valid strength for any unit. 
+ * 		| isValidStrength(getStrength())
+ * @invar The agility of each unit must be a valid agility for any unit. 
+ * 		| isValidAgility(getAgility())
+ * @invar The toughness of each unit must be a valid toughness for any unit. 
+ * 		| isValidToughness(getToughness())
  * @invar The number of hitpoints of each unit must be a valid number of
- *        hitpoints for any unit. | canHaveAsHitpoints(getNbHitpoints())
+ *        hitpoints for any unit. 
+ *		| canHaveAsHitpoints(getNbHitpoints())
  * @invar The number of stamina points of each unit must be a valid number of
- *        stamina points for any unit. |
- *        canHaveAsStaminaPoints(getNbStaminaPoints())
+ *        stamina points for any unit. 
+ *        | canHaveAsStaminaPoints(getNbStaminaPoints())
  * @invar The orientation of each unit must be a valid orientation for any unit.
  *        | isValidOrientation(getOrientation())
  * 
@@ -36,14 +37,14 @@ public class Unit {
 
 	/**
 	 * @pre The given hitpoints must be valid hitpoints for this unit. 
-	 * 		| isValidHitpoints(hitpoints)
+	 *		| isValidHitpoints(hitpoints)
 	 * @post The hitpoints of this new unit are equal to the given hitpoints. 
-	 * 		| new.getHitpoints() == hitpoints
+	 *		| new.getHitpoints() == hitpoints
 	 * @pre The given stamina points must be valid stamina points for this unit.
-	 *      | isValidStaminaPoints(staminaPoints)
+	 *		| isValidStaminaPoints(staminaPoints)
 	 * @post The stamina points of this new unit are equal to the given stamina
 	 *       points. 
-	 *       | new.getStaminaPoints() == staminaPoints 
+	 *		| new.getStaminaPoints() == staminaPoints 
 	 *       TODO andere post-condities, iets met @param
 	 * 
 	 */
@@ -102,7 +103,7 @@ public class Unit {
 	}
 
 	/**
-	 * Return the position on the y-axis of this unit.
+	 * Return the position of this unit.
 	 */
 	@Basic
 	@Raw
@@ -131,14 +132,18 @@ public class Unit {
 	 * @param z
 	 *            the new position on the z-axis for this unit
 	 * @post the new position on the x-axis of this unit is equal to the given
-	 *       x-coordinate. |new.getPositionX() = x
+	 *       x-coordinate. 
+	 *       |new.getPositionX() = x
 	 * @post the new position on the y-axis of this unit is equal to the given
-	 *       y-coordinate. |new.getPositionY() = y
+	 *       y-coordinate. 
+	 *       |new.getPositionY() = y
 	 * @post the new position on the z-axis of this unit is equal to the given
-	 *       z-coordinate. |new.getPositionZ() = z
+	 *       z-coordinate. 
+	 *       |new.getPositionZ() = z
 	 * @throws IllegalArgumentException
 	 *             At least one of the given coordinates is not within the
-	 *             boundaries of the game world. | (! isValidPosition(x,y,z))
+	 *             boundaries of the game world. 
+	 *       | (! isValidPosition(x,y,z))
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
@@ -166,9 +171,11 @@ public class Unit {
 	 *            The name to check.
 	 * @return Each name is at least two characters long and must start with an
 	 *         uppercase letter. Names can only use letters (both upper- and
-	 *         lowercase), quotes (both single and double) and spaces. |if
-	 *         (length(name) < 2) | result == false |if (!
-	 *         isUpperCase(name.charAt(0))) | return == false |TODO moet hier de
+	 *         lowercase), quotes (both single and double) and spaces. 
+	 *         |if (length(name) < 2) 
+	 *         |	result == false 
+	 *         |if (!isUpperCase(name.charAt(0))) 
+	 *         |	return == false |TODO moet hier de
 	 *         for-loop uit de implementatie komen?
 	 */
 	public static boolean isValidName(String name) {
@@ -198,11 +205,11 @@ public class Unit {
 	 * 
 	 * @param name
 	 *            The new name for this unit.
-	 * @post The name of this unit is equal to the given name. | new.getName()
-	 *       == name
+	 * @post The name of this unit is equal to the given name. 
+	 *		| new.getName() == name
 	 * @throws IllegalArgumentException
-	 *             The given name is not a valid name for this unit. | (!
-	 *             isValidName(name))
+	 *             The given name is not a valid name for this unit. 
+	 *		| (!isValidName(name))
 	 */
 	@Raw
 	public void setName(String name) throws IllegalArgumentException {
@@ -240,8 +247,8 @@ public class Unit {
 	 * @param strength
 	 *            The strength to check.
 	 * @return true if and only if strength lies between the minimum and maximum
-	 *         value for primary attributes. |result == ((strength >=
-	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <=
+	 *         value for primary attributes. 
+	 *         |result == ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <=
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	public static boolean isValidStrength(int strength) {
@@ -254,13 +261,16 @@ public class Unit {
 	 * @param strength
 	 *            The new strength for this unit.
 	 * @post If the given strength is a valid strength for this unit, the new
-	 *       strength of this unit is equal to the given strength. | if
-	 *       (isValidStrength(strength)) | then new.getStrength() == strength
+	 *       strength of this unit is equal to the given strength. 
+	 *       | if (isValidStrength(strength)) 
+	 *       | 	then new.getStrength() == strength
 	 * @post If the given strength lies beyond the limits of the specified
 	 *       minimum and maximum value, the new strength will be this limit
-	 *       value. | if (strength < MIN_VAL_PRIMARY_ATTRIBUTE) | then
-	 *       new.getStrength() == MIN_VAL_PRIMARY_ATTRIBUTE | if (strength >
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getStrength() ==
+	 *       value. 
+	 *       | if (strength < MIN_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | then new.getStrength() == MIN_VAL_PRIMARY_ATTRIBUTE 
+	 *       | if (strength > MAX_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | then new.getStrength() ==
 	 *       MAX_VAL_PRIMARY_ATTRIBUTE TODO mogen deze 2 if-statements zo achter
 	 *       elkaar? of moeten dit aparte postcondities worden?
 	 */
@@ -480,7 +490,7 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	private int getMaxHitpoints() {
+	public int getMaxHitpoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
 	}
 
@@ -532,7 +542,7 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	private int getMaxStaminaPoints() {
+	public int getMaxStaminaPoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
 	}
 
@@ -659,13 +669,12 @@ public class Unit {
 					&& (Math.signum(moveDiff.getZValue()) != Math.signum(diffNext.getZValue()))) {
 				this.setPosition(this.getMoveToAdjacent());
 
-				// Check voor verre move to (maw pathfinding is actief)
+				// Check whether the unit is moving to a cube far away (not an adjacent cube)
 				if (getMoveToCube() != null) {
 					findNextCubeInPath();
 				}
 
-				// Check if klaar met pathfinding/pathfinding niet actief)
-				// -> stop met bewegen want aangekomen
+				// Check whether the unit is not pathfinding. If this is true, it stops moving.
 				if (getMoveToCube() == null) {
 					this.setMoveToAdjacent(null);
 					this.setActivity(Activity.NONE);
@@ -690,7 +699,16 @@ public class Unit {
 				this.setActivity(Activity.NONE);
 			}
 		} else if (this.isResting()) {
-			// TODO: increase hitpoints/stamina
+			if (this.getHitpoints() != this.getMaxHitpoints()){
+				double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (200*0.2);
+				this.setHitpoints(Math.min(hitpoints, this.getMaxHitpoints()));
+			} else if (this.getStaminaPoints() != this.getMaxStaminaPoints()){
+				double stamina = this.getStaminaPoints() + seconds * this.getToughness() / (100*0.2);
+				this.setStaminaPoints(Math.min(stamina, this.getMaxStaminaPoints()));
+			} else {
+				this.setActivity(Activity.NONE);
+			}
+					
 			if (this.busyTimeMin(seconds)) {
 				this.canStopResting = true;
 			}
@@ -704,7 +722,9 @@ public class Unit {
 				this.work();
 			} else {
 				this.rest();
-				// TODO: calc full rest time
+				double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) 
+				double StaminaTime =
+				double restingTime = 
 				this.setBusyTime(10);
 			}
 		}
