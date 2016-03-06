@@ -867,14 +867,19 @@ public class Unit {
 	}
 	
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
-		//TODO: check x, y en z >= 0 en <= maxX,YenZ
-		if (Math.abs(this.getCubePositionX() - x) > 1
-			&& Math.abs(this.getCubePositionY() - y) > 1
-			&& Math.abs(this.getCubePositionZ() - z) > 1) {
-			throw new IllegalArgumentException();
-		}
 		
-		if (getIsMoving() != Activity.NONE) {
+		if ((x != -1) || (x != 0) || (x != 1) ||
+				(y != -1) || (y != 0) || (y != 1) ||
+				(z != -1) || (z != 0) || (z != 1)) 
+			throw new IllegalArgumentException();
+			
+		
+		if (! isValidPosition(this.getCubePositionX() + x + CUBE_SIDE_LENGTH/2,
+				this.getCubePositionY() + y + CUBE_SIDE_LENGTH/2,
+				this.getCubePositionZ() + z + CUBE_SIDE_LENGTH/2))
+			throw new IllegalArgumentException();
+		
+		if  {// moving to adjacent
 			throw new IllegalArgumentException();
 		}
 		
@@ -916,7 +921,27 @@ public class Unit {
 	}
 	
 	public void moveTo(int x, int y, int z) {
-		//TODO: zie opgave
+		int adjacentX = -1;
+		int adjacentY = -1;
+		int adjacentZ = -1;
+		while ((this.getCubePositionX() != x) && (this.getCubePositionY() != y) &&(this.getCubePositionZ() != z)) {
+			if (this.getCubePositionX() == x) {
+				adjacentX = 0;
+			} else if (this.getCubePositionX() < x) {
+				adjacentX = -1;
+			}
+			if (this.getCubePositionY() == y) {
+				adjacentY = 0;
+			} else if (this.getCubePositionY() < y) {
+				adjacentY = -1;
+			}
+			if (this.getCubePositionZ() == z) {
+				adjacentZ = 0;
+			} else if (this.getCubePositionZ() < z) {
+				adjacentZ = -1;
+			}
+			moveToAdjacent(adjacentX, adjacentY, adjacentZ);
+		}
 	}
 	
 	public boolean isDefending() {
