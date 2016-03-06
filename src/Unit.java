@@ -20,10 +20,10 @@ import be.kuleuven.cs.som.annotate.Raw;
  *       | isValidToughness(getToughness())
  * @invar  The number of hitpoints of each unit must be a valid number of hitpoints for any
  *         unit.
- *       | isValidNbHitpoints(getNbHitpoints())
+ *       | canHaveAsHitpoints(getNbHitpoints())
  * @invar  The number of stamina points of each unit must be a valid number of stamina points for any
  *         unit.
- *       | isValidNbStaminaPoints(getNbStaminaPoints())
+ *       | canHaveAsStaminaPoints(getNbStaminaPoints())
  * @invar  The orientation of each unit must be a valid orientation for any
  *         unit.
  *       | isValidOrientation(getOrientation())
@@ -36,10 +36,14 @@ public class Unit {
 	public static final double CUBE_SIDE_LENGTH = 1;
 	
 	/**
-	 * @pre		The given hitpoints must be a valid hitpoints for any unit.
+	 * @pre		The given hitpoints must be valid hitpoints for this unit.
 	 *			| isValidHitpoints(hitpoints)
-	 * @post	The hitpoints of this new unit is equal to the given hitpoints.
+	 * @post	The hitpoints of this new unit are equal to the given hitpoints.
 	 *			| new.getHitpoints() == hitpoints
+	 * @pre		The given stamina points must be valid stamina points for this unit.
+	 *			| isValidStaminaPoints(staminaPoints)
+	 * @post	The stamina points of this new unit are equal to the given stamina points.
+	 *			| new.getStaminaPoints() == staminaPoints
 	 * TODO andere post-condities, iets met @param
 	 * 
 	 */
@@ -47,11 +51,14 @@ public class Unit {
 			int weight, int strength, int agility, int toughness)
 			throws IllegalArgumentException {
 		
-		//position and name
-		this.setPosition(x,y,z);
+		//name
 		this.setName(name);
 		
+		//position, orientation and activity
+		this.setPosition(x,y,z);
+		this.setOrientation((float) (Math.PI/2.0));
 		this.isMoving = Movement.NONE;
+		
 		
 		//primary attributes
 		if (strength < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
@@ -88,8 +95,7 @@ public class Unit {
 		this.setStaminaPoints(this.getMaxStaminaPoints());
 		this.setHitpoints(this.getMaxHitpoints());
 		
-		//orientation
-		this.setOrientation((float) (Math.PI/2.0));
+
 	}
 
 	
@@ -809,8 +815,9 @@ public class Unit {
 	 * update the position and activity status of a Unit, based on that Unit's current position,
 	 * attributes and a given duration 'seconds' in seconds of game time
 	 * 
-	 * @param seconds
-	 * @throws IllegalSecondsException
+	 * @param	seconds
+	 * @throws	IllegalArgumentException
+	 * 			the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException{
 		if (seconds < 0 || seconds >= 0.2) {
