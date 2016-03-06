@@ -4,7 +4,6 @@ import model.Unit;
 
 public class Facade implements IFacade {
 	
-	//TODO geeft geen error-messages -> toch in srs-folder zetten?
 	
 	/* Unit creation */
 	/**
@@ -34,15 +33,12 @@ public class Facade implements IFacade {
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
 		try{
-			//TODO default behavior
-			//TODO is initialPosition.get(0) een juiste notatie?
-
-			return new Unit((double) initialPosition.get(0), (double) initialPosition.get(1), (double) initialPosition.get(2),
-				name, strength, agility, toughness, weight);
+			return new Unit((double) initialPosition[0], (double) initialPosition[1], (double) initialPosition[2],
+				name, strength, agility, toughness, weight, enableDefaultBehavior);
 		}
 		
-		catch (IllegalArgumentException){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -59,11 +55,12 @@ public class Facade implements IFacade {
 	 */
 	public double[] getPosition(Unit unit) throws ModelException {
 		try{
-			//TODO
+			return new double[] {unit.getPosition().getXValue(), 
+					unit.getPosition().getYValue(), unit.getPosition().getZValue()};
 		}
 		
-		catch (IllegalArgumentException){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}
 	}
 
@@ -79,11 +76,11 @@ public class Facade implements IFacade {
 	 */
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
 		try{
-		//TODO
+			return new int[] {unit.getCube().getXValue(), unit.getCube().getYValue(), unit.getCube().getZValue()};
 		}
 		
-		catch (IllegalArgumentException){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -102,8 +99,8 @@ public class Facade implements IFacade {
 			return unit.getName();
 		}
 		
-		catch (IllegalArgumentException){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -122,8 +119,8 @@ public class Facade implements IFacade {
 			unit.setName(newName);
 		}
 		
-		catch (IllegalArgumentException){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -139,13 +136,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getWeight(Unit unit) throws ModelException {
-		try{
-			return unit.getWeight();
-		}
-		
-		catch (){ //TODO is deze catch nodig? want weight is niet-defensief geprogrammeerd, maar zo kunnen we mss eender welke andere fout catchen
-			throw new ModelException
-		}	
+		return unit.getWeight();	
 	}
 
 	/**
@@ -159,13 +150,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void setWeight(Unit unit, int newValue) throws ModelException {
-		try{
-			unit.setWeight(newValue);
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		unit.setWeight(newValue);
 	}
 
 	/**
@@ -178,13 +163,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getStrength(Unit unit) throws ModelException {
-		try{
-			return unit.getStrength();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.getStrength();
 	}
 
 	/**
@@ -198,13 +177,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void setStrength(Unit unit, int newValue) throws ModelException {
-		try{
-			unit.setStrength(newValue);
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		unit.setStrength(newValue);
 	}
 
 	/**
@@ -217,13 +190,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getAgility(Unit unit) throws ModelException {
-		try{
-			return unit.getAgility();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.getAgility();
 	}
 
 	/**
@@ -237,13 +204,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void setAgility(Unit unit, int newValue) throws ModelException {
-		try{
-			unit.setAgility(newValue);
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		unit.setAgility(newValue);
 	}
 
 	/**
@@ -256,13 +217,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getToughness(Unit unit) throws ModelException {
-		try{
 			return unit.getToughness();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
 	}
 
 	/**
@@ -277,13 +232,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void setToughness(Unit unit, int newValue) throws ModelException {
-		try{
-			unit.setToughness(newValue);
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		unit.setToughness(newValue);
 	}
 
 	/* Points */
@@ -298,13 +247,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getMaxHitPoints(Unit unit) throws ModelException {
-		try{
-			return unit.getMaxHitpoints(); //TODO deze methode staat nog op private -> public maken of package available?
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.getMaxHitpoints();
 	}
 
 	/**
@@ -317,14 +260,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getCurrentHitPoints(Unit unit) throws ModelException {
-		try{
-			return (int) unit.getHitpoints();
-			//TODO waarom is hitpoints type double en niet int?
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return (int) unit.getHitpoints();
 	}
 
 	/**
@@ -338,13 +274,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getMaxStaminaPoints(Unit unit) throws ModelException {
-		try{
-			return unit.getMaxStaminaPoints();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.getMaxStaminaPoints();
 	}
 
 	/**
@@ -358,14 +288,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getCurrentStaminaPoints(Unit unit) throws ModelException {
-		try{
-			return (double) unit.getStaminaPoints();
-			//TODO waarom is staminaPoints double en niet int?
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return (int) unit.getStaminaPoints();
 	}
 
 	/* Time */
@@ -386,8 +309,8 @@ public class Facade implements IFacade {
 			unit.advanceTime((float) dt);
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -415,8 +338,8 @@ public class Facade implements IFacade {
 			unit.moveToAdjacent(dx, dy, dz);
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -430,13 +353,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public double getCurrentSpeed(Unit unit) throws ModelException {
-		try{
-			return unit.getMovementSpeed();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.getMovementSpeed();
 	}
 
 	/**
@@ -449,13 +366,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isMoving(Unit unit) throws ModelException {
-		try{
-			return unit.isMoving();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.isMoving();
 	}
 
 	/**
@@ -467,14 +378,11 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void startSprinting(Unit unit) throws ModelException {
-		try{
+		if (! unit.isSprinting())
 			unit.toggleSprinting();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
-	}
+		else
+			throw new ModelException();
+
 
 	/**
 	 * Disable sprinting mode for the given unit.
@@ -485,15 +393,11 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void stopSprinting(Unit unit) throws ModelException {
-		try{
+		if (unit.isSprinting())
 			unit.toggleSprinting();
-			//TODO aparte case voor als men al aan het sprinten is?
-		}
+		else
+			throw new ModelException();
 		
-		catch (){
-			throw new ModelException
-		}	
-	}
 
 	/**
 	 * Return whether the given unit is currently sprinting.
@@ -505,14 +409,8 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isSprinting(Unit unit) throws ModelException {
-		try{
-			return unit.isSprinting();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
-	}
+		return unit.isSprinting();
+
 
 	/* Orientation */
 
@@ -526,14 +424,8 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public double getOrientation(Unit unit) throws ModelException {
-		try{
-			return unit.getOrientation();
-		}
+		return unit.getOrientation();
 		
-		catch (){
-			throw new ModelException
-		}	
-	}
 
 	/* Extended movement */
 
@@ -550,16 +442,16 @@ public class Facade implements IFacade {
 	 */
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
 		try{
-			unit.moveTo(cube.get(0), cube.get(1), cube.get(2));
+			unit.moveTo(cube[0], cube[1], cube[2]);
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
+	
 	/* Working */
-
 	/**
 	 * Make the given unit start working.
 	 * 
@@ -570,11 +462,11 @@ public class Facade implements IFacade {
 	 */
 	public void work(Unit unit) throws ModelException {
 		try{
-			//TODO
+			unit.work();
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -588,17 +480,11 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isWorking(Unit unit) throws ModelException {
-		try{
-			return unit.isWorking();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.isWorking();
 	}
 
+	
 	/* Attacking */
-
 	/**
 	 * Make the given unit fight with another unit.
 	 * 
@@ -611,11 +497,12 @@ public class Facade implements IFacade {
 	 */
 	public void fight(Unit attacker, Unit defender) throws ModelException {
 		try{
-			//TODO
+			attacker.attack(defender);
+			defender.defend(attacker);
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -630,13 +517,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isAttacking(Unit unit) throws ModelException {
-		try{
-			return unit.isAttacking();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.isAttacking();
 	}
 
 	/* Resting */
@@ -651,11 +532,11 @@ public class Facade implements IFacade {
 	 */
 	public void rest(Unit unit) throws ModelException {
 		try{
-			//TODO
+			unit.rest();
 		}
 		
-		catch (){
-			throw new ModelException
+		catch (IllegalArgumentException e){
+			throw new ModelException();
 		}	
 	}
 
@@ -669,13 +550,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isResting(Unit unit) throws ModelException {
-		try{
-			return unit.isResting();
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return unit.isResting();
 	}
 
 	/* Default behavior */
@@ -692,13 +567,10 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void setDefaultBehaviorEnabled(Unit unit, boolean value) throws ModelException {
-		try{
-			//TODO
-		}
-		
-		catch (){
-			throw new ModelException
-		}
+		if (value)
+			unit.startDefaultBehaviour();
+		else
+			unit.stopDefaultBehaviour();
 	}
 
 	/**
@@ -711,12 +583,6 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public boolean isDefaultBehaviorEnabled(Unit unit) throws ModelException {
-		try{
-			//TODO
-		}
-		
-		catch (){
-			throw new ModelException
-		}	
+		return (! unit.canStartDefaultBehaviour());
 	}
 }
