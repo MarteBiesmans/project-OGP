@@ -147,10 +147,18 @@ public class Unit {
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
-		if (position.getCube() == null) {
+		if (position.getCube() == null)
 			throw new IllegalArgumentException();
-		}
+		if (!isValidPosition(position))
+			throw new IllegalArgumentException();
+		
 		this.position = position;
+	}
+	
+	public boolean isValidPosition(Position position) {
+		return ((position.getRealX()<=Cube.X_MAX) && (position.getRealX()>=Cube.X_MIN) &&
+				(position.getRealY()<=Cube.Y_MAX) && (position.getRealY()>=Cube.Y_MIN) &&
+				(position.getRealZ()<=Cube.Z_MAX) && (position.getRealZ()>=Cube.Z_MIN));
 	}
 
 	private Position position;
