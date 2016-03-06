@@ -78,7 +78,7 @@ public class Position extends Vector<Double> {
 		if (this.getCube() != null) {
 			return this.getCube().getYValue() * Cube.SIDE_LENGTH + this.getYValue();
 		} else {
-			return this.getXValue();
+			return this.getYValue();
 		}
 	}
 

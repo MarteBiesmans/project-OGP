@@ -36,12 +36,24 @@ public class Unit {
 	private static final Random randomGen = new Random();
 
 	/**
-	 * @pre The given hitpoints must be valid hitpoints for this unit. 
-	 *		| isValidHitpoints(hitpoints)
+	 * @post The name of this new unit is equal to the given name. 
+	 *		| new.getName() == name
+	 * @post The strength of this new unit is equal to the given strength. 
+	 *		| new.getStrength() == weight
+	 * @post The agility of this new unit is equal to the given agility. 
+	 *		| new.getAgility() == Agility
+	 * @post The toughness of this new unit is equal to the given thoughness. 
+	 *		| new.getThoughness() == thoughness
+	 * @post The weight of this new unit is equal to the given weight. 
+	 *		| new.getWeight() == weight
+	 * @post The default behaviour is enabled if this is necessary
+	 *		| new.defaultBehaviour == enableDefaultBehaviour
+	 * @post The time that the unit is busy is 0 seconds. 
+	 *		| new.getBusyTime == 0
+	 * @post The position of the unit is equal to the given position. 
+	 *		| new.getPosition == Position(x, y, z).toCube()
 	 * @post The hitpoints of this new unit are equal to the given hitpoints. 
 	 *		| new.getHitpoints() == hitpoints
-	 * @pre The given stamina points must be valid stamina points for this unit.
-	 *		| isValidStaminaPoints(staminaPoints)
 	 * @post The stamina points of this new unit are equal to the given stamina
 	 *       points. 
 	 *		| new.getStaminaPoints() == staminaPoints 
@@ -88,7 +100,6 @@ public class Unit {
 			this.setToughness(MAX_INIT_VAL_PRIMARY_ATTRIBUTE);
 		else
 			this.setToughness(toughness);
-		// TODO moet hier niet ergens documentatie over staan? en waar dan?
 
 		// hitpoints and stamina points
 		this.setStaminaPoints(this.getMaxStaminaPoints());
@@ -104,6 +115,8 @@ public class Unit {
 
 	/**
 	 * Return the position of this unit.
+	 * 
+	 * @return	
 	 */
 	@Basic
 	@Raw
@@ -116,7 +129,8 @@ public class Unit {
 	 * unit.
 	 * 
 	 * @return the position on the x-axis of this unit rounded down to an
-	 *         integer |result == (int) this.getPositionX()
+	 *         integer 
+	 *         |result == (int) this.getPositionX()
 	 */
 	public Cube getCube() {
 		return this.position.getCube();
