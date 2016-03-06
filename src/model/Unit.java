@@ -1139,8 +1139,6 @@ public class Unit {
 		return (this.getActivity() == Activity.NONE);
 	}
 
-	// TODO: maak method CanMove: check isMoving == 0, check niet aangevallen
-	// enz
 	public Activity getActivity() {
 		return this.activity;
 	}
@@ -1170,11 +1168,6 @@ public class Unit {
 
 	private Activity activity;
 
-	public void work() {
-		this.setActivity(Activity.WORKING);
-		this.setBusyTime(500 / this.getStrength());
-	}
-
 	public boolean busyTimeMin(double seconds) {
 		this.setBusyTime(this.getBusyTime() - seconds);
 		if (this.getBusyTime() == 0) {
@@ -1193,16 +1186,7 @@ public class Unit {
 	}
 
 	private double busyTime;
-
-	public void rest() {
-		if (this.setActivity(Activity.RESTING, 0.2)) {
-			// TODO: calc busy time
-			this.canStopResting = false;
-		}
-	}
-
-	private boolean canStopResting;
-
+	
 	public void startDefaultBehaviour() {
 		this.defaultBehaviour = true;
 	}
@@ -1216,16 +1200,35 @@ public class Unit {
 	}
 
 	private boolean defaultBehaviour;
+	
+	public void work() {
+		this.setActivity(Activity.WORKING);
+		this.setBusyTime(500 / this.getStrength());
+	}
+
+	public void rest() {
+		if (this.setActivity(Activity.RESTING, 0.2)) {
+			// TODO: calc busy time
+			this.canStopResting = false;
+		}
+	}
+
+	private boolean canStopResting;
 
 	public void attack(Unit other) {
 		if (this.setActivity(Activity.ATTACKING, 1)) {
-			//TODO: handle attack
+			//TODO: handle attack (update orientation)
 			other.defend(this);
 		}
 	}
 
 	public void defend(Unit attacker) {
-		//TODO: handle defense
+		//TODO: handle defense, set orientation
+		/*
+		 * if (randomGen.getDouble() < 0.2*...) {dodge}
+		 * else if (randomGen.getDouble() < 0.25*...) {block}
+		 * else {take damage}
+		 */
 	}
 >>>>>>> origin/master
 }
