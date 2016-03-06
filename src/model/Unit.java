@@ -35,18 +35,19 @@ public class Unit {
 	private static final Random randomGen = new Random();
 
 	/**
-	 * @pre The given hitpoints must be valid hitpoints for this unit. |
-	 *      isValidHitpoints(hitpoints)
-	 * @post The hitpoints of this new unit are equal to the given hitpoints. |
-	 *       new.getHitpoints() == hitpoints
+	 * @pre The given hitpoints must be valid hitpoints for this unit. 
+	 * 		| isValidHitpoints(hitpoints)
+	 * @post The hitpoints of this new unit are equal to the given hitpoints. 
+	 * 		| new.getHitpoints() == hitpoints
 	 * @pre The given stamina points must be valid stamina points for this unit.
 	 *      | isValidStaminaPoints(staminaPoints)
 	 * @post The stamina points of this new unit are equal to the given stamina
-	 *       points. | new.getStaminaPoints() == staminaPoints TODO andere
-	 *       post-condities, iets met @param
+	 *       points. 
+	 *       | new.getStaminaPoints() == staminaPoints 
+	 *       TODO andere post-condities, iets met @param
 	 * 
 	 */
-	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight)
+	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight, boolean enableDefaultBehaviour)
 			throws IllegalArgumentException {
 
 		// name
@@ -96,8 +97,8 @@ public class Unit {
 		this.setActivity(Activity.NONE);
 		this.setBusyTime(0);
 
-		// random behaviour
-		this.startDefaultBehaviour();
+		// behaviour
+		this.defaultBehaviour = enableDefaultBehaviour;
 	}
 
 	/**
@@ -617,7 +618,6 @@ public class Unit {
 	 */
 	private double orientation;
 
-	// ************************************************************************************************//
 
 	/**
 	 * 
