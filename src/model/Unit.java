@@ -861,6 +861,9 @@ public class Unit {
 				this.setOrientation(Math.atan2(yVelocity, xVelocity));
 				this.activity = Activity.NONE;
 			}
+			
+			if (this.activity == Activity.SPRINTING)
+				this.setStaminaPoints(this.getStaminaPoints() - (int) seconds*10); 
 				
 		}
 		//TODO: else if work dan work duration -= seconds, check rusten
