@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
@@ -29,6 +31,9 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @version 1.0
  */
 public class Unit {
+
+	private static final Random randomGen = new Random();
+
 	/**
 	 * @pre The given hitpoints must be valid hitpoints for this unit. |
 	 *      isValidHitpoints(hitpoints)
@@ -47,12 +52,11 @@ public class Unit {
 		// name
 		this.setName(name);
 
-		// position, orientation and activity
+		// position, orientation
 		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH), (int) (y / Cube.SIDE_LENGTH), (int) (z / Cube.SIDE_LENGTH));
 		this.setPosition(new Position(x % Cube.SIDE_LENGTH, x % Cube.SIDE_LENGTH, x % Cube.SIDE_LENGTH, cube));
 
 		this.setOrientation((float) (Math.PI / 2.0));
-		this.activity = Activity.NONE;
 
 		// primary attributes
 		if (strength < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
@@ -88,6 +92,12 @@ public class Unit {
 		this.setStaminaPoints(this.getMaxStaminaPoints());
 		this.setHitpoints(this.getMaxHitpoints());
 
+		// activity and busy time
+		this.setActivity(Activity.NONE);
+		this.setBusyTime(0);
+
+		// random behaviour
+		this.startDefaultBehaviour();
 	}
 
 	/**
@@ -624,10 +634,11 @@ public class Unit {
 			throw new IllegalArgumentException();
 		}
 
-		if (this.isDefending()) {
-
-		}
-		if (this.isMoving() && this.getMoveToAdjacent() != null) {
+		if (this.isAttacking()) {
+			if (this.busyTimeMin(seconds)) {
+				this.setActivity(Activity.NONE);
+			}
+		} else if (this.isMoving() && this.getMoveToAdjacent() != null) {
 			Position moveDiff = this.getMoveToAdjacent().min(this.getPosition());
 			double moveDistance = Math.sqrt(moveDiff.getXValue() * moveDiff.getXValue()
 					+ moveDiff.getYValue() * moveDiff.getYValue() + moveDiff.getZValue() * moveDiff.getZValue());
@@ -657,7 +668,7 @@ public class Unit {
 				// -> stop met bewegen want aangekomen
 				if (getMoveToCube() == null) {
 					this.setMoveToAdjacent(null);
-					this.activity = Activity.NONE;
+					this.setActivity(Activity.NONE);
 				}
 
 			} else {
@@ -665,12 +676,38 @@ public class Unit {
 				this.setPosition(next);
 			}
 
-			if (this.getActivity() == Activity.SPRINTING)
-				this.setStaminaPoints(this.getStaminaPoints() - seconds * 10);
-			//TODO: check if stamina == 0, activity = Activity.WALKING
+			if (this.getActivity() == Activity.SPRINTING) {
+				double stamina = this.getStaminaPoints() - seconds * 10;
+				if (stamina > 0) {
+					this.setStaminaPoints(stamina);
+				} else {
+					this.setStaminaPoints(0);
+					this.setActivity(Activity.WALKING);
+				}
+			}
+		} else if (this.isWorking()) {
+			if (this.busyTimeMin(seconds)) {
+				this.setActivity(Activity.NONE);
+			}
+		} else if (this.isResting()) {
+			// TODO: increase hitpoints/stamina
+			if (this.busyTimeMin(seconds)) {
+				this.canStopResting = true;
+			}
+		} else if (this.isBeingUseless() && this.canStartDefaultBehaviour()) {
+			int randomGetal = randomGen.nextInt(10);
+			if (randomGetal == 0) {
+				moveTo(randomGen.nextInt(Cube.X_MAX - Cube.X_MIN) + Cube.X_MIN,
+						randomGen.nextInt(Cube.Y_MAX - Cube.Y_MIN) + Cube.Y_MIN,
+						randomGen.nextInt(Cube.Z_MAX - Cube.Z_MIN) + Cube.Z_MIN);
+			} else if (randomGetal == 1) {
+				this.work();
+			} else {
+				this.rest();
+				// TODO: calc full rest time
+				this.setBusyTime(10);
+			}
 		}
-
-		// TODO: else if work dan work duration -= seconds, check rusten
 	}
 
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
@@ -686,7 +723,7 @@ public class Unit {
 				this.getCube().getY() + y + Cube.SIDE_LENGTH / 2, this.getCube().getZ() + z + Cube.SIDE_LENGTH / 2);
 		moveToAdjacent.toCube();
 
-		this.activity = Activity.WALKING;
+		this.setActivity(Activity.WALKING);
 		this.moveToAdjacent = moveToAdjacent;
 	}
 
@@ -774,9 +811,9 @@ public class Unit {
 
 	public void toggleSprinting() {
 		if (this.isSprinting()) {
-			this.activity = Activity.WALKING;
+			this.setActivity(Activity.WALKING);
 		} else if (this.isMoving()) {
-			this.activity = Activity.SPRINTING;
+			this.setActivity(Activity.SPRINTING);
 		}
 	}
 
@@ -788,11 +825,96 @@ public class Unit {
 		return (this.getActivity() == Activity.RESTING);
 	}
 
+	public boolean isBeingUseless() {
+		return (this.getActivity() == Activity.NONE);
+	}
+
 	// TODO: maak method CanMove: check isMoving == 0, check niet aangevallen
 	// enz
 	public Activity getActivity() {
 		return this.activity;
 	}
 
+	public boolean setActivity(Activity activity, double busyTime) {
+		if (this.setActivity(activity)) {
+			this.setBusyTime(busyTime);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public boolean setActivity(Activity activity) {
+		if (this.isResting() && !this.canStopResting) {
+			return false;
+		} else if (this.isAttacking() && this.getBusyTime() > 0) {
+			return false;
+		} else if (activity == Activity.SPRINTING && this.getStaminaPoints() == 0) {
+			return false;
+		}
+
+		this.activity = activity;
+		return true;
+	}
+
 	private Activity activity;
+
+	public void work() {
+		this.setActivity(Activity.WORKING);
+		this.setBusyTime(500 / this.getStrength());
+	}
+
+	public boolean busyTimeMin(double seconds) {
+		this.setBusyTime(this.getBusyTime() - seconds);
+		if (this.getBusyTime() == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public void setBusyTime(double busyTime) {
+		this.busyTime = Math.max(busyTime, 0);
+	}
+
+	public double getBusyTime() {
+		return this.busyTime;
+	}
+
+	private double busyTime;
+
+	public void rest() {
+		if (this.setActivity(Activity.RESTING, 0.2)) {
+			// TODO: calc busy time
+			this.canStopResting = false;
+		}
+	}
+
+	private boolean canStopResting;
+
+	public void startDefaultBehaviour() {
+		this.defaultBehaviour = true;
+	}
+
+	public void stopDefaultBehaviour() {
+		this.defaultBehaviour = false;
+	}
+
+	public boolean canStartDefaultBehaviour() {
+		return this.defaultBehaviour;
+	}
+
+	private boolean defaultBehaviour;
+
+	public void attack(Unit other) {
+		if (this.setActivity(Activity.ATTACKING, 1)) {
+			//TODO: handle attack
+			other.defend(this);
+		}
+	}
+
+	public void defend(Unit attacker) {
+		//TODO: handle defense
+	}
 }
