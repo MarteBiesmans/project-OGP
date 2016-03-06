@@ -71,7 +71,7 @@ public class Position extends Vector<Double> {
 	}
 
 	public double getYValue() {
-		return this.getX().doubleValue();
+		return this.getY().doubleValue();
 	}
 
 	public double getRealY() {
@@ -100,7 +100,7 @@ public class Position extends Vector<Double> {
 	}
 
 	public double getZValue() {
-		return this.getX().doubleValue();
+		return this.getZ().doubleValue();
 	}
 
 	public double getRealZ() {
