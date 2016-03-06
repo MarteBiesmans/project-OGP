@@ -47,11 +47,11 @@ public class Cube extends Vector<Integer> {
 	}
 	
 	public int getYValue() {
-		return this.getX().intValue();
+		return this.getY().intValue();
 	}
 	
 	public void setYValue(int y) {
-		this.setX(new Integer(y));
+		this.setY(new Integer(y));
 	}
 
 	@Override
@@ -64,11 +64,11 @@ public class Cube extends Vector<Integer> {
 	}
 	
 	public int getZValue() {
-		return this.getX().intValue();
+		return this.getZ().intValue();
 	}
 	
 	public void setZValue(int z) {
-		this.setX(new Integer(z));
+		this.setZ(new Integer(z));
 	}
 
 }
