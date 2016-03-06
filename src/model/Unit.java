@@ -58,7 +58,7 @@ public class Unit {
 		//position, orientation and activity
 		this.setPosition(x,y,z);
 		this.setOrientation((float) (Math.PI/2.0));
-		this.isMoving = Movement.NONE;
+		this.activity = Activity.NONE;
 		
 		
 		//primary attributes
@@ -165,15 +165,18 @@ public class Unit {
 	 * @param	z
 	 * 			position on the z-axis
 	 * @return	false if at least one of the coordinates is outside the boundaries of the game world.
-	 * 			| result == (! ((x<0) || (x>xMax) || (y<0) || (y>yMax) || (z<0) || (z>zMax)) )
+	 * 			| result == (! ((x<xMin) || (x>xMax) || (y<yMin) || (y>yMax) || (z<zMin) || (z>zMax)) )
 	 */
 	public static boolean isValidPosition(double x, double y, double z) {
-		return (! ((x<0) || (x>=X_MAX) || (y<0) || (y>=Y_MAX) || (z<0) || (z>=Z_MAX)) );
+		return (! ((x<X_MIN) || (x>=X_MAX) || (y<Y_MIN) || (y>=Y_MAX) || (z<Z_MIN) || (z>=Z_MAX)) );
 	}
 	
 	/**
 	 * Constants describing the boundaries of the game world.
 	 */
+	private static final int X_MIN = 0;
+	private static final int Y_MIN = 0;
+	private static final int Z_MIN = 0;
 	private static final int X_MAX = 50;
 	private static final int Y_MAX = 50;
 	private static final int Z_MAX = 50;
@@ -825,7 +828,9 @@ public class Unit {
 			throw new IllegalArgumentException();
 		}
 		
-		//TODO: aangevallen
+		if (this.isDefending()) {
+			
+		}
 		if (this.isMoving()) {
 			double xDiff = this.getMoveToX() - this.getPositionX();
 			double yDiff = this.getMoveToY() - this.getPositionY();
@@ -835,48 +840,31 @@ public class Unit {
 			double xVelocity = this.getMovementSpeed() * xDiff / moveDistance;
 			double yVelocity = this.getMovementSpeed() * yDiff / moveDistance;
 			double zVelocity = this.getMovementSpeed() * zDiff / moveDistance;
-			
-			this.setOrientation(Math.atan2(yVelocity, xVelocity));
-			
+						
 			// TODO: als variabele opslaan en kijken of het verder is dan targetposition, rekening houden met teken van x,y,zdiff (richting)!!
-			this.setPosition(this.getPositionX() + xVelocity * seconds,
-					this.getPositionY() + yVelocity * seconds,
-					this.getPositionZ() + zVelocity * seconds);
-			//TODO: als aangekomen dan isMoving = 0
+			double xNext = this.getPositionX() + xVelocity * seconds;
+			double yNext = this.getPositionY() + yVelocity * seconds;
+			double zNext = this.getPositionZ() + zVelocity * seconds;
+			
+			double xDiffNext = this.getMoveToX() - xNext;
+			double yDiffNext = this.getMoveToY() - yNext;
+			double zDiffNext = this.getMoveToZ() - zNext;
+			
+			if (((xDiff > 0 && xDiffNext < 0) || (xDiff < 0 && xDiffNext > 0)) && 
+					((yDiff > 0 && yDiffNext < 0) || (yDiff < 0 && yDiffNext > 0)) &&
+					((zDiff > 0 && zDiffNext < 0) || (zDiff < 0 && zDiffNext > 0))) {
+				this.setPosition(this.moveToX, this.moveToY, this.moveToZ);
+			}
+				
+			else {
+				this.setPosition(xNext, yNext, zNext);
+				this.setOrientation(Math.atan2(yVelocity, xVelocity));
+				this.activity = Activity.NONE;
+			}
+				
 		}
 		//TODO: else if work dan work duration -= seconds, check rusten
 	}
-	
-	public double getMovementSpeed() {
-		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
-		if (this.isSprinting()) {
-			speed *= 2;
-		}
-		
-		//(int) laat alles na komma wegvallen, aka voor positieve getallen rond het naar beneden af
-		int zDiff = this.getCubePositionZ() - (int) this.getMoveToZ();
-		if (zDiff == -1) {
-			speed *= 0.5;
-		} else if (zDiff == 1) {
-			speed *= 1.2;
-		}
-		
-		return speed;
-	}
-	
-	public void toggleSprinting() {
-		if (this.isSprinting()) {
-			this.isMoving = Movement.WALKING;
-		} else if (this.isMoving()) {
-			this.isMoving = Movement.SPRINTING;
-		} 
-	}
-	
-	public boolean isSprinting() {
-		return this.isMoving == Movement.SPRINTING;
-	}
-	
-	//TODO: maak method CanMove: check isMoving == 0, check niet aangevallen enz
 	
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
 		//TODO: check x, y en z >= 0 en <= maxX,YenZ
@@ -886,11 +874,11 @@ public class Unit {
 			throw new IllegalArgumentException();
 		}
 		
-		if (getIsMoving() != Movement.NONE) {
+		if (getIsMoving() != Activity.NONE) {
 			throw new IllegalArgumentException();
 		}
 		
-		this.isMoving = Movement.WALKING;
+		this.activity = Activity.WALKING;
 		this.moveToX = x + CUBE_SIDE_LENGTH / 2;
 		this.moveToY = y + CUBE_SIDE_LENGTH / 2;
 		this.moveToZ = z + CUBE_SIDE_LENGTH / 2;
@@ -908,22 +896,74 @@ public class Unit {
 		return this.moveToZ;
 	}
 	
-	public Movement getIsMoving() {
-		return this.isMoving;
-	}
-	
-	public boolean isMoving() {
-		return this.isMoving != Movement.NONE;
-	}
-	
-	private Movement isMoving;
 	private double moveToX;
 	private double moveToY;
 	private double moveToZ;
 	
+	public double getMovementSpeed() {
+		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
+		if (this.isSprinting()) {
+			speed *= 2;
+		}
+		int zDiff = this.getCubePositionZ() - (int) this.getMoveToZ();
+		if (zDiff == -1) {
+			speed *= 0.5;
+		} else if (zDiff == 1) {
+			speed *= 1.2;
+		}
+		
+		return speed;
+	}
+	
 	public void moveTo(int x, int y, int z) {
 		//TODO: zie opgave
 	}
+	
+	public boolean isDefending() {
+		return (this.activity == Activity.DEFENDING);
+	}
+	
+	public boolean isAttacking() {
+		return (this.activity == Activity.ATTACKING);
+	}
+	
+	public boolean isMoving(){
+		return (this.activity == Activity.WALKING) || (this.activity == Activity.SPRINTING);
+	}
+	
+	public boolean isSprinting() {
+		return this.activity == Activity.SPRINTING;
+	}
+	
+	public void toggleSprinting() {
+		if (this.isSprinting()) {
+			this.activity = Activity.WALKING;
+		} else if (this.isMoving()) {
+			this.activity = Activity.SPRINTING;
+		} 
+	}
+	
+	public boolean isWorking(){
+		return (this.activity == Activity.WORKING);
+	}
+	
+	public boolean isResting(){
+		return (this.activity == Activity.RESTING);
+	}
+	
+
+		
+	//TODO: maak method CanMove: check isMoving == 0, check niet aangevallen enz
+	
+	public Activity getIsMoving() {
+		return this.activity;
+	}
+	
+	
+	private Activity activity;
+	
+	
+	
 	
 	
 }
