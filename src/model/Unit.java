@@ -324,9 +324,9 @@ public class Unit {
 	 * @param agility
 	 *            The agility to check.
 	 * @return true if and only if agility lies between the minimum and maximum
-	 *         value for primary attributes. |result == ((agility >=
-	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <=
-	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
+	 *         value for primary attributes. 
+	 *         | result == ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <=
+	 *         | MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	public static boolean isValidAgility(int agility) {
 		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -338,15 +338,16 @@ public class Unit {
 	 * @param agility
 	 *            The new agility for this unit.
 	 * @post If the given agility is a valid agility for this unit, the new
-	 *       agility of this unit is equal to the given agility. | if
-	 *       (isValidAgility(agility)) | then new.getAgility() == agility
+	 *       agility of this unit is equal to the given agility. 
+	 *       | if (isValidAgility(agility)) 
+	 *       | then new.getAgility() == agility
 	 * @post If the given agility lies beyond the limits of the specified
 	 *       minimum and maximum value, the new agility will be this limit
-	 *       value. | if (agility < MIN_VAL_PRIMARY_ATTRIBUTE) | then
-	 *       new.getAgility() == MIN_VAL_PRIMARY_ATTRIBUTE | if (agility >
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getAgility() ==
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE TODO mogen deze 2 if-statements zo achter
-	 *       elkaar? of moeten dit aparte postcondities worden?
+	 *       value. 
+	 *       | if (agility < MIN_VAL_PRIMARY_ATTRIBUTE)
+	 *       | then new.getAgility() == MIN_VAL_PRIMARY_ATTRIBUTE 
+	 *       | if (agility > MAX_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | then new.getAgility() == MAX_VAL_PRIMARY_ATTRIBUTE
 	 */
 	@Raw
 	public void setAgility(int agility) {
@@ -375,7 +376,7 @@ public class Unit {
 	/**
 	 * Return the minimum value for the primary attribute weight.
 	 * 
-	 * @return TODO
+	 * @return the minimum of (strength + agility) / 2 and the minimum value for primary attribute
 	 */
 	public int getMinimumWeight() {
 		int minimumWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
@@ -387,7 +388,7 @@ public class Unit {
 	/**
 	 * Return the minimum initial value for the primary attribute weight.
 	 * 
-	 * @return TODO
+	 * @return the minimum of (strength + agility) / 2 and the minimum initial value for primary attributes
 	 */
 	public int getMinimumInitValWeight() {
 		int minimumInitValWeight = getMinimumWeight();
@@ -402,9 +403,9 @@ public class Unit {
 	 * @param weight
 	 *            The weight to check.
 	 * @return true if and only if weight lies between the minimum and maximum
-	 *         value for primary attributes. |result == ((weight >=
-	 *         this.getMinimumWeight()) && (weight <=
-	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
+	 *         value for primary attributes. 
+	 *         |result == ((weight >= this.getMinimumWeight()) && (weight <=
+	 *         |	MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	public boolean canHaveAsWeight(int weight) {
 		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -416,15 +417,15 @@ public class Unit {
 	 * @param weight
 	 *            The new weight for this unit.
 	 * @post If the given weight is a valid weight for this unit, the new weight
-	 *       of this unit is equal to the given weight. | if
-	 *       (this.canHaveAsWeight(weight)) | then new.getWeight() == weight
+	 *       of this unit is equal to the given weight. 
+	 *       | if (this.canHaveAsWeight(weight)) 
+	 *       | 	then new.getWeight() == weight
 	 * @post If the given weight lies beyond the limits of the specified minimum
-	 *       and maximum value, the new weight will be this limit value. | if
-	 *       (weight < this.getMinimumWeight()) | then new.getWeight() ==
-	 *       this.getMinimumWeight() | if (weight > MAX_VAL_PRIMARY_ATTRIBUTE) |
-	 *       then new.getWeight() == MAX_VAL_PRIMARY_ATTRIBUTE TODO mogen deze 2
-	 *       if-statements zo achter elkaar? of moeten dit aparte postcondities
-	 *       worden?
+	 *       and maximum value, the new weight will be this limit value. 
+	 *       | if (weight < this.getMinimumWeight()) 
+	 *       | 	then new.getWeight() == this.getMinimumWeight() 
+	 *       | if (weight > MAX_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | 	then new.getWeight() == MAX_VAL_PRIMARY_ATTRIBUTE
 	 */
 	@Raw
 	public void setWeight(int weight) {
@@ -456,8 +457,8 @@ public class Unit {
 	 * @param toughness
 	 *            The toughness to check.
 	 * @return true if and only if toughness lies between the minimum and
-	 *         maximum value for primary attributes. |result == ((toughness >=
-	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <=
+	 *         maximum value for primary attributes. 
+	 *         |result == ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <=
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	public static boolean isValidToughness(int toughness) {
@@ -470,16 +471,16 @@ public class Unit {
 	 * @param toughness
 	 *            The new toughness for this unit.
 	 * @post If the given toughness is a valid toughness for this unit, the new
-	 *       toughness of this unit is equal to the given toughness. | if
-	 *       (isValidToughness(toughness)) | then new.getToughness() ==
-	 *       toughness
+	 *       toughness of this unit is equal to the given toughness. 
+	 *       | if (isValidToughness(toughness)) 
+	 *       | 	then new.getToughness() == toughness
 	 * @post If the given toughness lies beyond the limits of the specified
 	 *       minimum and maximum value, the new toughness will be this
-	 *       limitvalue. | if (toughness < MIN_VAL_PRIMARY_ATTRIBUTE) | then
-	 *       new.getToughness() == MIN_VAL_PRIMARY_ATTRIBUTE | if (toughness >
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getToughness() ==
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE TODO mogen deze 2 if-statements zo achter
-	 *       elkaar? of moeten dit aparte postcondities worden?
+	 *       limitvalue. 
+	 *       | if (toughness < MIN_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | 	then new.getToughness() == MIN_VAL_PRIMARY_ATTRIBUTE 
+	 *       | if (toughness > MAX_VAL_PRIMARY_ATTRIBUTE) 
+	 *       | then new.getToughness() == MAX_VAL_PRIMARY_ATTRIBUTE 
 	 */
 	@Raw
 	public void setToughness(int toughness) {
@@ -508,7 +509,7 @@ public class Unit {
 	/**
 	 * Return the maximum number of hitpoints of this unit.
 	 * 
-	 * @return
+	 * @return 
 	 */
 	public int getMaxHitpoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
