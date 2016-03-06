@@ -24,7 +24,7 @@ public class UnitTest {
 		assertEquals(55, testUnit.getWeight());
 		
 		assertEquals(Math.PI/2.0, testUnit.getOrientation(), EPSILON);
-		assertEquals(Movement.NONE, testUnit.getIsMoving());
+		assertEquals(Activity.NONE, testUnit.getIsMoving());
 		
 		assertEquals(28, testUnit.getHitpoints());
 		assertEquals(28, testUnit.getStaminaPoints());
