@@ -1,6 +1,8 @@
-package part1;
+package hillbillies.part1.facade;
 
-import model.Unit;
+import hillbillies.model.Unit;
+import hillbillies.part1.facade.IFacade;
+import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade {
 	
@@ -382,6 +384,7 @@ public class Facade implements IFacade {
 			unit.toggleSprinting();
 		else
 			throw new ModelException();
+	}
 
 
 	/**
@@ -397,6 +400,7 @@ public class Facade implements IFacade {
 			unit.toggleSprinting();
 		else
 			throw new ModelException();
+	}
 		
 
 	/**
@@ -410,6 +414,7 @@ public class Facade implements IFacade {
 	 */
 	public boolean isSprinting(Unit unit) throws ModelException {
 		return unit.isSprinting();
+	}
 
 
 	/* Orientation */
@@ -425,6 +430,7 @@ public class Facade implements IFacade {
 	 */
 	public double getOrientation(Unit unit) throws ModelException {
 		return unit.getOrientation();
+	}
 		
 
 	/* Extended movement */

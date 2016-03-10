@@ -1,4 +1,4 @@
-package model;
+package hillbillies.model;
 
 public class Position extends Vector<Double> {
 

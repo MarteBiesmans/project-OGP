@@ -1,4 +1,4 @@
-package model;
+package hillbillies.model;
 
 public abstract class Vector<Type extends Number> {
 	

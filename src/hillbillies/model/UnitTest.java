@@ -1,4 +1,6 @@
-package model;
+package hillbillies.model;
+
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;

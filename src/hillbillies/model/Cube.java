@@ -1,4 +1,4 @@
-package model;
+package hillbillies.model;
 
 public class Cube extends Vector<Integer> {
 
