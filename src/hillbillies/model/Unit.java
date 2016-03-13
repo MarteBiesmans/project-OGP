@@ -1,5 +1,20 @@
 package hillbillies.model;
 
+/**
+ * TODO
+ * dependent properties (OK voor weight met agility en strength)
+ * regular expressions (name)
+ * fuzzyequals gebruiken in documentatie en testen
+ * value classes (position, cube...)
+ * documentatie schrijven
+ * testen schrijven
+ * hulpmethodes voor advanceTime
+ * code opkuisen (volgorde)
+ * user interface aan de praat krijgen
+ * interface-class -> hoe implementeren (copy-paste lijkt me louche)
+ * null pointers (niet nodig voor primary attributes, want int is basic type) (OK voor name)
+ */
+
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -201,16 +216,21 @@ public class Unit {
 	 * 
 	 * @param name
 	 *            The name to check.
+	 * @return	false if given name points to null
+	 * 			| if (name==null)
+	 * 			|	result == false
 	 * @return Each name is at least two characters long and must start with an
 	 *         uppercase letter. Names can only use letters (both upper- and
 	 *         lowercase), quotes (both single and double) and spaces. 
 	 *         |if (length(name) < 2) 
 	 *         |	result == false 
 	 *         |if (!isUpperCase(name.charAt(0))) 
-	 *         |	return == false |TODO moet hier de
-	 *         for-loop uit de implementatie komen?
+	 *         |	return == false
+	 *         |TODO for each ...
 	 */
 	public static boolean isValidName(String name) {
+		if (name==null)
+			return false;
 		if (name.length() < 2)
 			return false;
 		if (!Character.isUpperCase(name.charAt(0)))
@@ -302,9 +322,7 @@ public class Unit {
 	 *       | if (strength < MIN_VAL_PRIMARY_ATTRIBUTE) 
 	 *       | then new.getStrength() == MIN_VAL_PRIMARY_ATTRIBUTE 
 	 *       | if (strength > MAX_VAL_PRIMARY_ATTRIBUTE) 
-	 *       | then new.getStrength() ==
-	 *       MAX_VAL_PRIMARY_ATTRIBUTE TODO mogen deze 2 if-statements zo achter
-	 *       elkaar? of moeten dit aparte postcondities worden?
+	 *       | then new.getStrength() == MAX_VAL_PRIMARY_ATTRIBUTE
 	 */
 	@Raw
 	public void setStrength(int strength) {
@@ -314,6 +332,7 @@ public class Unit {
 			this.strength = MIN_VAL_PRIMARY_ATTRIBUTE;
 		if (strength > MAX_VAL_PRIMARY_ATTRIBUTE)
 			this.strength = MAX_VAL_PRIMARY_ATTRIBUTE;
+		this.setWeight(this.getWeight());
 	}
 
 	/**
@@ -369,6 +388,7 @@ public class Unit {
 			this.agility = MIN_VAL_PRIMARY_ATTRIBUTE;
 		if (agility > MAX_VAL_PRIMARY_ATTRIBUTE)
 			this.agility = MAX_VAL_PRIMARY_ATTRIBUTE;
+		this.setWeight(this.getWeight());
 	}
 
 	/**
