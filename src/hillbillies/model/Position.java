@@ -1,134 +1,111 @@
 package hillbillies.model;
 
+import be.kuleuven.cs.som.annotate.*;
+
 /**
  * @Value
  * @author Marte & Ellen
  *
  */
+@Value
 public class Position {
 
 
-	public Position(double x, double y, double z) {
+	public Position(double x, double y, double z) throws IllegalArgumentException {
 		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH),
 								(int) (y / Cube.SIDE_LENGTH),
 								(int) (z / Cube.SIDE_LENGTH));
 		
-		this.setCube(cube);
-		this.setXValue(x % Cube.SIDE_LENGTH);
-		this.setYValue(y % Cube.SIDE_LENGTH);
-		this.setZValue(z % Cube.SIDE_LENGTH);
+		x %= Cube.SIDE_LENGTH;
+		y %= Cube.SIDE_LENGTH;
+		z %= Cube.SIDE_LENGTH;
+		
+		if ((! cube.isValidCube()) && (! isValidX(x)) && (! isValidY(y)) && (! isValidZ(z)))
+			throw new IllegalArgumentException();
+		else {
+			this.cube = cube;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
 	}
 	
-	public Position(double x, double y, double z, Cube cube) {
-		this.setXValue(x);
-		this.setYValue(y);
-		this.setZValue(z);
-		this.setCube(cube);
-	}
-	
-	public boolean isValidPosition() {
-		return (this.cube.)
+	public Position(double x, double y, double z, Cube cube) throws IllegalArgumentException, NullPointerException {
+		if (cube == null)
+				throw new NullPointerException();
+		Cube newcube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)),
+				(int) (cube.getY() + (y / Cube.SIDE_LENGTH)),
+				(int) (cube.getZ() + (z / Cube.SIDE_LENGTH)));
 		
-		return ((this.getRealX()<=Cube.X_MAX) && (this.getRealX()>=Cube.X_MIN) &&
-				(this.getRealY()<=Cube.Y_MAX) && (this.getRealY()>=Cube.Y_MIN) &&
-				(this.getRealZ()<=Cube.Z_MAX) && (this.getRealZ()>=Cube.Z_MIN));
-	
-	public boolean isValidCube() {
+		x %= Cube.SIDE_LENGTH;
+		y %= Cube.SIDE_LENGTH;
+		z %= Cube.SIDE_LENGTH;
 		
-	}
-	
-	public void setCube() {
-		
+		if ((! newcube.isValidCube()) && (! isValidX(x)) && (! isValidY(y)) && (! isValidZ(z)))
+			throw new IllegalArgumentException();
+		else {
+			this.cube = cube;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
 	}
 	
 	private Cube cube;
 	
-
+	private double x;
+	private double y;
+	private double z;
+	
+	public boolean isValidPosition() {	
+		return this.cube.isValidCube() && isValidX(x) && isValidY(y) && isValidZ(z);
 	}
 	
-	public boolean isValidX(Double x) {
-		if (this.getCube() != null) {
-			if (x >= 0 || x < Cube.SIDE_LENGTH) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
+	public boolean isValidX(double x) {
+		if (x > 0 && x < Cube.SIDE_LENGTH)
 			return true;
-		}
+		else
+			return false;
 	}
 
-	public double getXValue() {
-		return this.getX().doubleValue();
+	public double getX() {
+		return this.x;
 	}
 
 	public double getRealX() {
-		if (this.getCube() != null) {
-			return this.getCube().getXValue() * Cube.SIDE_LENGTH + this.getXValue();
-		} else {
-			return this.getXValue();
-		}
+		return this.cube.getX() * Cube.SIDE_LENGTH + this.getX();
 	}
 
-	public void setXValue(double x) {
-		this.setX(new Double(x));
-	}
-
-	public boolean isValidY(Double y) {
-		if (this.getCube() != null) {
-			if (y >= 0 || y < Cube.SIDE_LENGTH) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
+	public boolean isValidY(double y) {
+		if (y > 0 && y < Cube.SIDE_LENGTH)
 			return true;
-		}
+		else
+			return false;
 	}
 
-	public double getYValue() {
-		return this.getY().doubleValue();
+
+	public double getY() {
+		return this.y;
 	}
 
 	public double getRealY() {
-		if (this.getCube() != null) {
-			return this.getCube().getYValue() * Cube.SIDE_LENGTH + this.getYValue();
-		} else {
-			return this.getYValue();
+		return this.cube.getY() * Cube.SIDE_LENGTH + this.getY();
 		}
-	}
 
-	public void setYValue(double y) {
-		this.setY(new Double(y));
-	}
-
-	public boolean isValidZ(Double z) {
-		if (this.getCube() != null) {
-			if (z >= 0 || z < Cube.SIDE_LENGTH) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
+	public boolean isValidZ(double z) {
+		if (z > 0 && z < Cube.SIDE_LENGTH)
 			return true;
-		}
+		else
+			return false;
 	}
 
-	public double getZValue() {
-		return this.getZ().doubleValue();
+	public double getZ() {
+		return this.z;
 	}
 
 	public double getRealZ() {
-		if (this.getCube() != null) {
-			return this.getCube().getZValue() * Cube.SIDE_LENGTH + this.getZValue();
-		} else {
-			return this.getZValue();
+		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
 		}
-	}
-
-	public void setZValue(double z) {
-		this.setZ(new Double(z));
-	}
 	
 	public Position min(Position other) {
 		return new Position(this.getRealX() - other.getRealX(),

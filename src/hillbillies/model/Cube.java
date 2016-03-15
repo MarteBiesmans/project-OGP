@@ -1,10 +1,13 @@
 package hillbillies.model;
 
+import be.kuleuven.cs.som.annotate.*;
+
 /**
  * @Value
  * @author Marthe
  *
  */
+@Value
 public class Cube {
 
 	public static final int X_MIN = 0;
@@ -16,35 +19,38 @@ public class Cube {
 	
 	public static final double SIDE_LENGTH = 1;
 
-	
+	@Raw
 	public Cube(int x, int y, int z) throws IllegalArgumentException {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		if ((! isValidX(x)) && (! isValidY(y)) && (! isValidZ(z)))
+			throw new IllegalArgumentException();
+		else {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
 	}
 	
 	private int x;
 	private int y;
 	private int z;
 	
-
-	public boolean isValidX(Integer x) {
-		if (x >= X_MIN || x < X_MAX) {
+	public boolean isValidCube() {
+		return (isValidX(this.getX()) && isValidY(this.getY()) && isValidZ(this.z));
+	}
+	
+	public boolean isValidX(int x) {
+		if (x >= X_MIN || x < X_MAX)
 			return true;
-		} else {
+		else
 			return false;
-		}
 	}
 	
-	public int getXValue() {
-		return this.getX().intValue();
+	@Basic @Raw
+	public int getX() {
+		return this.x;
 	}
 	
-	public void setXValue(int x) {
-		this.setX(new Integer(x));
-	}
-
-	public boolean isValidY(Integer y) {
+	public boolean isValidY(int y) {
 		if (y >= Y_MIN || y < Y_MAX) {
 			return true;
 		} else {
@@ -52,15 +58,12 @@ public class Cube {
 		}
 	}
 	
-	public int getYValue() {
-		return this.getY().intValue();
+	@Basic @Raw
+	public int getY() {
+		return this.y;
 	}
 	
-	public void setYValue(int y) {
-		this.setY(new Integer(y));
-	}
-
-	public boolean isValidZ(Integer z) {
+	public boolean isValidZ(int z) {
 		if (z >= Z_MIN || z < Z_MAX) {
 			return true;
 		} else {
@@ -68,12 +71,9 @@ public class Cube {
 		}
 	}
 	
-	public int getZValue() {
-		return this.getZ().intValue();
-	}
-	
-	public void setZValue(int z) {
-		this.setZ(new Integer(z));
+	@Basic @Raw
+	public int getZ() {
+		return this.z;
 	}
 
 }
