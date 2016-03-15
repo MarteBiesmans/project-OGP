@@ -442,6 +442,12 @@ public class Unit {
 	 *       | 	then new.getWeight() == this.getMinimumWeight() 
 	 *       | if (weight > MAX_VAL_PRIMARY_ATTRIBUTE) 
 	 *       | 	then new.getWeight() == MAX_VAL_PRIMARY_ATTRIBUTE
+	 * @post If after the change of weight, hitpoints and stamina points aren't legal anymore,
+	 *       they will be changed to a legal value.
+	 *       | if (!new.canHaveAsHitpoints(this.getHitpoints()) )
+	 *       |	then new.getHitpoints() == new.getMaxHitpoints()
+	 *       | if (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) )
+	 *       |	then new.getStaminaPoints() == new.getMaxStaminaPoints()
 	 */
 	@Raw
 	public void setWeight(int weight) {
@@ -451,6 +457,11 @@ public class Unit {
 			this.weight = this.getMinimumWeight();
 		if (weight > MAX_VAL_PRIMARY_ATTRIBUTE)
 			this.weight = MAX_VAL_PRIMARY_ATTRIBUTE;
+		
+		if (!this.canHaveAsHitpoints(this.getHitpoints()) )
+			this.setHitpoints(this.getMaxHitpoints());
+		if (!this.canHaveAsStaminaPoints(this.getStaminaPoints()))
+			this.setStaminaPoints(this.getMaxStaminaPoints());
 	}
 
 	/**
@@ -497,6 +508,12 @@ public class Unit {
 	 *       | 	then new.getToughness() == MIN_VAL_PRIMARY_ATTRIBUTE 
 	 *       | if (toughness > MAX_VAL_PRIMARY_ATTRIBUTE) 
 	 *       | then new.getToughness() == MAX_VAL_PRIMARY_ATTRIBUTE 
+	 * @post If after the change of toughness, hitpoints and stamina points aren't legal anymore,
+	 *       they will be changed to a legal value.
+	 *       | if (!new.canHaveAsHitpoints(this.getHitpoints()) )
+	 *       |	then new.getHitpoints() == new.getMaxHitpoints()
+	 *       | if (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) )
+	 *       |	then new.getStaminaPoints() == new.getMaxStaminaPoints()
 	 */
 	@Raw
 	public void setToughness(int toughness) {
@@ -506,6 +523,11 @@ public class Unit {
 			this.toughness = MIN_VAL_PRIMARY_ATTRIBUTE;
 		if (toughness > MAX_VAL_PRIMARY_ATTRIBUTE)
 			this.toughness = MAX_VAL_PRIMARY_ATTRIBUTE;
+		
+		if (!this.canHaveAsHitpoints(this.getHitpoints()) )
+			this.setHitpoints(this.getMaxHitpoints());
+		if (!this.canHaveAsStaminaPoints(this.getStaminaPoints()))
+			this.setStaminaPoints(this.getMaxStaminaPoints());
 	}
 
 	/**

@@ -167,11 +167,44 @@ public class UnitTest {
 		assertEquals(testUnit.getWeight(), 75);
 	}
 	
-//	@Test
-//	public void setWeight_IllegalHitpoints() {
-//		
-//	}
+	@Test
+	public void setWeight_IllegalHitpoints() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		//strength, agility, toughness, weight
+		/**
+		 * hitpoints = 28
+		 * setWeight(50)
+		 * hitpoints 28 is nu illegal, hitpoints moet 25 worden
+		 */
+		testUnit.setWeight(50);
+		assertEquals((int) testUnit.getHitpoints(), 25);
+	}
 	
+	@Test
+	public void setWeight_IllegalStaminaPoints() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setWeight(50);
+		assertEquals((int) testUnit.getStaminaPoints(), 25);
+	}
+	
+	@Test
+	public void setToughness_IllegalHitpoints() {
+		Unit testUnit = new Unit (3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		/**
+		 * staminaPoints = 28
+		 * setToughness(10)
+		 * hitpoints 28 is nu illegal, hitpoints moet 11 worden
+		 */
+		testUnit.setToughness(10);
+		assertEquals((int) testUnit.getHitpoints(), 11);
+	}
+	
+	@Test
+	public void setToughness_IllegalStaminaPoints() {
+		Unit testUnit = new Unit (3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setToughness(10);
+		assertEquals((int) testUnit.getStaminaPoints(), 11);
+	}
 	
 	@Test
 	public void getMaxHitpoints_Test() {
