@@ -1,6 +1,11 @@
 package hillbillies.model;
 
-public class Cube extends Vector<Integer> {
+/**
+ * @Value
+ * @author Marthe
+ *
+ */
+public class Cube {
 
 	public static final int X_MIN = 0;
 	public static final int Y_MIN = 0;
@@ -12,15 +17,17 @@ public class Cube extends Vector<Integer> {
 	public static final double SIDE_LENGTH = 1;
 
 	
-	public Cube(int x, int y, int z) {
-		super(new Integer(x), new Integer(y), new Integer(z));
+	public Cube(int x, int y, int z) throws IllegalArgumentException {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
-	public Cube(Integer x, Integer y, Integer z) {
-		super(x, y, z);
-	}
+	private int x;
+	private int y;
+	private int z;
+	
 
-	@Override
 	public boolean isValidX(Integer x) {
 		if (x >= X_MIN || x < X_MAX) {
 			return true;
@@ -37,7 +44,6 @@ public class Cube extends Vector<Integer> {
 		this.setX(new Integer(x));
 	}
 
-	@Override
 	public boolean isValidY(Integer y) {
 		if (y >= Y_MIN || y < Y_MAX) {
 			return true;
@@ -54,7 +60,6 @@ public class Cube extends Vector<Integer> {
 		this.setY(new Integer(y));
 	}
 
-	@Override
 	public boolean isValidZ(Integer z) {
 		if (z >= Z_MIN || z < Z_MAX) {
 			return true;

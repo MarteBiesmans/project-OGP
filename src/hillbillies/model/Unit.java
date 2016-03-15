@@ -34,6 +34,8 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
+ * A class of units involving a position, name, sttrength, agility, toughness and default behaviour.
+ * 
  * @invar The name of each unit must be a valid name for any unit. 
  * 		| isValidName(getName())
  * @invar The position of each unit must be a valid position for any unit. 
@@ -150,18 +152,6 @@ public class Unit {
 	}
 
 	/**
-	 * Return the position of the upper left corner from the cube that is occupied by this unit.
-	 * 
-	 * @return the x, y en z values of the position of this unit rounded down to an integer 
-	 *         |result == Position((int) this.getPosition.getRealX, 
-	 *         |	(int) this.getPosition().getRealY, 
-	 *         |	(int) this.getPosition().getRealZ())
-	 */
-	public Cube getCube() {
-		return this.position.getCube();
-	}
-
-	/**
 	 * Set the position of this unit to the given coordinates.
 	 * 
 	 * @param x
@@ -192,12 +182,6 @@ public class Unit {
 			throw new IllegalArgumentException();
 		
 		this.position = position;
-	}
-	
-	public boolean isValidPosition(Position position) {
-		return ((position.getRealX()<=Cube.X_MAX) && (position.getRealX()>=Cube.X_MIN) &&
-				(position.getRealY()<=Cube.Y_MAX) && (position.getRealY()>=Cube.Y_MIN) &&
-				(position.getRealZ()<=Cube.Z_MAX) && (position.getRealZ()>=Cube.Z_MIN));
 	}
 
 	private Position position;

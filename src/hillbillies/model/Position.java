@@ -1,34 +1,51 @@
 package hillbillies.model;
 
-public class Position extends Vector<Double> {
+/**
+ * @Value
+ * @author Marte & Ellen
+ *
+ */
+public class Position {
 
-	private Cube cube;
 
 	public Position(double x, double y, double z) {
-		super(new Double(x), new Double(y), new Double(z));
-		this.cube = null;
+		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH),
+								(int) (y / Cube.SIDE_LENGTH),
+								(int) (z / Cube.SIDE_LENGTH));
+		
+		this.setCube(cube);
+		this.setXValue(x % Cube.SIDE_LENGTH);
+		this.setYValue(y % Cube.SIDE_LENGTH);
+		this.setZValue(z % Cube.SIDE_LENGTH);
 	}
 	
 	public Position(double x, double y, double z, Cube cube) {
-		super(new Double(x), new Double(y), new Double(z));
-		this.cube = cube;
-	}
-
-	public Position(Double x, Double y, Double z) {
-		super(x, y, z);
-		this.cube = null;
+		this.setXValue(x);
+		this.setYValue(y);
+		this.setZValue(z);
+		this.setCube(cube);
 	}
 	
-	public Position(Double x, Double y, Double z, Cube cube) {
-		super(x, y, z);
-		this.cube = cube;
+	public boolean isValidPosition() {
+		return (this.cube.)
+		
+		return ((this.getRealX()<=Cube.X_MAX) && (this.getRealX()>=Cube.X_MIN) &&
+				(this.getRealY()<=Cube.Y_MAX) && (this.getRealY()>=Cube.Y_MIN) &&
+				(this.getRealZ()<=Cube.Z_MAX) && (this.getRealZ()>=Cube.Z_MIN));
+	
+	public boolean isValidCube() {
+		
 	}
-
-	public Cube getCube() {
-		return this.cube;
+	
+	public void setCube() {
+		
 	}
+	
+	private Cube cube;
+	
 
-	@Override
+	}
+	
 	public boolean isValidX(Double x) {
 		if (this.getCube() != null) {
 			if (x >= 0 || x < Cube.SIDE_LENGTH) {
@@ -57,7 +74,6 @@ public class Position extends Vector<Double> {
 		this.setX(new Double(x));
 	}
 
-	@Override
 	public boolean isValidY(Double y) {
 		if (this.getCube() != null) {
 			if (y >= 0 || y < Cube.SIDE_LENGTH) {
@@ -86,7 +102,6 @@ public class Position extends Vector<Double> {
 		this.setY(new Double(y));
 	}
 
-	@Override
 	public boolean isValidZ(Double z) {
 		if (this.getCube() != null) {
 			if (z >= 0 || z < Cube.SIDE_LENGTH) {
@@ -119,18 +134,5 @@ public class Position extends Vector<Double> {
 		return new Position(this.getRealX() - other.getRealX(),
 				this.getRealY() - other.getRealY(),
 				this.getRealZ() - other.getRealZ());
-	}
-	
-	public void toCube() {
-		if (this.cube == null) {
-			Cube cube = new Cube((int) (this.getXValue() / Cube.SIDE_LENGTH),
-					(int) (this.getYValue() / Cube.SIDE_LENGTH),
-					(int) (this.getZValue() / Cube.SIDE_LENGTH));
-			
-			this.cube = cube;
-			this.setXValue(this.getXValue() % Cube.SIDE_LENGTH);
-			this.setYValue(this.getYValue() % Cube.SIDE_LENGTH);
-			this.setZValue(this.getZValue() % Cube.SIDE_LENGTH);
-		}
 	}
 }
