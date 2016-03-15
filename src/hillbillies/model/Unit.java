@@ -5,7 +5,7 @@ package hillbillies.model;
  * dependent properties (OK voor weight met agility en strength)
  * regular expressions (name)
  * fuzzyequals gebruiken in documentatie en testen
- * value classes (position, cube...)
+ * value classes (position, cube...) (OK denk ik)
  * documentatie schrijven
  * testen schrijven
  * hulpmethodes voor advanceTime
