@@ -51,6 +51,10 @@ public class Position {
 		}
 	}
 	
+	public Cube getCube() {
+		return this.cube;
+	}
+	
 	private Cube cube;
 	
 	private double x;
