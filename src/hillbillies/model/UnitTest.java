@@ -127,29 +127,57 @@ public class UnitTest {
 		assertEquals(testUnit.getToughness(), 200);
 	}
 	
+	@Test
+	public void Constructor_IllegalInitialWeightLow() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 53, 25, 20, true);
+		assertEquals(testUnit.getWeight(), 52);
+	}
+	
+	@Test
+	public void Constructor_IllegalWeightLow() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 55, 25, 55, true);
+		testUnit.setWeight(0);
+		assertEquals(testUnit.getWeight(), 53);
+	}
+	
+	@Test
+	public void Constructor_IllegalInitialWeightHigh() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 125, 55, true);
+		assertEquals(testUnit.getToughness(),100);
+	}
+	
+	@Test
+	public void Constructor_IllegalWeightHigh() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setToughness(250);
+		assertEquals(testUnit.getToughness(), 200);
+	}
+	
+	@Test
+	public void setStrength_IllegalWeight() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setStrength(100);
+		assertEquals(testUnit.getWeight(), 75);
+	}
+	
+	@Test
+	public void setAgility_IllegalWeight() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setAgility(100);
+		assertEquals(testUnit.getWeight(), 75);
+	}
+	
 //	@Test
-//	public void Constructor_IllegalInitialWeightLow() {
-//		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 20, true);
-//		assertEquals(testUnit.getWeight(), 25);
+//	public void setWeight_IllegalHitpoints() {
+//		
 //	}
-//	
-//	@Test
-//	public void Constructor_IllegalWeightLow() {
-//		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 55, 25, 55, true);
-//		testUnit.setWeight(0);
-//		assertEquals(testUnit.getWeight(), 53);
-//	}
-//	
-//	@Test
-//	public void Constructor_IllegalInitialWeightHigh() {
-//		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 125, 55, true);
-//		assertEquals(testUnit.getToughness(),100);
-//	}
-//	
-//	@Test
-//	public void Constructor_IllegalWeightHigh() {
-//		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-//		testUnit.setToughness(250);
-//		assertEquals(testUnit.getToughness(), 200);
-//	}
+	
+	
+	@Test
+	public void getMaxHitpoints_Test() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getMaxHitpoints(), 28);
+	}
+	
+	
 }
