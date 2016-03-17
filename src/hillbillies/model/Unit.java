@@ -2,17 +2,18 @@ package hillbillies.model;
 
 /**
  * TODO
- * dependent properties (OK voor weight met agility en strength)
+ * dependent properties (OK voor weight met agility en strength, ook voor hitpoints en stamina points)
  * regular expressions (name)
  * fuzzyequals gebruiken in documentatie en testen
  * value classes (position, cube...) (OK denk ik)
  * documentatie schrijven
  * testen schrijven
- * hulpmethodes voor advanceTime
- * code opkuisen (volgorde)
+ * hulpmethodes voor advanceTime (OK)
+ * code opkuisen (volgorde) (OK)
  * user interface aan de praat krijgen
  * interface-class -> hoe implementeren (copy-paste lijkt me louche)
  * null pointers (niet nodig voor primary attributes, want int is basic type) (OK voor name)
+ * toggleSprinting opsplitsen
  */
 
 import java.util.Random;

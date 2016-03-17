@@ -39,7 +39,7 @@ public class Facade implements IFacade {
 				name, strength, agility, toughness, weight, enableDefaultBehavior);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -81,7 +81,7 @@ public class Facade implements IFacade {
 			return new int[] {unit.getCube().getX(), unit.getCube().getY(), unit.getCube().getZ()};
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -101,7 +101,7 @@ public class Facade implements IFacade {
 			return unit.getName();
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -121,7 +121,7 @@ public class Facade implements IFacade {
 			unit.setName(newName);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -311,7 +311,7 @@ public class Facade implements IFacade {
 			unit.advanceTime((float) dt);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -340,7 +340,7 @@ public class Facade implements IFacade {
 			unit.moveToAdjacent(dx, dy, dz);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -380,6 +380,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void startSprinting(Unit unit) throws ModelException {
+		//TODO aanpassen naar startSprinting
 		if (! unit.isSprinting())
 			unit.toggleSprinting();
 		else
@@ -396,6 +397,7 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void stopSprinting(Unit unit) throws ModelException {
+		//TODO aanpassen naar stopSprinting
 		if (unit.isSprinting())
 			unit.toggleSprinting();
 		else
@@ -451,7 +453,7 @@ public class Facade implements IFacade {
 			unit.moveTo(cube[0], cube[1], cube[2]);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -471,7 +473,7 @@ public class Facade implements IFacade {
 			unit.work();
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -507,7 +509,7 @@ public class Facade implements IFacade {
 			defender.defend(attacker);
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
@@ -541,7 +543,7 @@ public class Facade implements IFacade {
 			unit.rest();
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}	
 	}
