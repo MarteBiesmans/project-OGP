@@ -450,7 +450,7 @@ public class Facade implements IFacade {
 	 */
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
 		try{
-			unit.moveTo(cube[0], cube[1], cube[2]);
+			unit.setMoveTo(cube[0], cube[1], cube[2]);
 		}
 		
 		catch (Throwable e){
