@@ -57,8 +57,8 @@ public class Facade implements IFacade {
 	 */
 	public double[] getPosition(Unit unit) throws ModelException {
 		try{
-			return new double[] {unit.getPosition().getXValue(), 
-					unit.getPosition().getYValue(), unit.getPosition().getZValue()};
+			return new double[] {unit.getPosition().getX(), 
+					unit.getPosition().getY(), unit.getPosition().getZ()};
 		}
 		
 		catch (IllegalArgumentException e){
@@ -78,7 +78,7 @@ public class Facade implements IFacade {
 	 */
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
 		try{
-			return new int[] {unit.getCube().getXValue(), unit.getCube().getYValue(), unit.getCube().getZValue()};
+			return new int[] {unit.getCube().getX(), unit.getCube().getY(), unit.getCube().getZ()};
 		}
 		
 		catch (IllegalArgumentException e){

@@ -192,6 +192,10 @@ public class Unit {
 
 	private Position position;
 
+	public Cube getCube() {
+		return this.getPosition().getCube();
+	}
+	
 	/**
 	 * Return the name of this unit.
 	 */
