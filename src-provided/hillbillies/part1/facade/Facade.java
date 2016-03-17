@@ -61,7 +61,7 @@ public class Facade implements IFacade {
 					unit.getPosition().getY(), unit.getPosition().getZ()};
 		}
 		
-		catch (IllegalArgumentException e){
+		catch (Throwable e){
 			throw new ModelException();
 		}
 	}
