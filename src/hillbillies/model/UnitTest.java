@@ -227,4 +227,27 @@ public class UnitTest {
 		assertEquals(testPosition.getRealZ(), 5.3, EPSILON);
 	}
 	
+	@Test
+	public void constructorPosition_TooBigX() {
+		Cube testCube = new Cube(3,4,5);
+		Position testPosition = new Position(2.1,0.2,0.3, testCube);
+		assertEquals(testPosition.getRealX(), 5.1, EPSILON);
+		assertEquals(testPosition.getRealY(), 4.2, EPSILON);
+		assertEquals(testPosition.getRealZ(), 5.3, EPSILON);
+		assertEquals(testPosition.getCube().getX(), 5);
+	}
+	
+	@Test
+	public void constructorPosition_NegativeX() {
+		Cube testCube = new Cube(3,4,5);
+		Position testPosition = new Position(-0.1,0.2,0.3, testCube);
+		System.out.println(testPosition.getRealX());
+		System.out.println(testPosition.getX());
+		System.out.println(testPosition.getCube().getX());
+		assertEquals(testPosition.getRealX(), 2.9, EPSILON);
+		assertEquals(testPosition.getRealY(), 4.2, EPSILON);
+		assertEquals(testPosition.getRealZ(), 5.3, EPSILON);
+		assertEquals(testPosition.getCube().getX(), 2);
+	}
+	
 }
