@@ -12,9 +12,6 @@ public class Position {
 
 
 	public Position(double x, double y, double z) throws IllegalArgumentException {
-		if (! isValidPosition(x, y, z))
-			throw new IllegalArgumentException();
-		
 		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH),
 								(int) (y / Cube.SIDE_LENGTH),
 								(int) (z / Cube.SIDE_LENGTH));
