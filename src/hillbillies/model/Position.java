@@ -37,6 +37,13 @@ public class Position {
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
 		
+		if (x < 0)
+			x += Cube.SIDE_LENGTH;
+		if (y < 0)
+			y += Cube.SIDE_LENGTH;
+		if (z < 0)
+			z += Cube.SIDE_LENGTH;
+		
 		
 		this.cube = newcube;
 		this.x = x;
