@@ -15,19 +15,14 @@ public class Position {
 		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH),
 								(int) (y / Cube.SIDE_LENGTH),
 								(int) (z / Cube.SIDE_LENGTH));
-		
 		x %= Cube.SIDE_LENGTH;
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
 		
-		if ((! cube.isValidCube()) && (! isValidX(x)) && (! isValidY(y)) && (! isValidZ(z)))
-			throw new IllegalArgumentException();
-		else {
-			this.cube = cube;
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
+		this.cube = cube;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 	public Position(double x, double y, double z, Cube cube) throws IllegalArgumentException, NullPointerException {
@@ -41,14 +36,10 @@ public class Position {
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
 		
-		if ((! newcube.isValidCube()) && (! isValidX(x)) && (! isValidY(y)) && (! isValidZ(z)))
-			throw new IllegalArgumentException();
-		else {
-			this.cube = cube;
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
+		this.cube = newcube;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 	public Cube getCube() {
@@ -61,8 +52,8 @@ public class Position {
 	private double y;
 	private double z;
 	
-	public boolean isValidPosition() {	
-		return this.cube.isValidCube() && isValidX(x) && isValidY(y) && isValidZ(z);
+	public boolean isValidPosition(double x, double y, double z) {
+		return (isValidX(x) && isValidY(y) && isValidZ(z));
 	}
 	
 	public boolean isValidX(double x) {

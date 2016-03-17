@@ -30,12 +30,12 @@ public class Cube {
 		}
 	}
 	
-	private int x;
-	private int y;
-	private int z;
+	public boolean isValidCube(int x, int y,int z) {
+		return (isValidX(x) && isValidY(y) && isValidZ(z));
+	}
 	
-	public boolean isValidCube() {
-		return (isValidX(this.getX()) && isValidY(this.getY()) && isValidZ(this.z));
+	public Position getCenter() {
+		return new Position(SIDE_LENGTH/2, SIDE_LENGTH/2, SIDE_LENGTH/2, this);
 	}
 	
 	public boolean isValidX(int x) {
@@ -50,6 +50,8 @@ public class Cube {
 		return this.x;
 	}
 	
+	private int x;
+	
 	public boolean isValidY(int y) {
 		if (y >= Y_MIN || y < Y_MAX) {
 			return true;
@@ -63,6 +65,8 @@ public class Cube {
 		return this.y;
 	}
 	
+	private int y;
+	
 	public boolean isValidZ(int z) {
 		if (z >= Z_MIN || z < Z_MAX) {
 			return true;
@@ -75,5 +79,7 @@ public class Cube {
 	public int getZ() {
 		return this.z;
 	}
-
+	
+	private int z;
+	
 }
