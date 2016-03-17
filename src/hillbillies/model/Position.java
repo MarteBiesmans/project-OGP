@@ -62,7 +62,7 @@ public class Position {
 	}
 	
 	public boolean isValidX(double x) {
-		if (x > 0 && x < Cube.SIDE_LENGTH)
+		if (x >= 0 && x < Cube.SIDE_LENGTH)
 			return true;
 		else
 			return false;
@@ -77,7 +77,7 @@ public class Position {
 	}
 
 	public boolean isValidY(double y) {
-		if (y > 0 && y < Cube.SIDE_LENGTH)
+		if (y >= 0 && y < Cube.SIDE_LENGTH)
 			return true;
 		else
 			return false;
@@ -93,7 +93,7 @@ public class Position {
 		}
 
 	public boolean isValidZ(double z) {
-		if (z > 0 && z < Cube.SIDE_LENGTH)
+		if (z >= 0 && z < Cube.SIDE_LENGTH)
 			return true;
 		else
 			return false;

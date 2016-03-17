@@ -39,7 +39,7 @@ public class Cube {
 	}
 	
 	public boolean isValidX(int x) {
-		if (x >= X_MIN || x < X_MAX)
+		if (x >= X_MIN &&  x < X_MAX)
 			return true;
 		else
 			return false;
@@ -53,7 +53,7 @@ public class Cube {
 	private int x;
 	
 	public boolean isValidY(int y) {
-		if (y >= Y_MIN || y < Y_MAX) {
+		if (y >= Y_MIN && y < Y_MAX) {
 			return true;
 		} else {
 			return false;
@@ -68,7 +68,7 @@ public class Cube {
 	private int y;
 	
 	public boolean isValidZ(int z) {
-		if (z >= Z_MIN || z < Z_MAX) {
+		if (z >= Z_MIN && z < Z_MAX) {
 			return true;
 		} else {
 			return false;
