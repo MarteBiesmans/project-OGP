@@ -144,6 +144,10 @@ public class Unit {
 
 		// behaviour
 		this.defaultBehaviour = enableDefaultBehaviour;
+		
+		// moveTo and moveToAdjacent
+		this.setMoveToCube(null);
+		this.setMoveToAdjacent(null);
 	}
 
 	/**
@@ -693,8 +697,8 @@ public class Unit {
 	 *             the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (seconds < 0 || seconds >= 0.2)
-			throw new IllegalArgumentException();
+//		if (seconds < 0 || seconds >= 0.2)
+//			throw new IllegalArgumentException();
 
 		this.busyTimeMin(seconds);
 
@@ -721,12 +725,12 @@ public class Unit {
 
 	public void moving(float seconds) {
 		Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
-		double moveDistance = Math.sqrt(moveDiff.getX() * moveDiff.getX() + moveDiff.getY() * moveDiff.getY()
-				+ moveDiff.getZ() * moveDiff.getZ());
+		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX() + moveDiff.getRealY() * moveDiff.getRealY()
+				+ moveDiff.getRealZ() * moveDiff.getRealZ());
 
-		double xVelocity = this.getMovementSpeed() * moveDiff.getX() / moveDistance;
-		double yVelocity = this.getMovementSpeed() * moveDiff.getY() / moveDistance;
-		double zVelocity = this.getMovementSpeed() * moveDiff.getZ() / moveDistance;
+		double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
+		double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
+		double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
 
 		Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
 				this.getPosition().getRealY() + yVelocity * seconds,
@@ -736,10 +740,11 @@ public class Unit {
 
 		this.setOrientation(Math.atan2(yVelocity, xVelocity));
 
-		if ((Math.signum(moveDiff.getX()) != Math.signum(diffNext.getX()))
-				&& (Math.signum(moveDiff.getY()) != Math.signum(diffNext.getY()))
-				&& (Math.signum(moveDiff.getZ()) != Math.signum(diffNext.getZ()))) {
+		if ((Math.signum(moveDiff.getRealX()) != Math.signum(diffNext.getRealX()))
+				&& (Math.signum(moveDiff.getRealY()) != Math.signum(diffNext.getRealY()))
+				&& (Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
 			this.setPosition(this.getMoveToAdjacent().getCenter());
+			this.setMoveToAdjacent(null);
 
 			// Check whether the unit is moving to a cube far away (not an
 			// adjacent cube)
@@ -750,7 +755,6 @@ public class Unit {
 			// Check whether the unit is not pathfinding. If this is true,
 			// it stops moving.
 			if (getMoveToCube() == null) {
-				this.setMoveToAdjacent(null);
 				this.setActivity(Activity.NONE);
 			}
 
@@ -793,7 +797,7 @@ public class Unit {
 	public void beingUseless(float seconds) {
 		int randomGetal = randomGen.nextInt(3);
 		if (randomGetal == 0) {
-			setMoveTo(randomGen.nextInt(Cube.X_MAX - Cube.X_MIN) + Cube.X_MIN,
+			moveTo(randomGen.nextInt(Cube.X_MAX - Cube.X_MIN) + Cube.X_MIN,
 					randomGen.nextInt(Cube.Y_MAX - Cube.Y_MIN) + Cube.Y_MIN,
 					randomGen.nextInt(Cube.Z_MAX - Cube.Z_MIN) + Cube.Z_MIN);
 		} else if (randomGetal == 1) {
@@ -821,18 +825,20 @@ public class Unit {
 	 */
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
 
-		if (this.isMoving()) {
-			return;
-		}
-
-		if ((x != -1) || (x != 0) || (x != 1) || (y != -1) || (y != 0) || (y != 1) || (z != -1) || (z != 0) || (z != 1))
+		if (this.getMoveToAdjacent() != null)
+				return;
+		
+		if (! (((x == -1) || (x == 0) || (x == 1)) && 
+				((y == -1) || (y == 0) || (y == 1)) && 
+				((z == -1) || (z == 0) || (z == 1))))
 			throw new IllegalArgumentException();
-
+		
+		
 		Cube moveToAdjacent = new Cube(this.getPosition().getCube().getX() + x, this.getPosition().getCube().getY() + y,
 				this.getPosition().getCube().getZ() + z);
-
+		
 		this.setActivity(Activity.WALKING);
-		this.moveToAdjacent = moveToAdjacent;
+		this.setMoveToAdjacent(moveToAdjacent);
 	}
 
 	public Cube getMoveToAdjacent() {
@@ -854,11 +860,11 @@ public class Unit {
 		if (this.isSprinting())
 			speed *= 2;
 
-		int zDiff = this.getPosition().getCube().getZ() - this.getMoveToAdjacent().getZ();
-		if (zDiff == -1)
-			speed *= 0.5;
-		else if (zDiff == 1)
-			speed *= 1.2;
+//		int zDiff = (int) (this.getCube().getZ() - this.getMoveToAdjacent().getZ());
+//		if (zDiff == -1)
+//			speed *= 0.5;
+//		else if (zDiff == 1)
+//			speed *= 1.2;
 
 		return speed;
 	}
@@ -870,7 +876,7 @@ public class Unit {
 	 * @param y
 	 * @param z
 	 */
-	public void setMoveTo(int x, int y, int z) {
+	public void moveTo(int x, int y, int z) {
 		this.moveToCube = new Cube(x, y, z);
 		findNextCubeInPath();
 	}
@@ -905,6 +911,10 @@ public class Unit {
 			this.moveToCube = null;
 	}
 
+	public void setMoveToCube(Cube cube) {
+		this.moveToCube = cube;
+	}
+	
 	/**
 	 * returns the cube far away where this unit is going.
 	 * 

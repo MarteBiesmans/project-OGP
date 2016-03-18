@@ -57,8 +57,8 @@ public class Facade implements IFacade {
 	 */
 	public double[] getPosition(Unit unit) throws ModelException {
 		try{
-			return new double[] {unit.getPosition().getX(), 
-					unit.getPosition().getY(), unit.getPosition().getZ()};
+			return new double[] {unit.getPosition().getRealX(), 
+					unit.getPosition().getRealY(), unit.getPosition().getRealZ()};
 		}
 		
 		catch (Throwable e){
@@ -307,13 +307,13 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void advanceTime(Unit unit, double dt) throws ModelException {
-		try{
+//		try{
 			unit.advanceTime((float) dt);
-		}
-		
-		catch (Throwable e){
-			throw new ModelException();
-		}	
+//		}
+//		
+//		catch (Throwable e){
+//			throw new ModelException();
+//		}	
 	}
 
 	/* Basic movement */
@@ -450,7 +450,7 @@ public class Facade implements IFacade {
 	 */
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
 		try{
-			unit.setMoveTo(cube[0], cube[1], cube[2]);
+			unit.moveTo(cube[0], cube[1], cube[2]);
 		}
 		
 		catch (Throwable e){

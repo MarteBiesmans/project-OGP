@@ -21,13 +21,13 @@ public class Cube {
 
 	@Raw
 	public Cube(int x, int y, int z) throws IllegalArgumentException {
-		if (! isValidCube(x, y, z))
-			throw new IllegalArgumentException();
-		else {
+//		if (! isValidCube(x, y, z))
+//			throw new IllegalArgumentException();
+//		else {
 			this.x = x;
 			this.y = y;
 			this.z = z;
-		}
+//		}
 	}
 	
 	public boolean isValidCube(int x, int y,int z) {
