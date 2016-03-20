@@ -29,7 +29,7 @@ public class Position {
 		if (cube == null)
 				throw new NullPointerException();
 		
-		Cube newcube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)),
+		this.cube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)),
 				(int) (cube.getY() + (y / Cube.SIDE_LENGTH)),
 				(int) (cube.getZ() + (z / Cube.SIDE_LENGTH)));
 		
@@ -43,9 +43,6 @@ public class Position {
 			y += Cube.SIDE_LENGTH;
 		if (z < 0)
 			z += Cube.SIDE_LENGTH;
-		
-		
-		this.cube = newcube;
 		this.x = x;
 		this.y = y;
 		this.z = z;

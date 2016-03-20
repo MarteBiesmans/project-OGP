@@ -382,7 +382,7 @@ public class Facade implements IFacade {
 	public void startSprinting(Unit unit) throws ModelException {
 		//TODO aanpassen naar startSprinting
 		if (! unit.isSprinting())
-			unit.toggleSprinting();
+			unit.startSprinting();
 		else
 			throw new ModelException();
 	}
@@ -399,7 +399,7 @@ public class Facade implements IFacade {
 	public void stopSprinting(Unit unit) throws ModelException {
 		//TODO aanpassen naar stopSprinting
 		if (unit.isSprinting())
-			unit.toggleSprinting();
+			unit.stopSprinting();
 		else
 			throw new ModelException();
 	}
