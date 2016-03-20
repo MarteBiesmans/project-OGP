@@ -1144,12 +1144,18 @@ public class Unit {
 			this.canStopResting = false;
 	}
 
-	public void attack(Unit other) {
-		this.setActivity(Activity.ATTACKING, 1.0);
-		if (this.isAttacking())
-			other.defend(this);
-		this.setOrientation(Math.atan2(other.getPosition().getRealY() - this.getPosition().getRealY(),
-				other.getPosition().getRealX() - this.getPosition().getRealX()));
+	public void attack(Unit defender) {
+		Cube cubeDiff = this.getCube().min(defender.getCube());
+		
+		if ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1) &&
+				(cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1) &&
+				(cubeDiff.getZ() == -1 || cubeDiff.getZ() == 0 || cubeDiff.getZ() == 1)) {
+			this.setActivity(Activity.ATTACKING, 1.0);
+			if (this.isAttacking())
+				defender.defend(this);
+			this.setOrientation(Math.atan2(defender.getPosition().getRealY() - this.getPosition().getRealY(),
+					defender.getPosition().getRealX() - this.getPosition().getRealX()));
+		}
 	}
 
 	/**
@@ -1160,7 +1166,7 @@ public class Unit {
 	public void defend(Unit attacker) {
 		if (randomGen.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
 			Position nextPosition = null;
-			while (nextPosition == this.getPosition() && (! isValidPosition(nextPosition))) {
+			while (nextPosition == this.getPosition() || (! isValidPosition(nextPosition))) {
 				Position minPosition = new Position(randomGen.nextInt(3) - 1, randomGen.nextInt(3) - 1, 0);
 				nextPosition = this.getPosition().min(minPosition);
 			}
@@ -1168,7 +1174,7 @@ public class Unit {
 		} else if (randomGen.nextDouble() > 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
 			this.setHitpoints(attacker.getStrength() / 10);
-		}
+		} 
 		this.setOrientation(Math.atan2(attacker.getPosition().getRealY() - this.getPosition().getRealY(),
 				attacker.getPosition().getRealX() - this.getPosition().getRealX()));
 	}
