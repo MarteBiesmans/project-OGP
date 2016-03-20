@@ -1071,7 +1071,9 @@ public class Unit {
 	public boolean isResting() {
 		return (this.getActivity() == Activity.RESTING);
 	}
-
+	
+	private boolean canStopResting;
+	
 	/**
 	 * returns if this unit is doing anything at all.
 	 */
@@ -1080,16 +1082,6 @@ public class Unit {
 	}
 
 	private Activity activity;
-
-	/**
-	 * substracts the given seconds off of the busytime of this unit. returns
-	 * true if this succeded.
-	 * 
-	 * @param seconds
-	 */
-	public void busyTimeMin(double seconds) {
-		this.setBusyTime(this.getBusyTime() - seconds);
-	}
 
 	/**
 	 * sets the busytime of this unit to the given seconds
@@ -1105,6 +1097,16 @@ public class Unit {
 	 */
 	public double getBusyTime() {
 		return this.busyTime;
+	}
+
+	/**
+	 * substracts the given seconds off of the busytime of this unit. returns
+	 * true if this succeded.
+	 * 
+	 * @param seconds
+	 */
+	public void busyTimeMin(double seconds) {
+		this.setBusyTime(this.getBusyTime() - seconds);
 	}
 
 	private double busyTime;
@@ -1146,8 +1148,6 @@ public class Unit {
 		if (this.isResting())
 			this.canStopResting = false;
 	}
-
-	private boolean canStopResting;
 
 	public void attack(Unit other) {
 		this.setActivity(Activity.ATTACKING, 1.0);
