@@ -737,7 +737,7 @@ public class Unit {
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 //		if (seconds < 0 || seconds >= 0.2)
 //			throw new IllegalArgumentException();
-
+		
 		this.busyTimeMin(seconds);
 
 		if (this.isAttacking())
@@ -762,7 +762,6 @@ public class Unit {
 	}
 
 	public void moving(float seconds) {
-		System.out.println(this.getActivity());
 		Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
 		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX() 
 				+ moveDiff.getRealY() * moveDiff.getRealY()
@@ -803,15 +802,12 @@ public class Unit {
 		}
 
 		if (this.isSprinting()) {
-			System.out.println("is sprinting");
 			double stamina = this.getStaminaPoints() - seconds * 10;
-			if (stamina > 0) {
-				System.out.println("enough stamina left");
+			if (stamina > 0)
 				this.setStaminaPoints(stamina);
-			} else {
-				System.out.println("was sprinting and ran out of stamina");
+			else {
 				this.setStaminaPoints(0);
-				this.setActivity(Activity.WALKING);
+				this.stopSprinting();
 			}
 		}
 	}
@@ -867,9 +863,9 @@ public class Unit {
 	 *             when the x, y and z are not referring to an adjacent cube.
 	 */
 	public void moveToAdjacent(int x, int y, int z) throws IllegalArgumentException {
-
-		if (this.getMoveToAdjacent() != null)
-				return;
+		if (this.getMoveToAdjacent() != null) {
+			return;
+		}
 		
 		if (! (((x == -1) || (x == 0) || (x == 1)) && 
 				((y == -1) || (y == 0) || (y == 1)) && 
@@ -880,7 +876,6 @@ public class Unit {
 				this.getPosition().getCube().getZ() + z);
 		
 		if (! (this.getActivity() == Activity.WALKING || this.getActivity() == Activity.SPRINTING))
-			System.out.println("start walking");
 			this.setActivity(Activity.WALKING);
 		
 		this.setMoveToAdjacent(moveToAdjacent);
@@ -1006,8 +1001,8 @@ public class Unit {
 			return;
 		else if (this.isAttacking() && this.getBusyTime() > 0)
 			return;
-		else if (this.isSprinting() && this.getStaminaPoints() == 0)
-			return;
+//		else if (this.isSprinting() && this.getStaminaPoints() == 0)
+//			return;
 		this.activity = activity;
 	}
 
@@ -1040,7 +1035,7 @@ public class Unit {
 	 * returns wheter this unit is sprinting or not.
 	 */
 	public boolean isSprinting() {
-		return this.getActivity() == Activity.SPRINTING;
+		return (this.getActivity() == Activity.SPRINTING);
 	}
 
 	/**
@@ -1049,14 +1044,14 @@ public class Unit {
 	 * noting.
 	 */
 	public void startSprinting() {
-		if (this.isWalking() && this.getStaminaPoints() != 0)
+		if (this.isWalking() && this.getStaminaPoints() > 0)
 			this.setActivity(Activity.SPRINTING);
 	}
 	
 	public void stopSprinting() {
 		if (this.isSprinting()) 
 			this.setActivity(Activity.WALKING);
-		}
+	}
 
 	/**
 	 * returns whether this unit is working or not.
