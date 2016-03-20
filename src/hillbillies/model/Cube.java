@@ -23,6 +23,12 @@ public class Cube {
 		return new Position(SIDE_LENGTH/2, SIDE_LENGTH/2, SIDE_LENGTH/2, this);
 	}
 	
+	public Cube min(Cube other) {
+		return new Cube(this.getX() - other.getX(),
+				this.getY() - other.getY(),
+				this.getZ() - other.getZ());
+	}
+	
 	@Basic @Raw
 	public int getX() {
 		return this.x;

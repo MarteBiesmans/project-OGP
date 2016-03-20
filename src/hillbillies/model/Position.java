@@ -58,15 +58,10 @@ public class Position {
 	private double y;
 	private double z;
 	
-	public boolean isValidPosition(double x, double y, double z) {
-		return (isValidX(x) && isValidY(y) && isValidZ(z));
-	}
-	
-	public boolean isValidX(double x) {
-		if (x >= 0 && x < Cube.SIDE_LENGTH)
-			return true;
-		else
-			return false;
+	public Position min(Position other) {
+		return new Position(this.getRealX() - other.getRealX(),
+				this.getRealY() - other.getRealY(),
+				this.getRealZ() - other.getRealZ());
 	}
 
 	public double getX() {
@@ -77,14 +72,6 @@ public class Position {
 		return this.cube.getX() * Cube.SIDE_LENGTH + this.getX();
 	}
 
-	public boolean isValidY(double y) {
-		if (y >= 0 && y < Cube.SIDE_LENGTH)
-			return true;
-		else
-			return false;
-	}
-
-
 	public double getY() {
 		return this.y;
 	}
@@ -93,13 +80,6 @@ public class Position {
 		return this.cube.getY() * Cube.SIDE_LENGTH + this.getY();
 		}
 
-	public boolean isValidZ(double z) {
-		if (z >= 0 && z < Cube.SIDE_LENGTH)
-			return true;
-		else
-			return false;
-	}
-
 	public double getZ() {
 		return this.z;
 	}
@@ -107,10 +87,4 @@ public class Position {
 	public double getRealZ() {
 		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
 		}
-	
-	public Position min(Position other) {
-		return new Position(this.getRealX() - other.getRealX(),
-				this.getRealY() - other.getRealY(),
-				this.getRealZ() - other.getRealZ());
-	}
 }
