@@ -63,14 +63,14 @@ public class Facade implements IFacade {
 	
 	@Override
 	@Deprecated
-	default void work(Unit unit) throws ModelException {
+	public void work(Unit unit) throws ModelException {
 		throw new NoSuchMethodError("This method no longer needs to be supported");
 	}
 
 	
 	@Override
 	@Deprecated
-	default void advanceTime(Unit unit, double dt) throws ModelException {
+	public void advanceTime(Unit unit, double dt) throws ModelException {
 		throw new NoSuchMethodError("This method no longer needs to be supported");
 	}
 
