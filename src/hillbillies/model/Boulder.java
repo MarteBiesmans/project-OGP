@@ -1,5 +1,5 @@
 package hillbillies.model;
 
-public class Boulder {
+public class Boulder extends Material {
 
 }
