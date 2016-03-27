@@ -2,11 +2,7 @@ package hillbillies.part2.facade;
 
 import java.util.Set;
 
-import hillbillies.model.Boulder;
-import hillbillies.model.Faction;
-import hillbillies.model.Log;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
+import hillbillies.model.*;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
@@ -55,7 +51,15 @@ public class Facade implements IFacade {
 	public void advanceTime(World world, double dt) throws ModelException{}
 
 	
-	public int getCubeType(World world, int x, int y, int z) throws ModelException{}
+	public int getCubeType(World world, int x, int y, int z) throws ModelException{
+		try{
+			Cube cube = new Cube(x,y,z,world);
+			return world.getTerrainTypeInt(cube);
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
+	}
 
 	
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException{}

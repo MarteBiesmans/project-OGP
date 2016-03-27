@@ -59,24 +59,31 @@ public class World {
 	
 	
 	/**
-	 * Return the number of cubes on one axis of this world.
+	 * Return the number of cubes in one direction of this world.
 	 */
 	@Immutable
 	public int getNbCubes() {
 		return this.getTerrainTypesArray().length;
 	}
 
-	public TerrainType getTerrainType(int x, int y, int z){
-		if (this.getTerrainTypesArray()[x][y][z] == 1)
-			return TerrainType.ROCK;
-		if (this.getTerrainTypesArray()[x][y][z] == 2)
-			return TerrainType.WOOD;
-		if (this.getTerrainTypesArray()[x][y][z] == 3)
-			return TerrainType.WORKSHOP;
-		if (this.getTerrainTypesArray()[x][y][z] == 0)
-			return TerrainType.AIR;
-		else
-			throw new IllegalArgumentException();
+	public int getTerrainTypeInt(Cube cube) throws IllegalArgumentException {
+		return this.getTerrainTypesArray()[cube.getX()][cube.getY()][cube.getZ()];
 	}
+	
+	public TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
+		int terrainType = this.getTerrainTypeInt(cube);
+		if (terrainType == 1)
+			return TerrainType.ROCK;
+		if (terrainType == 2)
+			return TerrainType.TREE;
+		if (terrainType == 3)
+			return TerrainType.WORKSHOP;
+		else
+			return TerrainType.AIR;
+	}
+	
+	
+//	public Material[] getMaterialsInCube(Cube cube){}
+	
 	
 }

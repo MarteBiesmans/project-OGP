@@ -1095,8 +1095,7 @@ public class Unit {
 	}
 
 	/**
-	 * substracts the given seconds off of the busytime of this unit. returns
-	 * true if this succeded.
+	 * substracts the given seconds off of the busytime of this unit.
 	 * 
 	 * @param seconds
 	 */

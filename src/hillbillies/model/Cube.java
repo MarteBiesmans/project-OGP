@@ -3,6 +3,8 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * @Value
+ * 
  * @author Marte & Ellen
  *
  */
@@ -25,9 +27,7 @@ public class Cube {
 	 */
 	@Raw
 	public Cube(int x, int y, int z) throws IllegalArgumentException {
-		if ( (!isValidCoordinate(x))
-		  || (!isValidCoordinate(y))
-		  || (!isValidCoordinate(z)) )
+		if (!isValidCubeCoordinate(x,y,z))
 		  throw new IllegalArgumentException();
 		this.x = x;
 		this.y = y;
@@ -51,10 +51,8 @@ public class Cube {
 	 * 			given x, y or z are not legal 
 	 */
 	@Raw
-	public Cube(World world, int x, int y, int z) throws IllegalArgumentException {
-		if ( (!isValidCoordinate(world,x))
-		  || (!isValidCoordinate(world,y))
-		  || (!isValidCoordinate(world,z)) )
+	public Cube(int x, int y, int z, World world) throws IllegalArgumentException {
+		if (!isValidCubeCoordinate(x,y,z, world))
 		  throw new IllegalArgumentException();
 		this.x = x;
 		this.y = y;
@@ -62,15 +60,17 @@ public class Cube {
 	}
 	
 	
-	public boolean isValidCoordinate(int coordinate) {
-	if (coordinate < 0)
+	public boolean isValidCubeCoordinate(int x, int y, int z) {
+	if ( (x<0) || (y<0) || (z<0) )
 		return false;
 	return true;
 	}
 	
 	
-	public boolean isValidCoordinate(World world, int coordinate) {
-		if ((coordinate < 0) || (coordinate > world.getNbCubes()))
+	public boolean isValidCubeCoordinate(int x, int y, int z, World world) {
+		if ((x < 0) || (x > world.getNbCubes()) ||
+			(y < 0) || (y > world.getNbCubes()) ||
+			(z < 0) || (z > world.getNbCubes()) )
 			return false;
 		return true;
 	}

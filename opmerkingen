@@ -7,3 +7,9 @@ extra uitleg bij arrays: https://www.youtube.com/watch?v=1q3brvLgYbs
 
 in UnitTest zitten nog 2 failures: Constructor_IllegalPositionX() en Constructor_IllegalPositionZ()
 hierin zijn de opgegeven coördinaten te groot (y is wel juist, hier is de gegeven waarde te klein)
+
+in unit mss best een onderverdeling maken in unitWeight/carriedWeight/totalWeight
+we hebben ze niet alle 3 nodig, maar ik weet nog niet welke de minste aanpassingen nodig heeft voor de rest
+want hun eigen gewicht moet aan voorwaarden voldoen en het totale gewicht bepaalt hun bewegingen
+
+abstracte klasse object aanmaken boven unit en material, want materials kunnen net zoals unit vallen
