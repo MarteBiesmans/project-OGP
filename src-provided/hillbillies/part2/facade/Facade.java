@@ -12,16 +12,44 @@ import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade {
 	
-	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{}
+	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
+		try{
+			return new World(terrainTypes);
+		}
+		catch (Throwable e){
+			throw new ModelException();
+		}
+	}
 
 	
-	public int getNbCubesX(World world) throws ModelException{}
+	public int getNbCubesX(World world) throws ModelException{
+		try{
+			return world.getNbCubes();
+		}
+		catch (Throwable e){
+			throw new ModelException();
+		}
+	}
 
 	
-	public int getNbCubesY(World world) throws ModelException{}
+	public int getNbCubesY(World world) throws ModelException{
+		try{
+			return world.getNbCubes();
+		}
+		catch (Throwable e){
+			throw new ModelException();
+		}
+	}
 
 	
-	public int getNbCubesZ(World world) throws ModelException{}
+	public int getNbCubesZ(World world) throws ModelException{
+		try{
+			return world.getNbCubes();
+		}
+		catch (Throwable e){
+			throw new ModelException();
+		}
+	}
 
 	
 	public void advanceTime(World world, double dt) throws ModelException{}

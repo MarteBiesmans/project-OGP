@@ -1,2 +1,9 @@
 Facade is nog niet volledig error-loos, maar dat is niets om ons zorgen om te maken (voorlopig toch)
 
+in world heb ik 1 methode gemaakt voor het aantal cubes op x- y- of z-as: in de opgave staat dat het een
+'cubical world' is
+
+extra uitleg bij arrays: https://www.youtube.com/watch?v=1q3brvLgYbs
+
+in UnitTest zitten nog 2 failures: Constructor_IllegalPositionX() en Constructor_IllegalPositionZ()
+hierin zijn de opgegeven coördinaten te groot (y is wel juist, hier is de gegeven waarde te klein)
