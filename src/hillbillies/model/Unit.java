@@ -106,7 +106,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
-			boolean enableDefaultBehaviour) throws IllegalArgumentException {
+			boolean enableDefaultBehaviour, Faction faction) throws IllegalArgumentException {
 
 		// name
 		this.setName(name);
@@ -170,7 +170,7 @@ public class Unit {
 	}
 	
 	public boolean isValidPosition(Position position) {
-		if (position == null)
+		if ((position == null) || ())
 			return false;
 		else
 			return isValidCube(position.getCube()) && 
@@ -723,6 +723,21 @@ public class Unit {
 	 * Variable registering the orientation of this unit.
 	 */
 	private double orientation;
+	
+	public Faction getFaction() {
+		return this.faction;
+	}
+	
+	public boolean isValidFaction(Faction faction) {
+		return (faction != null);
+	}
+	
+	public void setFaction(Faction faction) {
+		if (isValidFaction(faction))
+			this.faction = faction;
+	}
+	
+	private Faction faction;
 
 	/**
 	 * 
