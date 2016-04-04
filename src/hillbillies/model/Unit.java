@@ -109,10 +109,10 @@ public class Unit {
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
 			boolean enableDefaultBehaviour) throws IllegalArgumentException {
 
-		// name, world
+		// name
 		this.setName(name);
 
-		// position, orientation
+		// position and orientation
 		this.setPosition(x, y, z);
 		this.setOrientation((float) (Math.PI / 2.0));
 
@@ -160,14 +160,18 @@ public class Unit {
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
 
-		// experience points
+		// world, faction and experience points
+		this.world = null;
+		this.faction = null;
 		this.setExperiencePoints(0);
 
 	}
 
 	public boolean isValidUnit() {
-		// wel in een wereld en heeft een faction
-		return true;
+		return (isValidPosition(this.getPosition()) && isValidName(this.getName())
+				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
+				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
+				&& isValidOrientation(this.getOrientation()) && this.getFaction() != null && this.getWorld() != null);
 	}
 
 	/**
@@ -317,16 +321,6 @@ public class Unit {
 	 * Variable registering the name of this unit.
 	 */
 	private String name;
-
-	public World getWorld() {
-		return this.world;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
-	}
-
-	private World world;
 
 	/**
 	 * Return the strength of this unit.
@@ -743,12 +737,31 @@ public class Unit {
 	 */
 	private double orientation;
 
+	public World getWorld() {
+		return this.world;
+	}
+
+	public boolean canHaveAsWorld(World world) {
+		return (world != null && world.hasAsUnit(this) && this.getWorld() ==  null);
+	}
+
+	public void setWorld(World world) {
+		if (world != null) {
+			if (canHaveAsWorld(world))
+				throw new IllegalArgumentException();
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	private World world;
+
 	public Faction getFaction() {
 		return this.faction;
 	}
 
 	public boolean canHaveAsFaction(Faction faction) {
-		return ((faction != null) && (faction.hasAsUnit(this)) && (this.getFaction() == null));
+		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
 	}
 
 	public void setFaction(Faction faction) throws IllegalArgumentException {
@@ -767,7 +780,7 @@ public class Unit {
 	}
 
 	public boolean isValidExperiencePoints(int points) {
-		return (points > 0);
+		return (points >= 0);
 	}
 
 	public void setExperiencePoints(int points) {

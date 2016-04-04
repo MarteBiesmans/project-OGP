@@ -25,7 +25,7 @@ public class Faction {
 	}
 
 	public void removeUnit(Unit unit) {
-		if (this.hasAsUnit(unit))
+		if (!this.hasAsUnit(unit))
 			throw new IllegalArgumentException();
 		this.units.remove(unit);
 		
