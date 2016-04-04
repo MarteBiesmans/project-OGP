@@ -160,11 +160,11 @@ public class Unit {
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
 
-		// world, faction and experience points
+		// world, faction, experience points and level
 		this.world = null;
 		this.faction = null;
 		this.setExperiencePoints(0);
-
+		this.setLevel(0);
 	}
 
 	public boolean isValidUnit() {
@@ -742,7 +742,7 @@ public class Unit {
 	}
 
 	public boolean canHaveAsWorld(World world) {
-		return (world != null && world.hasAsUnit(this) && this.getWorld() ==  null);
+		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
 	}
 
 	public void setWorld(World world) {
@@ -790,6 +790,21 @@ public class Unit {
 
 	private int experiencePoints;
 
+	private int getLevel() {
+		return this.level;
+	}
+
+	private boolean isValidLevel(int level) {
+		return level >= 0;
+	}
+
+	private void setLevel(int level) {
+		if (isValidLevel(level))
+			this.level = level;
+	}
+
+	private int level;
+
 	/**
 	 * 
 	 * update the position, activity status, hitpoints and stamina points of a
@@ -820,6 +835,9 @@ public class Unit {
 
 		if (this.isBeingUseless() && this.canStartDefaultBehaviour())
 			beingUseless(seconds);
+
+		while (this.getExperiencePoints() - 10 * this.getLevel() > 10)
+			this.levelUp();
 	}
 
 	public void attacking(float seconds) {
@@ -914,6 +932,33 @@ public class Unit {
 		}
 	}
 
+	public void levelUp() {
+		if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE || this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE
+				|| this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+			boolean leveledUp = false;
+			while (!leveledUp) {
+				int randomGetal = RANDOM_GEN.nextInt(3);
+				if (randomGetal == 0) {
+					if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setAgility(this.getAgility() + 1);
+						leveledUp = true;
+					}
+				} else if (randomGetal == 1) {
+					if (this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setStrength(this.getStrength() + 1);
+						leveledUp = true;
+					}
+				} else {
+					if (this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setToughness(this.getToughness() + 1);
+						leveledUp = true;
+					}
+				}
+			}
+		}
+		this.setLevel(this.getLevel() + 1);
+	}
+
 	/**
 	 * Moves this unit to an adjacent cube.
 	 * 
@@ -960,11 +1005,11 @@ public class Unit {
 	 * and primary attributes.
 	 */
 	public double getMovementSpeed() {
+		if (this.isFalling())
+			return 3.0;
 		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
-
 		if (this.isSprinting())
 			speed *= 2;
-
 		if (this.getMoveToAdjacent() != null) {
 			int zDiff = this.getCube().getZ() - this.getMoveToAdjacent().getZ();
 			if (zDiff == -1)
@@ -1087,7 +1132,8 @@ public class Unit {
 	 * returns wheter this unit is moving or not.
 	 */
 	public boolean isMoving() {
-		return (this.getActivity() == Activity.WALKING) || (this.getActivity() == Activity.SPRINTING);
+		return (this.getActivity() == Activity.WALKING)
+				|| (this.getActivity() == Activity.SPRINTING || (this.getActivity() == Activity.FALLING));
 	}
 
 	public boolean isWalking() {
@@ -1137,6 +1183,10 @@ public class Unit {
 	 */
 	public boolean isBeingUseless() {
 		return (this.getActivity() == Activity.NONE);
+	}
+
+	public boolean isFalling() {
+		return (this.getActivity() == Activity.FALLING);
 	}
 
 	private Activity activity;

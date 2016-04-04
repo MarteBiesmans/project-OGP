@@ -88,12 +88,14 @@ public class World {
 	public boolean isCubePassable(Cube cube) {
 		return this.getTerrainType(cube).isPassable();
 	}
-
+	
+	// public Material[] getMaterialsInCube(Cube cube){}
+	
 	public void addUnit(Unit unit) {
-		if (!canHaveAsUnit(unit))
+		if (!canAddAsUnit(unit))
 			throw new IllegalArgumentException();
 		this.units.add(unit);
-		
+
 		try {
 			unit.setWorld(this);
 		} catch (IllegalArgumentException e) {
@@ -115,7 +117,7 @@ public class World {
 		}
 	}
 
-	public boolean canHaveAsUnit(Unit unit) {
+	public boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead())
 			return false;
 		if (unit.getWorld() != null)
@@ -131,13 +133,24 @@ public class World {
 		return this.units.contains(unit);
 	}
 
-	private final Set<Unit> units;
+	public int getNbUnits() {
+		return this.units.size();
+	}
 	
+	public boolean hasProperUnits() {
+		for (Unit unit: this.units)
+			if (unit == null || unit.isDead() || unit.getWorld() != this)
+				return false;
+		return true;
+	}
+
+	private final Set<Unit> units;
+
 	public void addFaction(Faction faction) {
-		if (!canHaveAsFaction(faction))
+		if (!canAddAsFaction(faction))
 			throw new IllegalArgumentException();
 		this.factions.add(faction);
-		
+
 		try {
 			faction.setWorld(this);
 		} catch (IllegalArgumentException e) {
@@ -159,21 +172,20 @@ public class World {
 		}
 	}
 
-	public boolean canHaveAsFaction(Faction faction) {
+	public boolean canAddAsFaction(Faction faction) {
 		if (faction.getWorld() != null)
 			return false;
-		if (this.getNbActiveFactions() == MAX_FACTIONS)
+		if (this.getNbActiveFactions() == MAX_FACTIONS && faction.getNbUnits() > 0)
 			return false;
 		return true;
 	}
-	
+
 	public int getNbActiveFactions() {
-//		TODO: syntax correct
-//		int counter = 0;
-//		for faction in this.factions
-//			if faction.units.size() != null
-//			counter += 1;
-		return 0;
+		int counter = 0;
+		for (Faction faction : this.factions)
+			if (faction.getNbUnits() > 0)
+				counter += 1;
+		return counter;
 	}
 
 	public boolean hasAsFaction(Faction faction) {
@@ -182,8 +194,16 @@ public class World {
 		return this.factions.contains(faction);
 	}
 
+	public int getNbFactions() {
+		return this.factions.size();
+	}
+	
+	public boolean hasProperFactions() {
+		for (Faction faction: this.factions)
+			if (faction == null || faction.getWorld() != this)
+				return false;
+		return true;
+	}
+
 	private final Set<Faction> factions;
-
-	// public Material[] getMaterialsInCube(Cube cube){}
-
 }
