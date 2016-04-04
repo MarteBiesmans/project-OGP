@@ -54,5 +54,24 @@ public class Faction {
 	}
 
 	private final Set<Unit> units;
+	
+	public World getWorld() {
+		return this.world;
+	}
+
+	public boolean canHaveAsWorld(World world) {
+		return (world != null && world.hasAsFaction(this) && this.getWorld() ==  null);
+	}
+
+	public void setWorld(World world) {
+		if (world != null) {
+			if (this.canHaveAsWorld(world))
+				throw new IllegalArgumentException();
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsFaction(this)))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	private World world;
 
 }

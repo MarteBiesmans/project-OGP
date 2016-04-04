@@ -34,6 +34,7 @@ public class World {
 			throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
 		this.units = new HashSet<Unit>();
+		this.factions = new HashSet<Faction>();
 	}
 
 	/**
@@ -131,6 +132,57 @@ public class World {
 	}
 
 	private final Set<Unit> units;
+	
+	public void addFaction(Faction faction) {
+		if (!canHaveAsFaction(faction))
+			throw new IllegalArgumentException();
+		this.factions.add(faction);
+		
+		try {
+			faction.setWorld(this);
+		} catch (IllegalArgumentException e) {
+			this.factions.remove(faction);
+			throw e;
+		}
+	}
+
+	public void removeFaction(Faction faction) {
+		if (!this.hasAsFaction(faction))
+			throw new IllegalArgumentException();
+		this.factions.remove(faction);
+
+		try {
+			faction.setWorld(null);
+		} catch (IllegalArgumentException e) {
+			this.factions.add(faction);
+			throw e;
+		}
+	}
+
+	public boolean canHaveAsFaction(Faction faction) {
+		if (faction.getWorld() != null)
+			return false;
+		if (this.getNbActiveFactions() == MAX_FACTIONS)
+			return false;
+		return true;
+	}
+	
+	public int getNbActiveFactions() {
+//		TODO: syntax correct
+//		int counter = 0;
+//		for faction in this.factions
+//			if faction.units.size() != null
+//			counter += 1;
+		return 0;
+	}
+
+	public boolean hasAsFaction(Faction faction) {
+		if (faction == null)
+			return false;
+		return this.factions.contains(faction);
+	}
+
+	private final Set<Faction> factions;
 
 	// public Material[] getMaterialsInCube(Cube cube){}
 
