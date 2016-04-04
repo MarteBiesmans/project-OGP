@@ -63,6 +63,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 public class Unit {
 
+	private static final Random RANDOM_GEN = new Random();
 	/**
 	 * constants for the minimum and maximum values of primary attributes
 	 * (weight, strength, agility and toughness)
@@ -71,7 +72,7 @@ public class Unit {
 	private static final int MAX_INIT_VAL_PRIMARY_ATTRIBUTE = 100;
 	private static final int MIN_VAL_PRIMARY_ATTRIBUTE = 1;
 	private static final int MAX_VAL_PRIMARY_ATTRIBUTE = 200;
-	
+
 	/**
 	 * constants for the boundaries of the game world.
 	 */
@@ -106,9 +107,9 @@ public class Unit {
 	 * 
 	 */
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
-			boolean enableDefaultBehaviour, Faction faction) throws IllegalArgumentException {
+			boolean enableDefaultBehaviour) throws IllegalArgumentException {
 
-		// name
+		// name, world
 		this.setName(name);
 
 		// position, orientation
@@ -154,10 +155,19 @@ public class Unit {
 
 		// behaviour
 		this.defaultBehaviour = enableDefaultBehaviour;
-		
+
 		// moveTo and moveToAdjacent
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
+
+		// experience points
+		this.setExperiencePoints(0);
+
+	}
+
+	public boolean isValidUnit() {
+		// wel in een wereld en heeft een faction
+		return true;
 	}
 
 	/**
@@ -168,30 +178,29 @@ public class Unit {
 	public Position getPosition() {
 		return this.position;
 	}
-	
+
 	public boolean isValidPosition(Position position) {
-		if ((position == null) || ())
+		if (position == null)
+			return false;
+		else if (!this.getWorld().isCubePassable(position.getCube()))
 			return false;
 		else
-			return isValidCube(position.getCube()) && 
-					areValidCoördinates(position.getRealX(), 
-										position.getRealY(), 
-										position.getRealZ());
+			return isValidCube(position.getCube())
+					&& areValidCoördinates(position.getRealX(), position.getRealY(), position.getRealZ());
 	}
-	
+
 	public boolean isValidCube(Cube cube) {
 		if (cube == null)
 			return false;
+
 		else
-			return (cube.getX() * Cube.SIDE_LENGTH >= X_MIN && cube.getX() * Cube.SIDE_LENGTH < X_MAX &&
-					cube.getY() * Cube.SIDE_LENGTH >= Y_MIN && cube.getX() * Cube.SIDE_LENGTH < Y_MAX &&
-					cube.getZ() * Cube.SIDE_LENGTH >= Z_MIN && cube.getX() * Cube.SIDE_LENGTH < Z_MAX);
+			return (cube.getX() * Cube.SIDE_LENGTH >= X_MIN && cube.getX() * Cube.SIDE_LENGTH < X_MAX
+					&& cube.getY() * Cube.SIDE_LENGTH >= Y_MIN && cube.getX() * Cube.SIDE_LENGTH < Y_MAX
+					&& cube.getZ() * Cube.SIDE_LENGTH >= Z_MIN && cube.getX() * Cube.SIDE_LENGTH < Z_MAX);
 	}
-	
+
 	public boolean areValidCoördinates(double x, double y, double z) {
-		return (x >= X_MIN && x <= X_MAX &&
-					y >= Y_MIN && y <= Y_MAX &&
-					z >= Z_MIN && z <= Z_MAX);
+		return (x >= X_MIN && x <= X_MAX && y >= Y_MIN && y <= Y_MAX && z >= Z_MIN && z <= Z_MAX);
 	}
 
 	/**
@@ -308,6 +317,16 @@ public class Unit {
 	 * Variable registering the name of this unit.
 	 */
 	private String name;
+
+	public World getWorld() {
+		return this.world;
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
+	}
+
+	private World world;
 
 	/**
 	 * Return the strength of this unit.
@@ -723,21 +742,40 @@ public class Unit {
 	 * Variable registering the orientation of this unit.
 	 */
 	private double orientation;
-	
+
 	public Faction getFaction() {
 		return this.faction;
 	}
-	
-	public boolean isValidFaction(Faction faction) {
-		return (faction != null);
+
+	public boolean canHaveAsFaction(Faction faction) {
+		return ((faction != null) && (faction.hasAsUnit(this)) && (this.getFaction() == null));
 	}
-	
-	public void setFaction(Faction faction) {
-		if (isValidFaction(faction))
-			this.faction = faction;
+
+	public void setFaction(Faction faction) throws IllegalArgumentException {
+		if (faction != null) {
+			if (canHaveAsFaction(faction))
+				throw new IllegalArgumentException();
+		} else if ((this.getFaction() != null) && (this.getFaction().hasAsUnit(this)))
+			throw new IllegalArgumentException();
+		this.faction = faction;
 	}
-	
+
 	private Faction faction;
+
+	public int getExperiencePoints() {
+		return this.experiencePoints;
+	}
+
+	public boolean isValidExperiencePoints(int points) {
+		return (points > 0);
+	}
+
+	public void setExperiencePoints(int points) {
+		if (isValidExperiencePoints(points))
+			this.experiencePoints = points;
+	}
+
+	private int experiencePoints;
 
 	/**
 	 * 
@@ -750,9 +788,9 @@ public class Unit {
 	 *             the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-//		if (seconds < 0 || seconds >= 0.2)
-//			throw new IllegalArgumentException();
-		
+		// if (seconds < 0 || seconds >= 0.2)
+		// throw new IllegalArgumentException();
+
 		this.busyTimeMin(seconds);
 
 		if (this.isAttacking())
@@ -778,16 +816,15 @@ public class Unit {
 
 	public void moving(float seconds) {
 		Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
-		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX() 
-				+ moveDiff.getRealY() * moveDiff.getRealY()
-				+ moveDiff.getRealZ() * moveDiff.getRealZ());
+		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
+				+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
 
 		double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
 		double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
 		double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
-		
+
 		this.setOrientation(Math.atan2(yVelocity, xVelocity));
-		
+
 		Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
 				this.getPosition().getRealY() + yVelocity * seconds,
 				this.getPosition().getRealZ() + zVelocity * seconds);
@@ -849,11 +886,10 @@ public class Unit {
 	}
 
 	public void beingUseless(float seconds) {
-		int randomGetal = randomGen.nextInt(3);
+		int randomGetal = RANDOM_GEN.nextInt(3);
 		if (randomGetal == 0) {
-			moveTo(randomGen.nextInt(X_MAX - X_MIN) + X_MIN,
-					randomGen.nextInt(Y_MAX - Y_MIN) + Y_MIN,
-					randomGen.nextInt(Z_MAX - Z_MIN) + Z_MIN);
+			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN, RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
+					RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
 		} else if (randomGetal == 1) {
 			this.work();
 		} else {
@@ -881,18 +917,17 @@ public class Unit {
 		if (this.getMoveToAdjacent() != null) {
 			return;
 		}
-		
-		if (! (((x == -1) || (x == 0) || (x == 1)) && 
-				((y == -1) || (y == 0) || (y == 1)) && 
-				((z == -1) || (z == 0) || (z == 1))))
+
+		if (!(((x == -1) || (x == 0) || (x == 1)) && ((y == -1) || (y == 0) || (y == 1))
+				&& ((z == -1) || (z == 0) || (z == 1))))
 			throw new IllegalArgumentException();
-		
+
 		Cube moveToAdjacent = new Cube(this.getPosition().getCube().getX() + x, this.getPosition().getCube().getY() + y,
 				this.getPosition().getCube().getZ() + z);
-		
-		if (! (this.getActivity() == Activity.WALKING || this.getActivity() == Activity.SPRINTING))
+
+		if (!(this.getActivity() == Activity.WALKING || this.getActivity() == Activity.SPRINTING))
 			this.setActivity(Activity.WALKING);
-		
+
 		this.setMoveToAdjacent(moveToAdjacent);
 	}
 
@@ -913,12 +948,12 @@ public class Unit {
 	 */
 	public double getMovementSpeed() {
 		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
-		
+
 		if (this.isSprinting())
 			speed *= 2;
-		
+
 		if (this.getMoveToAdjacent() != null) {
-			int zDiff = this.getCube().getZ() - this.getMoveToAdjacent().getZ();	
+			int zDiff = this.getCube().getZ() - this.getMoveToAdjacent().getZ();
 			if (zDiff == -1)
 				speed *= 0.5;
 			else if (zDiff == 1)
@@ -973,7 +1008,7 @@ public class Unit {
 		if (cube == null || isValidCube(cube))
 			this.moveToCube = cube;
 	}
-	
+
 	/**
 	 * returns the cube far away where this unit is going.
 	 * 
@@ -1016,8 +1051,8 @@ public class Unit {
 			return;
 		else if (this.isAttacking() && this.getBusyTime() > 0)
 			return;
-//		else if (this.isSprinting() && this.getStaminaPoints() == 0)
-//			return;
+		// else if (this.isSprinting() && this.getStaminaPoints() == 0)
+		// return;
 		this.activity = activity;
 	}
 
@@ -1041,11 +1076,11 @@ public class Unit {
 	public boolean isMoving() {
 		return (this.getActivity() == Activity.WALKING) || (this.getActivity() == Activity.SPRINTING);
 	}
-	
+
 	public boolean isWalking() {
 		return (this.getActivity() == Activity.WALKING);
 	}
-	
+
 	/**
 	 * returns wheter this unit is sprinting or not.
 	 */
@@ -1062,9 +1097,9 @@ public class Unit {
 		if (this.isWalking() && this.getStaminaPoints() > 0)
 			this.setActivity(Activity.SPRINTING);
 	}
-	
+
 	public void stopSprinting() {
-		if (this.isSprinting()) 
+		if (this.isSprinting())
 			this.setActivity(Activity.WALKING);
 	}
 
@@ -1081,9 +1116,9 @@ public class Unit {
 	public boolean isResting() {
 		return (this.getActivity() == Activity.RESTING);
 	}
-	
+
 	private boolean canStopResting;
-	
+
 	/**
 	 * returns if this unit is doing anything at all.
 	 */
@@ -1160,10 +1195,10 @@ public class Unit {
 
 	public void attack(Unit defender) {
 		Cube cubeDiff = this.getCube().min(defender.getCube());
-		
-		if ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1) &&
-				(cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1) &&
-				(cubeDiff.getZ() == -1 || cubeDiff.getZ() == 0 || cubeDiff.getZ() == 1)) {
+
+		if ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1)
+				&& (cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1)
+				&& (cubeDiff.getZ() == -1 || cubeDiff.getZ() == 0 || cubeDiff.getZ() == 1)) {
 			this.setActivity(Activity.ATTACKING, 1.0);
 			if (this.isAttacking())
 				defender.defend(this);
@@ -1178,21 +1213,29 @@ public class Unit {
 	 * @param attacker
 	 */
 	public void defend(Unit attacker) {
-		if (randomGen.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
+		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
 			Position nextPosition = null;
-			while (nextPosition == this.getPosition() || (! isValidPosition(nextPosition))) {
-				Position minPosition = new Position(randomGen.nextInt(3) - 1, randomGen.nextInt(3) - 1, 0);
+			while (nextPosition == this.getPosition() || (!isValidPosition(nextPosition))) {
+				Position minPosition = new Position(RANDOM_GEN.nextInt(3) - 1, RANDOM_GEN.nextInt(3) - 1, 0);
 				nextPosition = this.getPosition().min(minPosition);
 			}
 			this.setPosition(nextPosition);
-		} else if (randomGen.nextDouble() > 0.25 * (this.getStrength() + this.getAgility())
+		} else if (RANDOM_GEN.nextDouble() > 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
 			this.setHitpoints(attacker.getStrength() / 10);
-		} 
+		}
 		this.setOrientation(Math.atan2(attacker.getPosition().getRealY() - this.getPosition().getRealY(),
 				attacker.getPosition().getRealX() - this.getPosition().getRealX()));
 	}
 
-	private static final Random randomGen = new Random();
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
+	}
+
+	private boolean isDead = false;
 
 }

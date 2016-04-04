@@ -35,7 +35,7 @@ public class Facade implements IFacade {
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
 		try{
-			return new Unit((double) initialPosition[0], (double) initialPosition[1], (double) initialPosition[2],
+			return Unit.create((double) initialPosition[0], (double) initialPosition[1], (double) initialPosition[2],
 				name, strength, agility, toughness, weight, enableDefaultBehavior);
 		}
 		

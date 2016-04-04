@@ -10,6 +10,9 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public class World {
 	
+	public static int MAX_FACTIONS = 5;
+	public static int MAX_UNITS = 250;
+	
 	/**
 	 * Initialize this World with given number of cubes.
 	 * 
@@ -80,6 +83,10 @@ public class World {
 			return TerrainType.WORKSHOP;
 		else
 			return TerrainType.AIR;
+	}
+	
+	public boolean isCubePassable(Cube cube) {
+		return this.getTerrainType(cube).isPassable();
 	}
 	
 	
