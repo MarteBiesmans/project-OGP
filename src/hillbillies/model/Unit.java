@@ -109,10 +109,10 @@ public class Unit extends TimeVariableObject {
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
 			boolean enableDefaultBehaviour) throws IllegalArgumentException {
 
-		// name, world
+		// name
 		this.setName(name);
 
-		// position, orientation
+		// position and orientation
 		this.setPosition(x, y, z);
 		this.setOrientation((float) (Math.PI / 2.0));
 
@@ -160,14 +160,18 @@ public class Unit extends TimeVariableObject {
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
 
-		// experience points
+		// world, faction, experience points and level
+		this.world = null;
+		this.faction = null;
 		this.setExperiencePoints(0);
-
+		this.setLevel(0);
 	}
 
 	public boolean isValidUnit() {
-		// wel in een wereld en heeft een faction
-		return true;
+		return (isValidPosition(this.getPosition()) && isValidName(this.getName())
+				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
+				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
+				&& isValidOrientation(this.getOrientation()) && this.getFaction() != null && this.getWorld() != null);
 	}
 
 	/**
@@ -317,16 +321,6 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering the name of this unit.
 	 */
 	private String name;
-
-	public World getWorld() {
-		return this.world;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
-	}
-
-	private World world;
 
 	/**
 	 * Return the strength of this unit.
@@ -743,12 +737,31 @@ public class Unit extends TimeVariableObject {
 	 */
 	private double orientation;
 
+	public World getWorld() {
+		return this.world;
+	}
+
+	public boolean canHaveAsWorld(World world) {
+		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
+	}
+
+	public void setWorld(World world) {
+		if (world != null) {
+			if (canHaveAsWorld(world))
+				throw new IllegalArgumentException();
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	private World world;
+
 	public Faction getFaction() {
 		return this.faction;
 	}
 
 	public boolean canHaveAsFaction(Faction faction) {
-		return ((faction != null) && (faction.hasAsUnit(this)) && (this.getFaction() == null));
+		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
 	}
 
 	public void setFaction(Faction faction) throws IllegalArgumentException {
@@ -767,7 +780,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public boolean isValidExperiencePoints(int points) {
-		return (points > 0);
+		return (points >= 0);
 	}
 
 	public void setExperiencePoints(int points) {
@@ -776,6 +789,21 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private int experiencePoints;
+
+	private int getLevel() {
+		return this.level;
+	}
+
+	private boolean isValidLevel(int level) {
+		return level >= 0;
+	}
+
+	private void setLevel(int level) {
+		if (isValidLevel(level))
+			this.level = level;
+	}
+
+	private int level;
 
 	/**
 	 * 
@@ -807,6 +835,9 @@ public class Unit extends TimeVariableObject {
 
 		if (this.isBeingUseless() && this.canStartDefaultBehaviour())
 			beingUseless(seconds);
+
+		while (this.getExperiencePoints() - 10 * this.getLevel() > 10)
+			this.levelUp();
 	}
 
 	public void attacking(float seconds) {
@@ -901,6 +932,33 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
+	public void levelUp() {
+		if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE || this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE
+				|| this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+			boolean leveledUp = false;
+			while (!leveledUp) {
+				int randomGetal = RANDOM_GEN.nextInt(3);
+				if (randomGetal == 0) {
+					if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setAgility(this.getAgility() + 1);
+						leveledUp = true;
+					}
+				} else if (randomGetal == 1) {
+					if (this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setStrength(this.getStrength() + 1);
+						leveledUp = true;
+					}
+				} else {
+					if (this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
+						this.setToughness(this.getToughness() + 1);
+						leveledUp = true;
+					}
+				}
+			}
+		}
+		this.setLevel(this.getLevel() + 1);
+	}
+
 	/**
 	 * Moves this unit to an adjacent cube.
 	 * 
@@ -947,11 +1005,11 @@ public class Unit extends TimeVariableObject {
 	 * and primary attributes.
 	 */
 	public double getMovementSpeed() {
+		if (this.isFalling())
+			return 3.0;
 		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
-
 		if (this.isSprinting())
 			speed *= 2;
-
 		if (this.getMoveToAdjacent() != null) {
 			int zDiff = this.getCube().getZ() - this.getMoveToAdjacent().getZ();
 			if (zDiff == -1)
@@ -1074,7 +1132,8 @@ public class Unit extends TimeVariableObject {
 	 * returns wheter this unit is moving or not.
 	 */
 	public boolean isMoving() {
-		return (this.getActivity() == Activity.WALKING) || (this.getActivity() == Activity.SPRINTING);
+		return (this.getActivity() == Activity.WALKING)
+				|| (this.getActivity() == Activity.SPRINTING || (this.getActivity() == Activity.FALLING));
 	}
 
 	public boolean isWalking() {
@@ -1124,6 +1183,10 @@ public class Unit extends TimeVariableObject {
 	 */
 	public boolean isBeingUseless() {
 		return (this.getActivity() == Activity.NONE);
+	}
+
+	public boolean isFalling() {
+		return (this.getActivity() == Activity.FALLING);
 	}
 
 	private Activity activity;

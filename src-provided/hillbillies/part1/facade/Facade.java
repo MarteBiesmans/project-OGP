@@ -35,10 +35,9 @@ public class Facade implements IFacade {
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
 		try{
-			return Unit.create((double) initialPosition[0], (double) initialPosition[1], (double) initialPosition[2],
+			return new Unit((double) initialPosition[0], (double) initialPosition[1], (double) initialPosition[2],
 				name, strength, agility, toughness, weight, enableDefaultBehavior);
 		}
-		
 		catch (Throwable e){
 			throw new ModelException();
 		}	
@@ -380,7 +379,6 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void startSprinting(Unit unit) throws ModelException {
-		//TODO aanpassen naar startSprinting
 		if (! unit.isSprinting())
 			unit.startSprinting();
 		else
@@ -397,7 +395,6 @@ public class Facade implements IFacade {
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void stopSprinting(Unit unit) throws ModelException {
-		//TODO aanpassen naar stopSprinting
 		if (unit.isSprinting())
 			unit.stopSprinting();
 		else

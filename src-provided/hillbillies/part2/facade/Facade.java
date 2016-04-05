@@ -7,18 +7,27 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
 public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
-	
-	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
-		try{
+
+	@Override
+	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
+		try {
 			return new World(terrainTypes);
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
 
-	
-	public int getNbCubesX(World world) throws ModelException{
+	@Override
+	public int getNbCubesX(World world) throws ModelException {
+		try {
+			return world.getNbCubes();
+		} catch (Throwable e) {
+			throw new ModelException();
+		}
+	}
+
+	@Override
+	public int getNbCubesY(World world) throws ModelException {
 		try{
 			return world.getNbCubes();
 		}
@@ -27,8 +36,8 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 		}
 	}
 
-	
-	public int getNbCubesY(World world) throws ModelException{
+	@Override
+	public int getNbCubesZ(World world) throws ModelException {
 		try{
 			return world.getNbCubes();
 		}
@@ -37,96 +46,122 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 		}
 	}
 
-	
-	public int getNbCubesZ(World world) throws ModelException{
-		try{
-			return world.getNbCubes();
-		}
-		catch (Throwable e){
-			throw new ModelException();
-		}
+	@Override
+	public void advanceTime(World world, double dt) throws ModelException {
+		// TODO Auto-generated method stub
+
 	}
 
-	
-	public void advanceTime(World world, double dt) throws ModelException{}
-
-	
-	public int getCubeType(World world, int x, int y, int z) throws ModelException{
-		try{
-			Cube cube = new Cube(x,y,z,world);
+	@Override
+	public int getCubeType(World world, int x, int y, int z) throws ModelException {
+		try {
+			Cube cube = new Cube(x, y, z, world);
 			return world.getTerrainTypeInt(cube);
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
 
-	
-	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException{}
-
-	
-	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException{}
-
-	/* UNITS */
-
-	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException{}
-
-
-	public void addUnit(Unit unit, World world) throws ModelException{}
-
-	
-	public Set<Unit> getUnits(World world) throws ModelException{}
-
-	
-	public boolean isCarryingLog(Unit unit) throws ModelException{}
-
-	
-	public boolean isCarryingBoulder(Unit unit) throws ModelException{}
-
-	
-	public boolean isAlive(Unit unit) throws ModelException{}
-
-	
-	public int getExperiencePoints(Unit unit) throws ModelException{}
-
-	
-	public void workAt(Unit unit, int x, int y, int z) throws ModelException{}
-
-	
 	@Override
-	@Deprecated
-	public void work(Unit unit) throws ModelException {
-		throw new NoSuchMethodError("This method no longer needs to be supported");
+	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
+		// TODO Auto-generated method stub
+
 	}
 
-	
 	@Override
-	@Deprecated
-	public void advanceTime(Unit unit, double dt) throws ModelException {
-		throw new NoSuchMethodError("This method no longer needs to be supported");
+	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	/* FACTIONS */
-	public Faction getFaction(Unit unit) throws ModelException{}
+	@Override
+	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	
-	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException{}
+	@Override
+	public void addUnit(Unit unit, World world) throws ModelException {
+		// TODO Auto-generated method stub
 
-	
-	public Set<Faction> getActiveFactions(World world) throws ModelException{}
+	}
 
-	
-	/* BOULDERS */
-	public double[] getPosition(Boulder boulder) throws ModelException{}
+	@Override
+	public Set<Unit> getUnits(World world) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	
-	public Set<Boulder> getBoulders(World world) throws ModelException{}
+	@Override
+	public boolean isCarryingLog(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-	
-	/* LOGS */
-	public double[] getPosition(Log log) throws ModelException{}
+	@Override
+	public boolean isCarryingBoulder(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-	
-	public Set<Log> getLogs(World world) throws ModelException{}
+	@Override
+	public boolean isAlive(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int getExperiencePoints(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Faction getFaction(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Faction> getActiveFactions(World world) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getPosition(Boulder boulder) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Boulder> getBoulders(World world) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getPosition(Log log) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Log> getLogs(World world) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
