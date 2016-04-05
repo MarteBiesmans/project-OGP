@@ -7,6 +7,7 @@ import java.util.Set;
 /**
  * 
  * @invar Each world has a valid array terrainTypes.
+ * @invar Each world must have proper materials. | hasProperMaterials()
  * 
  * @author Ellen & Marte
  */
@@ -26,6 +27,7 @@ public class World {
 	 *            are as follows: 0: air 1: rock 2: tree 3: workshop
 	 * @post The terrain types of this new world are equal to the given terrain
 	 *       types.
+	 * @post This new world has no materials yet. | new.getNbMaterials() == 0
 	 * @throws IllegalArgumentException
 	 *             terrainTypes is not valid for this world
 	 */
@@ -54,7 +56,7 @@ public class World {
 	public int[][][] getTerrainTypesArray() {
 		return this.terrainTypes;
 	}
-	
+
 	public void setTerrainType(Cube cube, TerrainType type) {
 		if (type == TerrainType.ROCK)
 			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 1;
@@ -99,15 +101,16 @@ public class World {
 	public boolean isCubePassable(Cube cube) {
 		return this.getTerrainType(cube).isPassable();
 	}
-	
-	
-	//TODO: relatie world met material
-	public Boulder getBoulderIn(Cube cube){
-		return null; //return null als er geen boulders in deze cube zijn, anders return er 1
+
+	// TODO: relatie world met material
+	public Boulder getBoulderIn(Cube cube) {
+		return null; // return null als er geen boulders in deze cube zijn,
+						// anders return er 1
 	}
-	
+
 	public Log getLogIn(Cube cube) {
-		return null; //return null als er geen logs in deze cube zijn, anders, return er 1
+		return null; // return null als er geen logs in deze cube zijn, anders,
+						// return er 1
 	}
 
 	// public Material[] getMaterialsInCube(Cube cube){}
@@ -126,12 +129,12 @@ public class World {
 	}
 
 	// public Material[] getMaterialsInCube(Cube cube){}
-	
+
 	public void addUnit(Unit unit) {
 		if (!canAddAsUnit(unit))
 			throw new IllegalArgumentException();
 		this.units.add(unit);
-	
+
 		try {
 			unit.setWorld(this);
 		} catch (IllegalArgumentException e) {
@@ -229,4 +232,104 @@ public class World {
 	}
 
 	private final Set<Faction> factions;
+
+	/**
+	 * Check whether this world has the given material as one of its materials.
+	 * 
+	 * @param material
+	 *            The material to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsMaterial(@Raw Material material) {
+		return materials.contains(material);
+	}
+
+	/**
+	 * Check whether this world can have the given material as one of its
+	 * materials.
+	 * 
+	 * @param material
+	 *            The material to check.
+	 * @return True if and only if the given material is effective and that
+	 *         material is a valid material for a world. | result == | (material
+	 *         != null) && | Material.isValidWorld(this)
+	 */
+	@Raw
+	public boolean canHaveAsMaterial(Material material) {
+		return (material != null) && (material.canHaveAsWorld(this));
+	}
+
+	/**
+	 * Check whether this world has proper materials attached to it.
+	 * 
+	 * @return True if and only if this world can have each of the materials
+	 *         attached to it as one of its materials, and if each of these
+	 *         materials references this world as the world to which they are
+	 *         attached. | for each material in Material: | if
+	 *         (hasAsMaterial(material)) | then canHaveAsMaterial(material) && |
+	 *         (material.getWorld() == this)
+	 */
+	public boolean hasProperMaterials() {
+		for (Material material : materials) {
+			if (!canHaveAsMaterial(material))
+				return false;
+			if (material.getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of materials associated with this world.
+	 *
+	 * @return The total number of materials collected in this world. | result
+	 *         == | card({material:Material | hasAsMaterial({material)})
+	 */
+	public int getNbMaterials() {
+		return materials.size();
+	}
+
+	/**
+	 * Add the given material to the set of materials of this world.
+	 * 
+	 * @param material
+	 *            The material to be added.
+	 * @pre The given material is effective and already references this world. |
+	 *      (material != null) && (material.getWorld() == this)
+	 * @post This world has the given material as one of its materials. |
+	 *       new.hasAsMaterial(material)
+	 */
+	public void addMaterial(@Raw Material material) {
+		assert (material != null) && (material.getWorld() == this);
+		materials.add(material);
+		material.setWorld(this);
+	}
+
+	/**
+	 * Remove the given material from the set of materials of this world.
+	 * 
+	 * @param material
+	 *            The material to be removed.
+	 * @pre This world has the given material as one of its materials, and the
+	 *      given material does not reference any world. |
+	 *      this.hasAsMaterial(material) && | (material.getWorld() == null)
+	 * @post This world no longer has the given material as one of its
+	 *       materials. | ! new.hasAsMaterial(material)
+	 */
+	@Raw
+	public void removeMaterial(Material material) {
+		assert this.hasAsMaterial(material) && (material.getWorld() == null);
+		materials.remove(material);
+	}
+
+	/**
+	 * Variable referencing a set collecting all the materials of this world.
+	 * 
+	 * @invar The referenced set is effective. | materials != null
+	 * @invar Each material registered in the referenced list is effective and
+	 *        not yet terminated. | for each material in materials: | (
+	 *        (material != null) && | (! material.isTerminated()) )
+	 */
+	private final Set<Material> materials = new HashSet<Material>();
 }

@@ -446,6 +446,13 @@ public class Unit {
 		return this.weight;
 	}
 
+	public int getTotalWeight() {
+		int weightSoFar = this.getWeight();
+		for (Material material : this.materials)
+			weightSoFar += material.getWeight();
+		return weightSoFar;
+	}
+
 	/**
 	 * Return the minimum value for the primary attribute weight.
 	 * 
@@ -831,7 +838,7 @@ public class Unit {
 		if (this.isAttacking())
 			attacking(seconds);
 
-		if (this.isMoving() && this.getMoveToAdjacent() != null)
+		if (this.isMoving() && (this.getMoveToAdjacent() != null || isFalling()))
 			moving(seconds);
 
 		else if (this.isWorking())
@@ -904,30 +911,39 @@ public class Unit {
 	}
 
 	private void working(float seconds) {
-		if (this.getBusyTime() == 0)
+		if (this.getBusyTime() == 0) {
+
 			if (this.getNbMaterials() > 0) {
 				Iterator<Material> iter = this.materials.iterator();
 				Material material = (Material) iter.next();
 				this.removeMaterial(material, this.getCube().getCenter());
+
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WORKSHOP
 					&& this.getWorld().getBoulderIn(this.getCube()) != null
 					&& this.getWorld().getLogIn(this.getCube()) != null) {
 				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
 				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+
 			} else if (this.getWorld().getBoulderIn(this.getCube()) != null) {
 				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
+
 			} else if (this.getWorld().getLogIn(this.getCube()) != null) {
 				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD) {
 				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
 				if (RANDOM_GEN.nextDouble() < 0.25) {
-					// Log newLog = Log(this.getWorld(),
-					// this.getCube().getCenter());
-				} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
-					this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
+					this.getWorld().addMaterial(new Log(this.getWorld(), this.getCube().getCenter()));
 				}
-				this.setActivity(Activity.NONE);
+			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
+				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
+				if (RANDOM_GEN.nextDouble() < 0.25) {
+					this.getWorld().addMaterial(new Boulder(this.getWorld(), this.getCube().getCenter()));
+				}
 			}
+			this.setActivity(Activity.NONE);
+			this.setExperiencePoints(this.getExperiencePoints() + 10);
+		}
 	}
 
 	private void resting(float seconds) {
@@ -1037,7 +1053,7 @@ public class Unit {
 	public double getMovementSpeed() {
 		if (this.isFalling())
 			return 3.0;
-		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getWeight());
+		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight());
 		if (this.isSprinting())
 			speed *= 2;
 		if (this.getMoveToAdjacent() != null) {
@@ -1294,7 +1310,7 @@ public class Unit {
 	}
 
 	public void attack(Unit defender) {
-		if (this.getCube().isAdjacentCube(defender.getCube()) && !defender.isFalling()
+		if (this.getCube().isSameOrAdjacentCube(defender.getCube()) && !defender.isFalling()
 				&& this.getFaction() != defender.getFaction()) {
 			this.setActivity(Activity.ATTACKING, 1.0);
 			if (this.isAttacking())
@@ -1310,6 +1326,8 @@ public class Unit {
 	 * @param attacker
 	 */
 	public void defend(Unit attacker) {
+		boolean succeeded = true;
+		// dodging
 		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
 			Position nextPosition = null;
 			while (nextPosition == this.getPosition() || (!isValidPosition(nextPosition))) {
@@ -1317,12 +1335,20 @@ public class Unit {
 				nextPosition = this.getPosition().min(minPosition);
 			}
 			this.setPosition(nextPosition);
-		} else if (RANDOM_GEN.nextDouble() > 0.25 * (this.getStrength() + this.getAgility())
+			// blocking
+		} else if (RANDOM_GEN.nextDouble() < 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
+			// taking damage
+		} else {
 			this.setHitpoints(attacker.getStrength() / 10);
+			succeeded = false;
 		}
 		this.setOrientation(Math.atan2(attacker.getPosition().getRealY() - this.getPosition().getRealY(),
 				attacker.getPosition().getRealX() - this.getPosition().getRealX()));
+		if (succeeded)
+			this.setExperiencePoints(this.getExperiencePoints() + 20);
+		else
+			attacker.setExperiencePoints(attacker.getExperiencePoints() + 20);
 	}
 
 	public boolean isDead() {

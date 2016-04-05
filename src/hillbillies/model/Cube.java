@@ -116,7 +116,7 @@ public class Cube {
 		return (this.getX() == other.getX() && this.getY() == other.getY() && this.getZ() == other.getZ());
 	}
 
-	public boolean isAdjacentCube(Cube other) {
+	public boolean isSameOrAdjacentCube(Cube other) {
 		Cube cubeDiff = this.min(other);
 		return ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1)
 				&& (cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1)
