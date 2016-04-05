@@ -122,6 +122,27 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	}
 
+	/**
+	 * This method is no longer necessary, and is replaced by the
+	 * {@link #workAt(Unit, int[])} method.
+	 */
+	@Override
+	@Deprecated
+	public void work(Unit unit) throws ModelException {
+		throw new NoSuchMethodError("This method no longer needs to be supported");
+	}
+
+	/**
+	 * This method is no longer necessary, and is replaced by the
+	 * {@link #advanceTime(World, double)} method.
+	 */
+	@Override
+	@Deprecated
+	public void advanceTime(Unit unit, double dt) throws ModelException {
+		throw new NoSuchMethodError("This method no longer needs to be supported");
+	}
+
+	
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub

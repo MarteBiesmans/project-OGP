@@ -9,14 +9,13 @@ import java.util.Set;
 /**
  * 
  * @invar	Each world has a valid array terrainTypes.
- * @invar	Each faction in a world should always be active, i.e. non-empty
  * 
  * @author Ellen & Marte
  */
 public class World extends TimeVariableObject {
 	
 	public static int MAX_FACTIONS = 5;
-	public static int MAX_UNITS_IN_WORLD = 100;
+	public static int MAX_UNITS = 100;
 	
 	/**
 	 * Initialize this World with given number of cubes.
@@ -105,125 +104,204 @@ public class World extends TimeVariableObject {
 		return this.getTerrainType(cube).isPassable();
 	}
 	
-	// public Material[] getMaterialsInCube(Cube cube){}
 	
 	
 	
-	//VERSIE MARTE//
-//	public void addUnit(Unit unit) {
-//		if (!canAddAsUnit(unit))
-//			throw new IllegalArgumentException();
-//		this.units.add(unit);
-//
-//		try {
-//			unit.setWorld(this);
-//		} catch (IllegalArgumentException e) {
-//			this.units.remove(unit);
-//			throw e;
-//		}
-//	}
-//
-//	public void removeUnit(Unit unit) {
-//		if (!this.hasAsUnit(unit))
-//			throw new IllegalArgumentException();
-//		this.units.remove(unit);
-//
-//		try {
-//			unit.setFaction(null);
-//		} catch (IllegalArgumentException e) {
-//			this.units.add(unit);
-//			throw e;
-//		}
-//	}
-//
-//	public boolean canAddAsUnit(Unit unit) {
-//		if (unit.isDead())
-//			return false;
-//		if (unit.getWorld() != null)
-//			return false;
-//		if (this.units.size() == MAX_UNITS)
-//			return false;
-//		return true;
-//	}
-//
-//	public boolean hasAsUnit(Unit unit) {
-//		if (unit == null)
-//			return false;
-//		return this.units.contains(unit);
-//	}
-//
-//	public int getNbUnits() {
-//		return this.units.size();
-//	}
-//	
-//	public boolean hasProperUnits() {
-//		for (Unit unit: this.units)
-//			if (unit == null || unit.isDead() || unit.getWorld() != this)
-//				return false;
-//		return true;
-//	}
-//
-//	private final Set<Unit> units;
-//
-//	public void addFaction(Faction faction) {
-//		if (!canAddAsFaction(faction))
-//			throw new IllegalArgumentException();
-//		this.factions.add(faction);
-//
-//		try {
-//			faction.setWorld(this);
-//		} catch (IllegalArgumentException e) {
-//			this.factions.remove(faction);
-//			throw e;
-//		}
-//	}
-//
-//	public void removeFaction(Faction faction) {
-//		if (!this.hasAsFaction(faction))
-//			throw new IllegalArgumentException();
-//		this.factions.remove(faction);
-//
-//		try {
-//			faction.setWorld(null);
-//		} catch (IllegalArgumentException e) {
-//			this.factions.add(faction);
-//			throw e;
-//		}
-//	}
-//
-//	public boolean canAddAsFaction(Faction faction) {
-//		if (faction.getWorld() != null)
-//			return false;
-//		if (this.getNbActiveFactions() == MAX_FACTIONS && faction.getNbUnits() > 0)
-//			return false;
-//		return true;
-//	}
-//
-//	public int getNbActiveFactions() {
-//		int counter = 0;
-//		for (Faction faction : this.factions)
-//			if (faction.getNbUnits() > 0)
-//				counter += 1;
-//		return counter;
-//	}
-//
-//	public boolean hasAsFaction(Faction faction) {
-//		if (faction == null)
-//			return false;
-//		return this.factions.contains(faction);
-//	}
-//
-//	public int getNbFactions() {
-//		return this.factions.size();
-//	}
 	
+	
+	
+	
+	//UNITS//
+	
+	
+	public void addUnit(Unit unit) {
+		if (!canAddAsUnit(unit))
+			throw new IllegalArgumentException();
+		this.units.add(unit);
+
+		try {
+			unit.setWorld(this);
+		} catch (IllegalArgumentException e) {
+			this.units.remove(unit);
+			throw e;
+		}
+	}
+
+	public void removeUnit(Unit unit) {
+		if (!this.hasAsUnit(unit))
+			throw new IllegalArgumentException();
+		this.units.remove(unit);
+
+		try {
+			unit.setFaction(null);
+		} catch (IllegalArgumentException e) {
+			this.units.add(unit);
+			throw e;
+		}
+	}
+
+	public boolean canAddAsUnit(Unit unit) {
+		if (unit.isDead())
+			return false;
+		if (unit.getWorld() != null)
+			return false;
+		if (this.units.size() == MAX_UNITS)
+			return false;
+		return true;
+	}
+
+	public boolean hasAsUnit(Unit unit) {
+		if (unit == null)
+			return false;
+		return this.units.contains(unit);
+	}
+
+	public int getNbUnits() {
+		return this.units.size();
+	}
+	
+	public boolean hasProperUnits() {
+		for (Unit unit: this.units)
+			if (unit == null || unit.isDead() || unit.getWorld() != this)
+				return false;
+		return true;
+	}
+	
+	//is deze functie nodig? in de opgave staat dat alle objects in een cube moeten opgelijst
+	// kunnen worden, maar is een unit een 'object'?
+	/**
+	 * get all units in one cube of the game world presented as a set
+	 * 
+	 * @param	cube
+	 * 			the cube to check
+	 * @return	a set containing all the units in the given cube
+	 */
+	public Set<Unit> getUnitsInCube(Cube cube) {
+		Set<Unit> result = new HashSet<Unit>();
+		
+		Iterator<Unit> it = units.iterator();
+		while (it.hasNext()) {
+			Unit unit = it.next();
+			if (unit.getCube() == cube)
+				result.add(unit);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * return all units present in this world
+	 */
+	public Set<Unit> getAllUnits() {
+		Set<Unit> result = new HashSet<Unit>();
+		
+		Iterator<Faction> it = this.getAllFactions().iterator();
+		while (it.hasNext()) {
+			Faction faction = it.next();
+				result.addAll(faction.getAllUnits());
+		}
+		
+		return result;
+	}
+	
+	
+	//ik vind dit een heel vage functie, kan zijn dat ik de opgave niet goed begrepen heb
+	/**
+	 * Return all the units in this world present in a given faction.
+	 * @param	faction
+	 * 			the faction to which the returned units belong
+	 */
+	public Set<Unit> getAllUnits(Faction faction) {
+		return faction.getAllUnits();
+	}
+	
+	public void spawnUnit() {
+		//TODO
+	}
+
+	private final Set<Unit> units;
 
 	
 	
 	
 	
 	
-	//VERSIE ELLEN//
+	
+	
+	//FACTIONS//
+	
+	public void addFaction(Faction faction) {
+		if (!canAddAsFaction(faction))
+			throw new IllegalArgumentException();
+		this.factions.add(faction);
+
+		try {
+			faction.setWorld(this);
+		} catch (IllegalArgumentException e) {
+			this.factions.remove(faction);
+			throw e;
+		}
+	}
+
+	public void removeFaction(Faction faction) {
+		if (!this.hasAsFaction(faction))
+			throw new IllegalArgumentException();
+		this.factions.remove(faction);
+
+		try {
+			faction.setWorld(null);
+		} catch (IllegalArgumentException e) {
+			this.factions.add(faction);
+			throw e;
+		}
+	}
+
+	public boolean canAddAsFaction(Faction faction) {
+		if (faction.getWorld() != null)
+			return false;
+		if (this.getNbActiveFactions() == MAX_FACTIONS && faction.getNbUnits() > 0)
+			return false;
+		return true;
+	}
+
+	public int getNbActiveFactions() {
+		int counter = 0;
+		for (Faction faction : this.factions)
+			if (faction.getNbUnits() > 0)
+				counter += 1;
+		return counter;
+	}
+
+	public boolean hasAsFaction(Faction faction) {
+		if (faction == null)
+			return false;
+		return this.factions.contains(faction);
+	}
+
+	public int getNbFactions() {
+		return this.factions.size();
+	}
+	
+	/**
+	 * return all the factions present in this world as a set
+	 */
+	public Set<Faction> getAllFactions() {
+		return factions;
+	}
+	
+	public boolean hasProperFactions() {
+		for (Faction faction: this.factions)
+			if (faction == null || faction.getWorld() != this)
+				return false;
+		return true;
+	}
+	
+	private Set<Faction> factions;
+	
+
+	
+	
+	
 	
 	
 	//MATERIALS//
@@ -294,239 +372,6 @@ public class World extends TimeVariableObject {
 		
 		return result;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	//UNITS//
-	
-	/**
-	 * add a given unit to this world if the maximum number is not yet reached
-	 * 
-	 * @param	unit
-	 * 			the unit to add
-	 * @throws	IllegalArgumentException
-	 * 			the given unit can not belong to this world
-	 */
-	public void addAsUnit(Unit unit) throws IllegalArgumentException {
-		
-		//op voorhand dit controleren, want mag geen exceptions geven
-		if ((this.getNbOfUnits() == MAX_UNITS_IN_WORLD) 
-				|| ((this.getNbOfFactions() == MAX_FACTIONS)))
-			return;
-		
-		if (!this.canHaveAsUnit(unit))
-			throw new IllegalArgumentException();
-		
-		//moet in deze volgorde, want als er al te veel factions zijn, geeft addAsFaction al
-		//een error en wordt de unit niet toegevoegd.
-		this.addAsFaction(unit.getFaction());
-		UnitsInWorld.add(unit);
-	}
-	
-	/**
-	 * remove the given unit from this world
-	 * 
-	 * @param	unit
-	 * 			the unit to remove
-	 */
-	public void removeAsUnit(Unit unit) {
-		UnitsInWorld.remove(unit);
-		unit.getFaction().removeUnit(unit);
-		if (unit.getFaction().isEmpty())
-			this.removeAsFaction(unit.getFaction());
-		
-	}
-	
-	/**
-	 * Check if the given unit can belong to this world.
-	 * 
-	 * @param	unit
-	 * 			the unit to check
-	 * @return	false if the given unit equals null
-	 * @return	false if the maximum number of units is already reached
-	 * @return	false if the cube where the given unit is located is not passable
-	 */
-	public boolean canHaveAsUnit(Unit unit) {
-		if (unit==null)
-			return false;
-		if (this.getNbOfUnits() == MAX_UNITS_IN_WORLD)
-			return false;
-		if (!this.isPassableCube(unit.getCube()))
-			return false;
-		return true;
-	}
-	
-	/**
-	 * Returns the number of units in this world.
-	 */
-	public int getNbOfUnits() {
-		return UnitsInWorld.size();
-	}
-	
-	private Set<Unit> UnitsInWorld;
-
-	
-	//is deze functie nodig? in de opgave staat dat alle objects in een cube moeten opgelijst kunnen worden
-	//is een unit een 'object'?
-	/**
-	 * get all units in one cube of the game world presented as a set
-	 * 
-	 * @param	cube
-	 * 			the cube to check
-	 * @return	a set containing all the units in the given cube
-	 */
-	public Set<Unit> getUnitsInCube(Cube cube) {
-		Set<Unit> result = new HashSet<Unit>();
-		
-		Iterator<Unit> it = UnitsInWorld.iterator();
-		while (it.hasNext()) {
-			Unit unit = it.next();
-			if (unit.getCube() == cube)
-				result.add(unit);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * return all units present in this world
-	 */
-	public Set<Unit> getAllUnits() {
-		Set<Unit> result = new HashSet<Unit>();
-		
-		Iterator<Faction> it = this.getAllFactions().iterator();
-		while (it.hasNext()) {
-			Faction faction = it.next();
-				result.addAll(faction.getAllUnits());
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Return all the units in this world present in a given faction.
-	 * @param	faction
-	 * 			the faction to which the returned units belong
-	 */
-	public Set<Unit> getAllUnits(Faction faction) {
-		return faction.getAllUnits();
-	}
-	
-	public void spawnUnit() {
-		//TODO
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//FACTIONS//
-	
-	/**
-	 * add a given faction to this world if the maximum number is not yet reached and won't
-	 * be exceeded after adding the faction
-	 * 
-	 * @param	faction
-	 * 			the faction to add
-	 * @throws	IllegalArgumentException
-	 * 			the given faction can not belong to this world
-	 */
-	public void addAsFaction(Faction faction) {
-		//op voorhand dit controleren, want mag geen exceptions geven
-		if ((this.getNbOfUnits() + faction.getNbOfUnits() > MAX_UNITS_IN_WORLD) 
-				|| ((this.getNbOfFactions() == MAX_FACTIONS)))
-			return;
-		
-		if (!this.canHaveAsFaction(faction))
-			throw new IllegalArgumentException();
-		
-		this.FactionsInWorld.add(faction);
-		
-		//TODO nu worden alle units één voor één toegevoegd, maar wat als de 10e unit een fout geeft
-		// dan is de rest al wel toegevoegd? (mss met try-catch)
-		Iterator<Unit> it = faction.getAllUnits().iterator();
-		while (it.hasNext()) {
-			Unit unit = it.next();
-			this.addAsUnit(unit);
-		}
-		
-		
-	}
-	
-	/**
-	 * remove the given faction from this world, including all it's units
-	 * 
-	 * @param	faction
-	 * 			the faction to remove
-	 */
-	public void removeAsFaction(Faction faction) {
-		if (!faction.isEmpty()) {
-			Iterator<Unit> it = faction.getAllUnits().iterator();
-			while (it.hasNext()) {
-				Unit unit = it.next();
-				this.removeAsUnit(unit);
-			}
-		}
-		
-		//else, want als er units in de faction zaten is samen met de laatste unit
-		// ook de faction verwijderd
-		else
-			this.FactionsInWorld.remove(faction);
-	}
-	
-	/**
-	 * Check if the given faction can belong to this world.
-	 * 
-	 * @param	faction
-	 * 			the faction to check
-	 * @return	false if the given faction equals null
-	 * @return	false if the maximum number of factions is already reached
-	 */
-	public boolean canHaveAsFaction(Faction faction) {
-		if (faction==null)
-			return false;
-		if (this.getNbOfFactions() == MAX_FACTIONS)
-			return false;
-		return true;
-	}
-	
-	/**
-	 * return de number of factions in this world
-	 */
-	public int getNbOfFactions() {
-		return FactionsInWorld.size();
-	}
-	
-	/**
-	 * return all the factions present in this world as a set
-	 */
-	public Set<Faction> getAllFactions() {
-		return FactionsInWorld;
-	}
-	
-	private Set<Faction> FactionsInWorld;
-	
-	public boolean hasProperFactions() {
-		for (Faction faction: this.FactionsInWorld)
-			if (faction == null || faction.getWorld() != this)
-				return false;
-		return true;
-	}
-	
-	
-	
 	
 	
 	

@@ -1,5 +1,3 @@
-Facade is nog niet volledig error-loos, maar dat is niets om ons zorgen om te maken (voorlopig toch)
-
 in world heb ik 1 methode gemaakt voor het aantal cubes op x- y- of z-as: in de opgave staat dat het een
 'cubical world' is
 
@@ -24,6 +22,6 @@ mogelijke nadelen:
 worden het misschien te veel iteraties over elkaar?
 2) addUnit wordt ingewikkelder, maar addFaction mss juist makkelijker
 
-wat volgens mij nog bij faction bij moet:
-attribute world -> elke niet-lege faction hoort bij een world
-method isEmpty()
+ik dacht om deze invariant te gebruiken en dus als een faction leeg is, die direct weg te halen 
+uit de world (faction.world wordt dan null)
+@invar	Each faction in a world should always be active, i.e. non-empty

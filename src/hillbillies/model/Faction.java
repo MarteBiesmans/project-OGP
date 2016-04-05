@@ -68,13 +68,6 @@ public class Faction {
 		return units;
 	}
 	
-	/**
-	 * Return the number of units in this faction.
-	 */
-	public int getNbOfUnits() {
-		return units.size();
-	}
-
 	public int getNbUnits() {
 		return this.units.size();
 	}
