@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -11,6 +13,8 @@ import be.kuleuven.cs.som.annotate.*;
  *
  */
 public abstract class Material {
+	
+	private static final Random RANDOM_GEN = new Random();
 
 	/**
 	 * Initialize this new material with given position.
@@ -33,9 +37,9 @@ public abstract class Material {
 		this.setPosition(position);
 		
 		//create random weight between 10 and 50
-		//Min + (int)(Math.random() * ((Max - Min) + 1))
-		//TODO kan dit 51 worden door afrondingsfouten?
-		this.weight = 10 + (int)(Math.random() * ((50 - 10) + 1));
+		//Min + RANDOM_GEN.nextInt(Max - Min) + 1)
+		//TODO: todo is opgelost dmv RANDOM_GEN ipv Math.random
+		this.weight = 10 + RANDOM_GEN.nextInt(41);
 	}
 
 	
@@ -83,6 +87,12 @@ public abstract class Material {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
+	
+	public void setPosition(Position position, World world) {
+		this.owner = null;
+//		world.addMaterial(this); -> TODO deze methode moet relatie in 2 richtingen zetten!!
+		this.setPosition(position);
+	}
 
 	/**
 	 * Variable registering the position of this material.
@@ -127,6 +137,7 @@ public abstract class Material {
 			throw new IllegalArgumentException();
 		this.setPosition(null);
 		this.owner = owner;
+		//TODO: this.world.remove(this) + zorgen dat deze methode this.world = null zet
 	}
 
 	/**
@@ -146,7 +157,7 @@ public abstract class Material {
 	/**
 	 * Variable registering the world where this material is located.
 	 */
-	private final World world;
+	private World world;
 	
 	
 	public void advanceTime(float seconds) throws IllegalArgumentException {

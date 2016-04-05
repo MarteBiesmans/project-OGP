@@ -13,7 +13,7 @@ import java.util.Set;
 public class World {
 
 	public static int MAX_FACTIONS = 5;
-	public static int MAX_UNITS = 250;
+	public static int MAX_UNITS = 100;
 
 	/**
 	 * Initialize this World with given number of cubes.
@@ -54,6 +54,17 @@ public class World {
 	public int[][][] getTerrainTypesArray() {
 		return this.terrainTypes;
 	}
+	
+	public void setTerrainType(Cube cube, TerrainType type) {
+		if (type == TerrainType.ROCK)
+			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 1;
+		else if (type == TerrainType.WOOD)
+			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 2;
+		else if (type == TerrainType.WORKSHOP)
+			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 3;
+		else
+			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 4;
+	}
 
 	/**
 	 * Variable registering the terrain types of this world in a
@@ -78,7 +89,7 @@ public class World {
 		if (terrainType == 1)
 			return TerrainType.ROCK;
 		if (terrainType == 2)
-			return TerrainType.TREE;
+			return TerrainType.WOOD;
 		if (terrainType == 3)
 			return TerrainType.WORKSHOP;
 		else
@@ -89,20 +100,17 @@ public class World {
 		return this.getTerrainType(cube).isPassable();
 	}
 	
-	// public Material[] getMaterialsInCube(Cube cube){}
 	
-	public void addUnit(Unit unit) {
-		if (!canAddAsUnit(unit))
-			throw new IllegalArgumentException();
-		this.units.add(unit);
-
-		try {
-			unit.setWorld(this);
-		} catch (IllegalArgumentException e) {
-			this.units.remove(unit);
-			throw e;
-		}
+	//TODO: relatie world met material
+	public Boulder getBoulderIn(Cube cube){
+		return null; //return null als er geen boulders in deze cube zijn, anders return er 1
 	}
+	
+	public Log getLogIn(Cube cube) {
+		return null; //return null als er geen logs in deze cube zijn, anders, return er 1
+	}
+
+	// public Material[] getMaterialsInCube(Cube cube){}
 
 	public void removeUnit(Unit unit) {
 		if (!this.hasAsUnit(unit))
@@ -113,6 +121,21 @@ public class World {
 			unit.setFaction(null);
 		} catch (IllegalArgumentException e) {
 			this.units.add(unit);
+			throw e;
+		}
+	}
+
+	// public Material[] getMaterialsInCube(Cube cube){}
+	
+	public void addUnit(Unit unit) {
+		if (!canAddAsUnit(unit))
+			throw new IllegalArgumentException();
+		this.units.add(unit);
+	
+		try {
+			unit.setWorld(this);
+		} catch (IllegalArgumentException e) {
+			this.units.remove(unit);
 			throw e;
 		}
 	}
@@ -136,9 +159,9 @@ public class World {
 	public int getNbUnits() {
 		return this.units.size();
 	}
-	
+
 	public boolean hasProperUnits() {
-		for (Unit unit: this.units)
+		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getWorld() != this)
 				return false;
 		return true;
@@ -197,9 +220,9 @@ public class World {
 	public int getNbFactions() {
 		return this.factions.size();
 	}
-	
+
 	public boolean hasProperFactions() {
-		for (Faction faction: this.factions)
+		for (Faction faction : this.factions)
 			if (faction == null || faction.getWorld() != this)
 				return false;
 		return true;

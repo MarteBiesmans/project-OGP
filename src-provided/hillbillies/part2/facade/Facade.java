@@ -188,7 +188,6 @@ public class Facade implements IFacade {
 	public void fight(Unit attacker, Unit defender) throws ModelException {
 		try {
 			attacker.attack(defender);
-			defender.defend(attacker);
 		} catch (Throwable e) {
 			throw new ModelException();
 		}
@@ -246,20 +245,18 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		try{
+		try {
 			return world.getNbCubes();
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
 
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		try{
+		try {
 			return world.getNbCubes();
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}

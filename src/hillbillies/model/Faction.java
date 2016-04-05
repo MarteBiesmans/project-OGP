@@ -83,9 +83,9 @@ public class Faction {
 			throw new IllegalArgumentException();
 		this.world = world;
 	}
-	
+
 	public boolean hasProperUnits() {
-		for (Unit unit: this.units)
+		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getFaction() != this)
 				return false;
 		return true;

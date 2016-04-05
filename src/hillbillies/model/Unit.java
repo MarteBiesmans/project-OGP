@@ -1,5 +1,8 @@
 package hillbillies.model;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 /**
  * TODO
  * dependent properties (OK voor weight met agility en strength, ook voor hitpoints en stamina points)
@@ -17,6 +20,7 @@ package hillbillies.model;
  */
 
 import java.util.Random;
+import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -57,6 +61,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  *        canHaveAsStaminaPoints(getNbStaminaPoints())
  * @invar The orientation of each unit must be a valid orientation for any unit.
  *        | isValidOrientation(getOrientation())
+ * @invar Each unit must have proper materials. | hasProperMaterials()
+ * 
  * 
  * @author Ellen & Marte
  * @version 1.0
@@ -104,6 +110,7 @@ public class Unit {
 	 * @post The stamina points of this new unit are equal to the given stamina
 	 *       points. | new.getStaminaPoints() == staminaPoints TODO andere
 	 *       post-condities, iets met @param
+	 * @post This new unit has no materials yet. | new.getNbMaterials() == 0
 	 * 
 	 */
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
@@ -836,16 +843,16 @@ public class Unit {
 		if (this.isBeingUseless() && this.canStartDefaultBehaviour())
 			beingUseless(seconds);
 
-		while (this.getExperiencePoints() - 10 * this.getLevel() > 10)
+		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
 	}
 
-	public void attacking(float seconds) {
+	private void attacking(float seconds) {
 		if (this.getBusyTime() == 0)
 			this.setActivity(Activity.NONE);
 	}
 
-	public void moving(float seconds) {
+	private void moving(float seconds) {
 		Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
 		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
 				+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
@@ -867,6 +874,7 @@ public class Unit {
 				&& (moveDiff.getRealZ() == 0 || Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
 			this.setPosition(this.getMoveToAdjacent().getCenter());
 			this.setMoveToAdjacent(null);
+			this.setExperiencePoints(this.getExperiencePoints() + 1);
 
 			// Check whether the unit is moving to a cube far away (not an
 			// adjacent cube)
@@ -895,12 +903,34 @@ public class Unit {
 		}
 	}
 
-	public void working(float seconds) {
+	private void working(float seconds) {
 		if (this.getBusyTime() == 0)
-			this.setActivity(Activity.NONE);
+			if (this.getNbMaterials() > 0) {
+				Iterator<Material> iter = this.materials.iterator();
+				Material material = (Material) iter.next();
+				this.removeMaterial(material, this.getCube().getCenter());
+			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WORKSHOP
+					&& this.getWorld().getBoulderIn(this.getCube()) != null
+					&& this.getWorld().getLogIn(this.getCube()) != null) {
+				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
+				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+			} else if (this.getWorld().getBoulderIn(this.getCube()) != null) {
+				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
+			} else if (this.getWorld().getLogIn(this.getCube()) != null) {
+				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD) {
+				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
+				if (RANDOM_GEN.nextDouble() < 0.25) {
+					// Log newLog = Log(this.getWorld(),
+					// this.getCube().getCenter());
+				} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
+					this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
+				}
+				this.setActivity(Activity.NONE);
+			}
 	}
 
-	public void resting(float seconds) {
+	private void resting(float seconds) {
 		if (this.getHitpoints() != this.getMaxHitpoints()) {
 			double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (200 * 0.2);
 			this.setHitpoints(Math.min(hitpoints, this.getMaxHitpoints()));
@@ -916,7 +946,7 @@ public class Unit {
 		}
 	}
 
-	public void beingUseless(float seconds) {
+	private void beingUseless(float seconds) {
 		int randomGetal = RANDOM_GEN.nextInt(3);
 		if (randomGetal == 0) {
 			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN, RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
@@ -932,7 +962,7 @@ public class Unit {
 		}
 	}
 
-	public void levelUp() {
+	private void levelUp() {
 		if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE || this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE
 				|| this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
 			boolean leveledUp = false;
@@ -1109,6 +1139,8 @@ public class Unit {
 			return;
 		else if (this.isAttacking() && this.getBusyTime() > 0)
 			return;
+		if (this.isFalling() && !this.canStopFalling())
+			return;
 		// else if (this.isSprinting() && this.getStaminaPoints() == 0)
 		// return;
 		this.activity = activity;
@@ -1189,6 +1221,11 @@ public class Unit {
 		return (this.getActivity() == Activity.FALLING);
 	}
 
+	public boolean canStopFalling() {
+		Cube cubeDirection = new Cube(0, 0, 1);
+		return (this.isFalling() && !this.world.isCubePassable(this.getCube().min(cubeDirection)));
+	}
+
 	private Activity activity;
 
 	/**
@@ -1257,11 +1294,8 @@ public class Unit {
 	}
 
 	public void attack(Unit defender) {
-		Cube cubeDiff = this.getCube().min(defender.getCube());
-
-		if ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1)
-				&& (cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1)
-				&& (cubeDiff.getZ() == -1 || cubeDiff.getZ() == 0 || cubeDiff.getZ() == 1)) {
+		if (this.getCube().isAdjacentCube(defender.getCube()) && !defender.isFalling()
+				&& this.getFaction() != defender.getFaction()) {
 			this.setActivity(Activity.ATTACKING, 1.0);
 			if (this.isAttacking())
 				defender.defend(this);
@@ -1295,10 +1329,112 @@ public class Unit {
 		return isDead;
 	}
 
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
+	public void die() {
+		// TODO: terminate (relaties loskoppelen enzo)
+		this.isDead = true;
 	}
 
 	private boolean isDead = false;
+
+	/**
+	 * Check whether this unit has the given material as one of its materials.
+	 * 
+	 * @param material
+	 *            The material to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsMaterial(@Raw Material material) {
+		return materials.contains(material);
+	}
+
+	/**
+	 * Check whether this unit can have the given material as one of its
+	 * materials.
+	 * 
+	 * @param material
+	 *            The material to check.
+	 * @return True if and only if the given material is effective and that
+	 *         material is a valid material for a unit. | result == | (material
+	 *         != null) && | Material.isValidUnit(this)
+	 */
+	@Raw
+	public boolean canHaveAsMaterial(Material material) {
+		return (material != null) && (material.canHaveAsOwner(this));
+	}
+
+	/**
+	 * Check whether this unit has proper materials attached to it.
+	 * 
+	 * @return True if and only if this unit can have each of the materials
+	 *         attached to it as one of its materials, and if each of these
+	 *         materials references this unit as the unit to which they are
+	 *         attached. | for each material in Material: | if
+	 *         (hasAsMaterial(material)) | then canHaveAsMaterial(material) && |
+	 *         (material.getUnit() == this)
+	 */
+	public boolean hasProperMaterials() {
+		for (Material material : materials) {
+			if (!canHaveAsMaterial(material))
+				return false;
+			if (material.getOwner() != this)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of materials associated with this unit.
+	 *
+	 * @return The total number of materials collected in this unit. | result ==
+	 *         | card({material:Material | hasAsMaterial({material)})
+	 */
+	public int getNbMaterials() {
+		return materials.size();
+	}
+
+	/**
+	 * Add the given material to the set of materials of this unit.
+	 * 
+	 * @param material
+	 *            The material to be added.
+	 * @pre The given material is effective and already references this unit. |
+	 *      (material != null) && (material.getUnit() == this)
+	 * @post This unit has the given material as one of its materials. |
+	 *       new.hasAsMaterial(material)
+	 */
+	public void addMaterial(@Raw Material material) {
+		assert (material != null);
+		materials.add(material);
+		material.setOwner(this);
+	}
+
+	/**
+	 * Remove the given material from the set of materials of this unit.
+	 * 
+	 * @param material
+	 *            The material to be removed.
+	 * @pre This unit has the given material as one of its materials, and the
+	 *      given material does not reference any unit. |
+	 *      this.hasAsMaterial(material) && | (material.getUnit() == null)
+	 * @post This unit no longer has the given material as one of its materials.
+	 *       | ! new.hasAsMaterial(material)
+	 */
+	@Raw
+	public void removeMaterial(Material material, Position position) {
+		assert this.hasAsMaterial(material) && (material.getOwner() == null);
+		materials.remove(material);
+		material.setPosition(position, this.getWorld());
+	}
+
+	/**
+	 * Variable referencing a set collecting all the materials of this unit.
+	 * 
+	 * @invar The referenced set is effective. | materials != null
+	 * @invar Each material registered in the referenced list is effective and
+	 *        not yet terminated. | for each material in materials: | (
+	 *        (material != null) && | (! material.isTerminated()) )
+	 */
+	private final Set<Material> materials = new HashSet<Material>();
 
 }
