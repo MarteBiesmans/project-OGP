@@ -94,8 +94,7 @@ public abstract class Material {
 
 	public void setPosition(Position position, World world) {
 		this.owner = null;
-		// world.addMaterial(this); -> TODO deze methode moet relatie in 2
-		// richtingen zetten!!
+		world.addMaterial(this);
 		this.setPosition(position);
 	}
 
@@ -140,6 +139,7 @@ public abstract class Material {
 		if (!canHaveAsOwner(owner))
 			throw new IllegalArgumentException();
 		this.setPosition(null);
+		this.getWorld().removeMaterial(this);
 		this.owner = owner;
 		// TODO: this.world.remove(this) + zorgen dat deze methode this.world =
 		// null zet

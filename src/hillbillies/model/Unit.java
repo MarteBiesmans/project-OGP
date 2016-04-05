@@ -751,44 +751,6 @@ public class Unit {
 	 */
 	private double orientation;
 
-	public World getWorld() {
-		return this.world;
-	}
-
-	public boolean canHaveAsWorld(World world) {
-		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
-	}
-
-	public void setWorld(World world) {
-		if (world != null) {
-			if (canHaveAsWorld(world))
-				throw new IllegalArgumentException();
-		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
-			throw new IllegalArgumentException();
-		this.world = world;
-	}
-
-	private World world;
-
-	public Faction getFaction() {
-		return this.faction;
-	}
-
-	public boolean canHaveAsFaction(Faction faction) {
-		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
-	}
-
-	public void setFaction(Faction faction) throws IllegalArgumentException {
-		if (faction != null) {
-			if (canHaveAsFaction(faction))
-				throw new IllegalArgumentException();
-		} else if ((this.getFaction() != null) && (this.getFaction().hasAsUnit(this)))
-			throw new IllegalArgumentException();
-		this.faction = faction;
-	}
-
-	private Faction faction;
-
 	public int getExperiencePoints() {
 		return this.experiencePoints;
 	}
@@ -852,6 +814,11 @@ public class Unit {
 
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
+
+		// TODO: of doen bij setHitpoints(hitpoints) -> if hitpoints == 0 ->
+		// this.die()?
+		if (this.getHitpoints() == 0)
+			this.die();
 	}
 
 	private void attacking(float seconds) {
@@ -919,16 +886,24 @@ public class Unit {
 				this.removeMaterial(material, this.getCube().getCenter());
 
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WORKSHOP
-					&& this.getWorld().getBoulderIn(this.getCube()) != null
-					&& this.getWorld().getLogIn(this.getCube()) != null) {
-				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
-				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+					&& this.getWorld().getBouldersIn(this.getCube()).size() > 0
+					&& this.getWorld().getLogsIn(this.getCube()).size() > 0) {
+				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getCube()).iterator();
+				Boulder boulder = (Boulder) iterBoulder.next();
+				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getCube()).iterator();
+				Log log = (Log) iterLog.next();
+				this.addMaterial(boulder);
+				this.addMaterial(log);
 
-			} else if (this.getWorld().getBoulderIn(this.getCube()) != null) {
-				this.addMaterial(this.getWorld().getBoulderIn(this.getCube()));
+			} else if (this.getWorld().getBouldersIn(this.getCube()).size() > 0) {
+				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getCube()).iterator();
+				Boulder boulder = (Boulder) iterBoulder.next();
+				this.addMaterial(boulder);
 
-			} else if (this.getWorld().getLogIn(this.getCube()) != null) {
-				this.addMaterial(this.getWorld().getLogIn(this.getCube()));
+			} else if (this.getWorld().getLogsIn(this.getCube()).size() > 0) {
+				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getCube()).iterator();
+				Log log = (Log) iterLog.next();
+				this.addMaterial(log);
 
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD) {
 				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
@@ -963,18 +938,20 @@ public class Unit {
 	}
 
 	private void beingUseless(float seconds) {
-		int randomGetal = RANDOM_GEN.nextInt(3);
+		int randomGetal = RANDOM_GEN.nextInt(4);
 		if (randomGetal == 0) {
 			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN, RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
 					RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
 		} else if (randomGetal == 1) {
 			this.work();
-		} else {
+		} else if (randomGetal == 2) {
 			this.rest();
 			double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
 			double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
 					/ this.getToughness();
 			this.setBusyTime(hitpointsTime + staminaTime);
+		} else {
+			// TODO: fight potential enemies
 		}
 	}
 
@@ -1351,16 +1328,43 @@ public class Unit {
 			attacker.setExperiencePoints(attacker.getExperiencePoints() + 20);
 	}
 
-	public boolean isDead() {
-		return isDead;
+	public World getWorld() {
+		return this.world;
 	}
 
-	public void die() {
-		// TODO: terminate (relaties loskoppelen enzo)
-		this.isDead = true;
+	public boolean canHaveAsWorld(World world) {
+		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
 	}
 
-	private boolean isDead = false;
+	public void setWorld(World world) {
+		if (world != null) {
+			if (canHaveAsWorld(world))
+				throw new IllegalArgumentException();
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	private World world;
+
+	public Faction getFaction() {
+		return this.faction;
+	}
+
+	public boolean canHaveAsFaction(Faction faction) {
+		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
+	}
+
+	public void setFaction(Faction faction) throws IllegalArgumentException {
+		if (faction != null) {
+			if (canHaveAsFaction(faction))
+				throw new IllegalArgumentException();
+		} else if ((this.getFaction() != null) && (this.getFaction().hasAsUnit(this)))
+			throw new IllegalArgumentException();
+		this.faction = faction;
+	}
+
+	private Faction faction;
 
 	/**
 	 * Check whether this unit has the given material as one of its materials.
@@ -1462,5 +1466,35 @@ public class Unit {
 	 *        (material != null) && | (! material.isTerminated()) )
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
+
+	/**
+	 * Terminate this unit.
+	 *
+	 * @post This unit is terminated. | new.isDead()
+	 * @post The unit doesn't have a relation with the world and faction |
+	 * @post The materials the unit was carrying are left behind at the exact
+	 *       same position the unit has died. |
+	 */
+	public void die() {
+		for (Material material : this.materials)
+			material.setPosition(this.getPosition(), this.getWorld());
+		this.getWorld().removeUnit(this);
+		this.getFaction().removeUnit(this);
+		this.isDead = true;
+	}
+
+	/**
+	 * Return a boolean indicating whether or not this unit is terminated.
+	 */
+	@Basic
+	@Raw
+	public boolean isDead() {
+		return this.isDead;
+	}
+
+	/**
+	 * Variable registering whether this person is terminated.
+	 */
+	private boolean isDead = false;
 
 }

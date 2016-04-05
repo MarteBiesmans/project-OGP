@@ -102,15 +102,13 @@ public class World {
 		return this.getTerrainType(cube).isPassable();
 	}
 
-	// TODO: relatie world met material
-	public Boulder getBoulderIn(Cube cube) {
-		return null; // return null als er geen boulders in deze cube zijn,
-						// anders return er 1
+	// TODO: methodes uitwerken
+	public Set<Boulder> getBouldersIn(Cube cube) {
+		return null;
 	}
 
-	public Log getLogIn(Cube cube) {
-		return null; // return null als er geen logs in deze cube zijn, anders,
-						// return er 1
+	public Set<Log> getLogsIn(Cube cube) {
+		return null;
 	}
 
 	// public Material[] getMaterialsInCube(Cube cube){}
@@ -131,15 +129,32 @@ public class World {
 	// public Material[] getMaterialsInCube(Cube cube){}
 
 	public void addUnit(Unit unit) {
-		if (!canAddAsUnit(unit))
-			throw new IllegalArgumentException();
-		this.units.add(unit);
-
-		try {
-			unit.setWorld(this);
-		} catch (IllegalArgumentException e) {
-			this.units.remove(unit);
-			throw e;
+		if (canAddAsUnit(unit)) {
+			Faction unitsFaction = null;
+			// if the max number of factions in this world is not reached, make
+			// a new faction
+			if (this.getNbActiveFactions() != MAX_FACTIONS) {
+				unitsFaction = new Faction();
+				this.addFaction(unitsFaction);
+			// else, search for the active faction in this world with the
+			// least units
+			} else
+				for (Faction faction : this.factions) {
+					if (unitsFaction == null)
+						unitsFaction = faction;
+					if (faction.getNbUnits() > 0 && faction.getNbUnits() < unitsFaction.getNbUnits())
+						unitsFaction = faction;
+				}
+			
+			unitsFaction.addUnit(unit);
+			
+			this.units.add(unit);
+			try {
+				unit.setWorld(this);
+			} catch (IllegalArgumentException e) {
+				this.units.remove(unit);
+				throw e;
+			}
 		}
 	}
 
@@ -301,7 +316,7 @@ public class World {
 	 *       new.hasAsMaterial(material)
 	 */
 	public void addMaterial(@Raw Material material) {
-		assert (material != null) && (material.getWorld() == this);
+		assert (material != null);
 		materials.add(material);
 		material.setWorld(this);
 	}
@@ -319,8 +334,16 @@ public class World {
 	 */
 	@Raw
 	public void removeMaterial(Material material) {
-		assert this.hasAsMaterial(material) && (material.getWorld() == null);
-		materials.remove(material);
+		if (!this.hasAsMaterial(material))
+			throw new IllegalArgumentException();
+		this.materials.remove(material);
+
+		try {
+			material.setWorld(null);
+		} catch (IllegalArgumentException e) {
+			this.materials.add(material);
+			throw e;
+		}
 	}
 
 	/**
