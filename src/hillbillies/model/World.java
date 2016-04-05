@@ -237,8 +237,10 @@ public class World extends TimeVariableObject {
 		return result;
 	}
 
-	// ik vind dit een heel vage functie, kan zijn dat ik de opgave niet goed
+	// TODO: ik vind dit een heel vage functie, kan zijn dat ik de opgave niet goed
 	// begrepen heb
+	// => zou dat niet gewoon een functie in Faction moeten zijn? zodat ge kunt doen
+	// faction.getAllUnits() ?
 	/**
 	 * Return all the units in this world present in a given faction.
 	 * 
@@ -328,27 +330,51 @@ public class World extends TimeVariableObject {
 	// MATERIALS//
 
 	/**
-	 * add a given material to this world
+	 * Add the given material to the set of materials of this world.
 	 * 
 	 * @param material
-	 *            the material to add
-	 * @throws IllegalArgumentException
-	 *             the given material can not belong to this world
+	 *            The material to be added.
+	 * @pre The given material is effective and already references this world. |
+	 *      (material != null) && (material.getWorld() == this)
+	 * @post This world has the given material as one of its materials. |
+	 *       new.hasAsMaterial(material)
 	 */
-	public void addAsMaterial(Material material) throws IllegalArgumentException {
-		if (!this.canHaveAsMaterial(material))
+	public void addMaterial(@Raw Material material) {
+		if (!canHaveAsMaterial(material))
 			throw new IllegalArgumentException();
-		MaterialsInWorld.add(material);
+		this.materials.add(material);
+
+		try {
+			material.setWorld(this);
+		} catch (IllegalArgumentException e) {
+			this.materials.remove(material);
+			throw e;
+		}
 	}
 
 	/**
-	 * remove the given material from this world
+	 * Remove the given material from the set of materials of this world.
 	 * 
 	 * @param material
-	 *            the material to remove
+	 *            The material to be removed.
+	 * @pre This world has the given material as one of its materials, and the
+	 *      given material does not reference any world. |
+	 *      this.hasAsMaterial(material) && | (material.getWorld() == null)
+	 * @post This world no longer has the given material as one of its
+	 *       materials. | ! new.hasAsMaterial(material)
 	 */
-	public void removeAsMaterial(Material material) {
-		MaterialsInWorld.remove(material);
+	@Raw
+	public void removeMaterial(Material material) {
+		if (!this.hasAsMaterial(material))
+			throw new IllegalArgumentException();
+		this.materials.remove(material);
+	
+		try {
+			material.setWorld(null);
+		} catch (IllegalArgumentException e) {
+			this.materials.add(material);
+			throw e;
+		}
 	}
 
 	/**
@@ -373,7 +399,6 @@ public class World extends TimeVariableObject {
 	/**
 	 * a set containing all the materials in this world.
 	 */
-	private Set<Material> MaterialsInWorld;
 
 	/**
 	 * get all materials in one cube of the game world presented as a set
@@ -385,7 +410,7 @@ public class World extends TimeVariableObject {
 	public Set<Material> getMaterialsInCube(Cube cube) {
 		Set<Material> result = new HashSet<Material>();
 
-		Iterator<Material> it = MaterialsInWorld.iterator();
+		Iterator<Material> it = materials.iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
 			if (material.getPosition().getCube() == cube)
@@ -393,13 +418,6 @@ public class World extends TimeVariableObject {
 		}
 
 		return result;
-	}
-
-	// OTHERS//
-
-	public void advanceTime(float seconds) throws IllegalArgumentException {
-		// if (seconds < 0 || seconds >= 0.2)
-		// throw new IllegalArgumentException();
 	}
 
 	/**
@@ -445,47 +463,6 @@ public class World extends TimeVariableObject {
 	}
 
 	/**
-	 * Add the given material to the set of materials of this world.
-	 * 
-	 * @param material
-	 *            The material to be added.
-	 * @pre The given material is effective and already references this world. |
-	 *      (material != null) && (material.getWorld() == this)
-	 * @post This world has the given material as one of its materials. |
-	 *       new.hasAsMaterial(material)
-	 */
-	public void addMaterial(@Raw Material material) {
-		assert (material != null);
-		materials.add(material);
-		material.setWorld(this);
-	}
-
-	/**
-	 * Remove the given material from the set of materials of this world.
-	 * 
-	 * @param material
-	 *            The material to be removed.
-	 * @pre This world has the given material as one of its materials, and the
-	 *      given material does not reference any world. |
-	 *      this.hasAsMaterial(material) && | (material.getWorld() == null)
-	 * @post This world no longer has the given material as one of its
-	 *       materials. | ! new.hasAsMaterial(material)
-	 */
-	@Raw
-	public void removeMaterial(Material material) {
-		if (!this.hasAsMaterial(material))
-			throw new IllegalArgumentException();
-		this.materials.remove(material);
-
-		try {
-			material.setWorld(null);
-		} catch (IllegalArgumentException e) {
-			this.materials.add(material);
-			throw e;
-		}
-	}
-
-	/**
 	 * Variable referencing a set collecting all the materials of this world.
 	 * 
 	 * @invar The referenced set is effective. | materials != null
@@ -495,7 +472,14 @@ public class World extends TimeVariableObject {
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
 
-	// this.busyTimeMin(seconds);
+	// OTHERS//
+
+	public void advanceTime(float seconds) throws IllegalArgumentException {
+		// if (seconds < 0 || seconds >= 0.2)
+		// throw new IllegalArgumentException();
+	}
+
+//	 this.busyTimeMin(seconds);
 
 	// TODO
 }

@@ -72,6 +72,13 @@ public class Faction {
 		return this.units.size();
 	}
 
+	public boolean hasProperUnits() {
+		for (Unit unit : this.units)
+			if (unit == null || unit.isDead() || unit.getFaction() != this)
+				return false;
+		return true;
+	}
+
 	private final Set<Unit> units;
 
 	public World getWorld() {
@@ -89,13 +96,6 @@ public class Faction {
 		} else if ((this.getWorld() != null) && (this.getWorld().hasAsFaction(this)))
 			throw new IllegalArgumentException();
 		this.world = world;
-	}
-
-	public boolean hasProperUnits() {
-		for (Unit unit : this.units)
-			if (unit == null || unit.isDead() || unit.getFaction() != this)
-				return false;
-		return true;
 	}
 
 	private World world;
