@@ -13,3 +13,17 @@ we hebben ze niet alle 3 nodig, maar ik weet nog niet welke de minste aanpassing
 want hun eigen gewicht moet aan voorwaarden voldoen en het totale gewicht bepaalt hun bewegingen
 
 abstracte klasse object aanmaken boven unit en material, want materials kunnen net zoals unit vallen
+
+uit IFacade: Your <code>Facade</code> class should offer a <b>default constructor
+
+alternatieve optie:
+in world geen set aanmaken van units om opslagruimte te besparen, en dan om alle units op te vragen
+via getAllUnits itereren over alle factions.
+mogelijke nadelen:
+1) Als ik dan in een functie getAllUnits gebruik om er weer over te itereren, 
+worden het misschien te veel iteraties over elkaar?
+2) addUnit wordt ingewikkelder, maar addFaction mss juist makkelijker
+
+wat volgens mij nog bij faction bij moet:
+attribute world -> elke niet-lege faction hoort bij een world
+method isEmpty()

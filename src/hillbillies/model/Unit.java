@@ -61,7 +61,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @author Ellen & Marte
  * @version 1.0
  */
-public class Unit {
+public class Unit extends TimeVariableObject {
 
 	private static final Random RANDOM_GEN = new Random();
 	/**
@@ -182,7 +182,7 @@ public class Unit {
 	public boolean isValidPosition(Position position) {
 		if (position == null)
 			return false;
-		else if (!this.getWorld().isCubePassable(position.getCube()))
+		else if (!this.getWorld().isPassableCube(position.getCube()))
 			return false;
 		else
 			return isValidCube(position.getCube())
@@ -1128,32 +1128,6 @@ public class Unit {
 
 	private Activity activity;
 
-	/**
-	 * sets the busytime of this unit to the given seconds
-	 * 
-	 * @param busyTime
-	 */
-	public void setBusyTime(double busyTime) {
-		this.busyTime = Math.max(busyTime, 0);
-	}
-
-	/**
-	 * returns the busytime of this unit
-	 */
-	public double getBusyTime() {
-		return this.busyTime;
-	}
-
-	/**
-	 * substracts the given seconds off of the busytime of this unit.
-	 * 
-	 * @param seconds
-	 */
-	public void busyTimeMin(double seconds) {
-		this.setBusyTime(this.getBusyTime() - seconds);
-	}
-
-	private double busyTime;
 
 	/**
 	 * starts the default behaviour of this unit

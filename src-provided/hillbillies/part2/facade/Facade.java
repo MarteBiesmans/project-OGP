@@ -6,7 +6,7 @@ import hillbillies.model.*;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
-public class Facade implements IFacade {
+public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		try{

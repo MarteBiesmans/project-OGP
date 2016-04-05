@@ -52,6 +52,20 @@ public class Faction {
 			return false;
 		return this.units.contains(unit);
 	}
+	
+	/**
+	 * Return all the units in this faction.
+	 */
+	public Set<Unit> getAllUnits() {
+		return units;
+	}
+	
+	/**
+	 * Return the number of units in this faction.
+	 */
+	public int getNbOfUnits() {
+		return units.size();
+	}
 
 	private final Set<Unit> units;
 
