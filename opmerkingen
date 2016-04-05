@@ -1,5 +1,3 @@
-Facade is nog niet volledig error-loos, maar dat is niets om ons zorgen om te maken (voorlopig toch)
-
 in world heb ik 1 methode gemaakt voor het aantal cubes op x- y- of z-as: in de opgave staat dat het een
 'cubical world' is
 
@@ -13,3 +11,17 @@ we hebben ze niet alle 3 nodig, maar ik weet nog niet welke de minste aanpassing
 want hun eigen gewicht moet aan voorwaarden voldoen en het totale gewicht bepaalt hun bewegingen
 
 abstracte klasse object aanmaken boven unit en material, want materials kunnen net zoals unit vallen
+
+uit IFacade: Your <code>Facade</code> class should offer a <b>default constructor
+
+alternatieve optie:
+in world geen set aanmaken van units om opslagruimte te besparen, en dan om alle units op te vragen
+via getAllUnits itereren over alle factions.
+mogelijke nadelen:
+1) Als ik dan in een functie getAllUnits gebruik om er weer over te itereren, 
+worden het misschien te veel iteraties over elkaar?
+2) addUnit wordt ingewikkelder, maar addFaction mss juist makkelijker
+
+ik dacht om deze invariant te gebruiken en dus als een faction leeg is, die direct weg te halen 
+uit de world (faction.world wordt dan null)
+@invar	Each faction in a world should always be active, i.e. non-empty

@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.*;
+
 import be.kuleuven.cs.som.annotate.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +13,7 @@ import java.util.Set;
  * 
  * @author Ellen & Marte
  */
-public class World {
+public class World extends TimeVariableObject {
 
 	public static int MAX_FACTIONS = 5;
 	public static int MAX_UNITS = 100;
@@ -46,10 +48,20 @@ public class World {
 	 * @param terrainTypes
 	 *            The array to check.
 	 * @return false if the given array terrainTypes is not cubical
+	 * @return false if the given array contains integers not in [0,3]
 	 */
 	private boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
 		if ((terrainTypes.length != terrainTypes[0].length) || (terrainTypes.length != terrainTypes[0][0].length))
 			return false;
+
+		// iterate over the array terrainTypes
+		for (int x = 0; x < terrainTypes.length; x++)
+			for (int y = 0; y < terrainTypes[x].length; y++)
+				for (int z = 0; z < terrainTypes[x][y].length; z++)
+					// check if the value is legal
+					if ((terrainTypes[x][y][z] != 0) && (terrainTypes[x][y][z] != 1) && (terrainTypes[x][y][z] != 2)
+							&& (terrainTypes[x][y][z] != 3))
+						return false;
 		return true;
 	}
 
@@ -98,9 +110,11 @@ public class World {
 			return TerrainType.AIR;
 	}
 
-	public boolean isCubePassable(Cube cube) {
+	public boolean isPassableCube(Cube cube) {
 		return this.getTerrainType(cube).isPassable();
 	}
+
+	// UNITS//
 
 	// TODO: methodes uitwerken
 	public Set<Boulder> getBouldersIn(Cube cube) {
@@ -136,8 +150,8 @@ public class World {
 			if (this.getNbActiveFactions() != MAX_FACTIONS) {
 				unitsFaction = new Faction();
 				this.addFaction(unitsFaction);
-			// else, search for the active faction in this world with the
-			// least units
+				// else, search for the active faction in this world with the
+				// least units
 			} else
 				for (Faction faction : this.factions) {
 					if (unitsFaction == null)
@@ -145,9 +159,9 @@ public class World {
 					if (faction.getNbUnits() > 0 && faction.getNbUnits() < unitsFaction.getNbUnits())
 						unitsFaction = faction;
 				}
-			
+
 			unitsFaction.addUnit(unit);
-			
+
 			this.units.add(unit);
 			try {
 				unit.setWorld(this);
@@ -185,7 +199,63 @@ public class World {
 		return true;
 	}
 
+	// is deze functie nodig? in de opgave staat dat alle objects in een cube
+	// moeten opgelijst
+	// kunnen worden, maar is een unit een 'object'?
+	/**
+	 * get all units in one cube of the game world presented as a set
+	 * 
+	 * @param cube
+	 *            the cube to check
+	 * @return a set containing all the units in the given cube
+	 */
+	public Set<Unit> getUnitsInCube(Cube cube) {
+		Set<Unit> result = new HashSet<Unit>();
+
+		Iterator<Unit> it = units.iterator();
+		while (it.hasNext()) {
+			Unit unit = it.next();
+			if (unit.getCube() == cube)
+				result.add(unit);
+		}
+
+		return result;
+	}
+
+	/**
+	 * return all units present in this world
+	 */
+	public Set<Unit> getAllUnits() {
+		Set<Unit> result = new HashSet<Unit>();
+
+		Iterator<Faction> it = this.getAllFactions().iterator();
+		while (it.hasNext()) {
+			Faction faction = it.next();
+			result.addAll(faction.getAllUnits());
+		}
+
+		return result;
+	}
+
+	// ik vind dit een heel vage functie, kan zijn dat ik de opgave niet goed
+	// begrepen heb
+	/**
+	 * Return all the units in this world present in a given faction.
+	 * 
+	 * @param faction
+	 *            the faction to which the returned units belong
+	 */
+	public Set<Unit> getAllUnits(Faction faction) {
+		return faction.getAllUnits();
+	}
+
+	public void spawnUnit() {
+		// TODO
+	}
+
 	private final Set<Unit> units;
+
+	// FACTIONS//
 
 	public void addFaction(Faction faction) {
 		if (!canAddAsFaction(faction))
@@ -239,6 +309,13 @@ public class World {
 		return this.factions.size();
 	}
 
+	/**
+	 * return all the factions present in this world as a set
+	 */
+	public Set<Faction> getAllFactions() {
+		return factions;
+	}
+
 	public boolean hasProperFactions() {
 		for (Faction faction : this.factions)
 			if (faction == null || faction.getWorld() != this)
@@ -246,7 +323,84 @@ public class World {
 		return true;
 	}
 
-	private final Set<Faction> factions;
+	private Set<Faction> factions;
+
+	// MATERIALS//
+
+	/**
+	 * add a given material to this world
+	 * 
+	 * @param material
+	 *            the material to add
+	 * @throws IllegalArgumentException
+	 *             the given material can not belong to this world
+	 */
+	public void addAsMaterial(Material material) throws IllegalArgumentException {
+		if (!this.canHaveAsMaterial(material))
+			throw new IllegalArgumentException();
+		MaterialsInWorld.add(material);
+	}
+
+	/**
+	 * remove the given material from this world
+	 * 
+	 * @param material
+	 *            the material to remove
+	 */
+	public void removeAsMaterial(Material material) {
+		MaterialsInWorld.remove(material);
+	}
+
+	/**
+	 * Check if the given material can belong to this world.
+	 * 
+	 * @param material
+	 * @return false if the given material is null
+	 * @return false if the given material doesn't have a position (but only an
+	 *         owner)
+	 * @return false if the position of the material is not a passable cube
+	 */
+	public boolean canHaveAsMaterial(Material material) {
+		if (material == null)
+			return false;
+		if (material.getPosition() == null)
+			return false;
+		if (!this.isPassableCube(material.getPosition().getCube()))
+			return false;
+		return true;
+	}
+
+	/**
+	 * a set containing all the materials in this world.
+	 */
+	private Set<Material> MaterialsInWorld;
+
+	/**
+	 * get all materials in one cube of the game world presented as a set
+	 * 
+	 * @param cube
+	 *            the cube to check
+	 * @return a set containing all the materials in the given cube
+	 */
+	public Set<Material> getMaterialsInCube(Cube cube) {
+		Set<Material> result = new HashSet<Material>();
+
+		Iterator<Material> it = MaterialsInWorld.iterator();
+		while (it.hasNext()) {
+			Material material = it.next();
+			if (material.getPosition().getCube() == cube)
+				result.add(material);
+		}
+
+		return result;
+	}
+
+	// OTHERS//
+
+	public void advanceTime(float seconds) throws IllegalArgumentException {
+		// if (seconds < 0 || seconds >= 0.2)
+		// throw new IllegalArgumentException();
+	}
 
 	/**
 	 * Check whether this world has the given material as one of its materials.
@@ -258,21 +412,6 @@ public class World {
 	@Raw
 	public boolean hasAsMaterial(@Raw Material material) {
 		return materials.contains(material);
-	}
-
-	/**
-	 * Check whether this world can have the given material as one of its
-	 * materials.
-	 * 
-	 * @param material
-	 *            The material to check.
-	 * @return True if and only if the given material is effective and that
-	 *         material is a valid material for a world. | result == | (material
-	 *         != null) && | Material.isValidWorld(this)
-	 */
-	@Raw
-	public boolean canHaveAsMaterial(Material material) {
-		return (material != null) && (material.canHaveAsWorld(this));
 	}
 
 	/**
@@ -355,4 +494,8 @@ public class World {
 	 *        (material != null) && | (! material.isTerminated()) )
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
+
+	// this.busyTimeMin(seconds);
+
+	// TODO
 }

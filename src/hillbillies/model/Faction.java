@@ -60,7 +60,14 @@ public class Faction {
 			return false;
 		return this.units.contains(unit);
 	}
-
+	
+	/**
+	 * Return all the units in this faction.
+	 */
+	public Set<Unit> getAllUnits() {
+		return units;
+	}
+	
 	public int getNbUnits() {
 		return this.units.size();
 	}
