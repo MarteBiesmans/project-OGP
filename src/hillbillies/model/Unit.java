@@ -250,6 +250,8 @@ public class Unit {
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
 		if (isValidPosition(position))
+			if (this.getActivity() != Activity.FALLING && this.canStartFallingAt(position.getCube()))
+				this.setActivity(Activity.FALLING);
 			this.position = position;
 	}
 
@@ -827,52 +829,64 @@ public class Unit {
 	}
 
 	private void moving(float seconds) {
-		Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
-		double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
-				+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
-
-		double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
-		double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
-		double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
-
-		this.setOrientation(Math.atan2(yVelocity, xVelocity));
-
-		Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
-				this.getPosition().getRealY() + yVelocity * seconds,
-				this.getPosition().getRealZ() + zVelocity * seconds);
-
-		Position diffNext = this.getMoveToAdjacent().getCenter().min(next);
-
-		if ((moveDiff.getRealX() == 0 || Math.signum(moveDiff.getRealX()) != Math.signum(diffNext.getRealX()))
-				&& (moveDiff.getRealY() == 0 || Math.signum(moveDiff.getRealY()) != Math.signum(diffNext.getRealY()))
-				&& (moveDiff.getRealZ() == 0 || Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
-			this.setPosition(this.getMoveToAdjacent().getCenter());
-			this.setMoveToAdjacent(null);
-			this.setExperiencePoints(this.getExperiencePoints() + 1);
-
-			// Check whether the unit is moving to a cube far away (not an
-			// adjacent cube)
-			if (this.getMoveToCube() != null) {
-				findNextCubeInPath();
-			}
-
-			// Check whether the unit is not pathfinding. If this is true,
-			// it stops moving.
-			if (this.getMoveToCube() == null) {
+		if (this.isFalling()) {
+			Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
+					this.getPosition().getRealZ() - 3.0 * seconds);
+			if (!this.getCube().equals(next.getCube()))
+				this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
+			this.setPosition(next);
+			if (this.canStopFalling())
 				this.setActivity(Activity.NONE);
-			}
 
 		} else {
-			this.setPosition(next);
-		}
+			
+			if (this.isSprinting()) {
+				double stamina = this.getStaminaPoints() - seconds * 10;
+				if (stamina > 0)
+					this.setStaminaPoints(stamina);
+				else {
+					this.setStaminaPoints(0);
+					this.stopSprinting();
+				}
+				
+			Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
 
-		if (this.isSprinting()) {
-			double stamina = this.getStaminaPoints() - seconds * 10;
-			if (stamina > 0)
-				this.setStaminaPoints(stamina);
-			else {
-				this.setStaminaPoints(0);
-				this.stopSprinting();
+			double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
+					+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
+
+			double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
+			double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
+			double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
+
+			Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
+					this.getPosition().getRealY() + yVelocity * seconds,
+					this.getPosition().getRealZ() + zVelocity * seconds);
+
+			this.setOrientation(Math.atan2(yVelocity, xVelocity));
+			
+			Position diffNext = this.getMoveToAdjacent().getCenter().min(next);
+			if ((moveDiff.getRealX() == 0 || Math.signum(moveDiff.getRealX()) != Math.signum(diffNext.getRealX()))
+					&& (moveDiff.getRealY() == 0
+							|| Math.signum(moveDiff.getRealY()) != Math.signum(diffNext.getRealY()))
+					&& (moveDiff.getRealZ() == 0
+							|| Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
+				this.setPosition(this.getMoveToAdjacent().getCenter());
+				this.setMoveToAdjacent(null);
+				this.setExperiencePoints(this.getExperiencePoints() + 1);
+
+				// Check whether the unit is moving to a cube far away (not an
+				// adjacent cube)
+				if (this.getMoveToCube() != null) {
+					findNextCubeInPath();
+				}
+
+				// Check whether the unit is not pathfinding. If this is true,
+				// it stops moving.
+				if (this.getMoveToCube() == null) {
+					this.setActivity(Activity.NONE);
+				}
+			} else
+				this.setPosition(next);
 			}
 		}
 	}
@@ -1213,10 +1227,43 @@ public class Unit {
 	public boolean isFalling() {
 		return (this.getActivity() == Activity.FALLING);
 	}
-
+	
+	public boolean canStartFalling() {
+		return (this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, 0, 1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, 1, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, 1, 1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(1, 0, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(1, 0, 1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(1, 1, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(1, 1, 1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, 0, -1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, -1, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(0, -1, -1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(-1, 0, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(-1, 0, -1))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(-1, -1, 0))) ||
+				this.getWorld().isCubePassable((this.getCube()).min(new Cube(-1, -1, -1))));
+	}
+	
+	public boolean canStartFallingAt(Cube cube) {
+		return (this.getWorld().isCubePassable(cube.min(new Cube(0, 0, 1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(0, 1, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(0, 1, 1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(1, 0, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(1, 0, 1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(1, 1, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(1, 1, 1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(0, 0, -1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(0, -1, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(0, -1, -1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(-1, 0, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(-1, 0, -1))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(-1, -1, 0))) ||
+				this.getWorld().isCubePassable(cube.min(new Cube(-1, -1, -1))));
+	}
+	
 	public boolean canStopFalling() {
-		Cube cubeDirection = new Cube(0, 0, 1);
-		return (this.isFalling() && !this.world.isCubePassable(this.getCube().min(cubeDirection)));
+		return (this.isFalling() && !this.world.isCubePassable(this.getCube().min(new Cube(0, 0, 1))));
 	}
 
 	private Activity activity;
