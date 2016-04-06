@@ -20,7 +20,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
 		try {
-			return world.getNbCubes();
+			return world.getNbCubesX();
 		} catch (Throwable e) {
 			throw new ModelException();
 		}
@@ -29,7 +29,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
 		try{
-			return world.getNbCubes();
+			return world.getNbCubesY();
 		}
 		catch (Throwable e){
 			throw new ModelException();
@@ -39,7 +39,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
 		try{
-			return world.getNbCubes();
+			return world.getNbCubesZ();
 		}
 		catch (Throwable e){
 			throw new ModelException();
@@ -48,7 +48,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		// TODO Auto-generated method stub
+		try {
+			world.advanceTime((float) dt);
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
 
 	}
 
@@ -82,14 +87,23 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		// TODO Auto-generated method stub
+		try {
+			world.addUnit(unit);
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
 
 	}
 
 	@Override
 	public Set<Unit> getUnits(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return world.getAllUnits();
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
@@ -106,14 +120,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return !unit.isDead();
 	}
 
 	@Override
 	public int getExperiencePoints(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return unit.getExperiencePoints();
 	}
 
 	@Override
@@ -145,14 +157,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getAllUnits();
 	}
 
 	@Override
@@ -163,26 +173,40 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public double[] getPosition(Boulder boulder) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			if (boulder.getPosition()==null)
+				return null;
+			return new double[]{boulder.getPosition().getRealX(), 
+			        			boulder.getPosition().getRealY(),
+			        			boulder.getPosition().getRealZ()};
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
 	public Set<Boulder> getBoulders(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getAllBoulders();
 	}
 
 	@Override
 	public double[] getPosition(Log log) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			if (log.getPosition()==null)
+				return null;
+			return new double[]{log.getPosition().getRealX(), 
+			        			log.getPosition().getRealY(),
+			        			log.getPosition().getRealZ()};
+		}
+		catch (Throwable e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getAllLogs();
 	}
 
 }

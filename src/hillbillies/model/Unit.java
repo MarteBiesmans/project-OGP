@@ -1079,7 +1079,7 @@ public class Unit extends TimeVariableObject {
 	private Cube moveToCube;
 
 	/**
-	 * returns the currenta ctivity of this unit.
+	 * returns the current activity of this unit.
 	 */
 	public Activity getActivity() {
 		return this.activity;

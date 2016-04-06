@@ -49,6 +49,8 @@ public class World extends TimeVariableObject {
 	 * @return	false if the given array contains integers not in [0,3]
 	 */
 	private boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
+		
+		//TODO toch niet cubical :(
 		if ((terrainTypes.length != terrainTypes[0].length) || (terrainTypes.length != terrainTypes[0][0].length))
 			return false;
 		
@@ -65,7 +67,11 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	public int[][][] getTerrainTypesArray() {
+	/**
+	 * return the 3D-array terrainTypes of this world
+	 */
+	@Basic
+	int[][][] getTerrainTypesArray() {
 		return this.terrainTypes;
 	}
 
@@ -76,18 +82,59 @@ public class World extends TimeVariableObject {
 	private int[][][] terrainTypes;
 
 	/**
-	 * Return the number of cubes in one direction of this world.
+	 * Return the number of cubes in the X direction of this world.
 	 */
 	@Immutable
-	public int getNbCubes() {
+	public int getNbCubesX() {
+		//TODO toch niet cubical :(
+		return this.getTerrainTypesArray().length;
+	}
+	
+	/**
+	 * Return the number of cubes in the Y direction of this world.
+	 */
+	@Immutable
+	public int getNbCubesY() {
+		//TODO toch niet cubical :(
+		return this.getTerrainTypesArray().length;
+	}
+	
+	/**
+	 * Return the number of cubes in the Z direction of this world.
+	 */
+	@Immutable
+	public int getNbCubesZ() {
+		//TODO toch niet cubical :(
 		return this.getTerrainTypesArray().length;
 	}
 
+	/**
+	 * Return the integer associated with the terrain type of the given cube.
+	 * 
+	 * @param	cube
+	 * 			the cube to check
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
+	 */
 	public int getTerrainTypeInt(Cube cube) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();		
 		return this.getTerrainTypesArray()[cube.getX()][cube.getY()][cube.getZ()];
 	}
 
+	
+	/**
+	 * Return the terrain type of the given cube.
+	 * 
+	 * @param	cube
+	 * 			the cube to check
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
+	 */
 	public TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();
+		
 		int terrainType = this.getTerrainTypeInt(cube);
 		if (terrainType == 1)
 			return TerrainType.ROCK;
@@ -175,8 +222,13 @@ public class World extends TimeVariableObject {
 	 * @param	cube
 	 * 			the cube to check
 	 * @return	a set containing all the units in the given cube
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
 	 */
-	public Set<Unit> getUnitsInCube(Cube cube) {
+	public Set<Unit> getUnitsInCube(Cube cube) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();
+		
 		Set<Unit> result = new HashSet<Unit>();
 		
 		Iterator<Unit> it = units.iterator();
@@ -354,23 +406,63 @@ public class World extends TimeVariableObject {
 	private Set<Material> MaterialsInWorld;
 	
 	/**
-	 * get all materials in one cube of the game world presented as a set
+	 * get all logs in one cube of the game world presented as a set
 	 * 
 	 * @param	cube
 	 * 			the cube to check
-	 * @return	a set containing all the materials in the given cube
+	 * @return	a set containing all the logs in the given cube
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
 	 */
-	public Set<Material> getMaterialsInCube(Cube cube){
+	public Set<Material> getLogsInCube(Cube cube) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();
+		
 		Set<Material> result = new HashSet<Material>();
 		
 		Iterator<Material> it = MaterialsInWorld.iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
-			if (material.getPosition().getCube() == cube)
+			if ( (material.getPosition().getCube() == cube) && (Log.class.isInstance(material)) )
 				result.add(material);
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * get all boulders in one cube of the game world presented as a set
+	 * 
+	 * @param	cube
+	 * 			the cube to check
+	 * @return	a set containing all the boulders in the given cube
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
+	 */
+	public Set<Material> getBouldersInCube(Cube cube) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();
+		
+		Set<Material> result = new HashSet<Material>();
+		
+		Iterator<Material> it = MaterialsInWorld.iterator();
+		while (it.hasNext()) {
+			Material material = it.next();
+			if ( (material.getPosition().getCube() == cube) && (Boulder.class.isInstance(material)) )
+				result.add(material);
+		}
+		
+		return result;
+	}
+	
+	public Set<Log> getAllLogs() {
+		//TODO
+		return null;
+	}
+	
+	public Set<Boulder> getAllBoulders() {
+		//TODO
+		return null;
 	}
 	
 	

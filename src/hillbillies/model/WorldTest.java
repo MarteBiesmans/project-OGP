@@ -4,6 +4,19 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class WorldTest {
+	
+	/**
+	 * return an empty testWorld filled with air except half of the lowest layer is rock
+	 */
+	public World newTestWorld() {
+		int[][][] terrainTypes = new int[50][50][50];
+
+		for(int x=0;x<terrainTypes.length/2;x++)
+			for(int y=0;y<terrainTypes[x].length;y++)
+				terrainTypes[x][y][0] = 1;
+					
+		return new World(terrainTypes);
+	}
 
 	@Test
 	public void constructorWorld_LegalTerrainTypes() {
@@ -27,6 +40,13 @@ public class WorldTest {
 	@Test (expected = IllegalArgumentException.class)
 	public void constructorWorld_IllegalDimensionsTerrainTypes3() {
 		int[][][] terrainTypes = new int[60][50][50];
+		new World(terrainTypes);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void constructorWorld_IllegalNumberInTerrainTypes() {
+		int[][][] terrainTypes = new int[50][50][50];
+		terrainTypes[49][49][49] = 4;
 		new World(terrainTypes);
 	}
 	

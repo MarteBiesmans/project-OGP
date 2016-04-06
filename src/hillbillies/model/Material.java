@@ -6,11 +6,12 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar  The position of each material must be a valid position for any
  *         material.
  * @invar  Each Material can have its weight as weight.
+ * @invar	Each material that is not carried by a unit is located in a passable cube
  *         
  * @author Ellen & Marte
  *
  */
-public abstract class Material {
+public abstract class Material extends TimeVariableObject {
 
 	/**
 	 * Initialize this new material with given position.
@@ -49,24 +50,39 @@ public abstract class Material {
 	}
 
 	/**
-	 * Check whether the given position is a valid position for this material.
+	 * Check whether the given position is a valid initial position for this material.
 	 * 
 	 * @param	position
 	 * 			The position to check.
 	 * @return	false if the cube of the position is not passable
-	 * @return	false if the cube of the position is not directly above a solid cube or if the z-coordinate is not 0
 	 */
 	public boolean canHaveAsPosition(Position position) {
 		if ( ! this.getWorld().getTerrainType(position.getCube()).isPassable() )
 			return false;
-		if (position.getCube().getZ() == 0)
-			return true;
-		
-		Cube cubeBelow = new Cube(position.getCube().getX(), position.getCube().getY(), position.getCube().getZ()-1);
-		if ( this.getWorld().getTerrainType(cubeBelow).isPassable() )
-			return false;
 		return true;
 	}
+	
+	/**
+	 * Check whether this material should fall.
+	 * 
+	 * @return	true if the cube of the position is not directly above a solid cube 
+	 * 			or if the z-coordinate is not 0
+	 */
+	public boolean shouldFall() {
+		if (this.getPosition()==null)
+			return false;
+		
+		if (this.getPosition().getCube().getZ() != 0)
+			return true;
+		Cube cubeBelow = new Cube(this.getPosition().getCube().getX(), 
+								this.getPosition().getCube().getY(), 
+								this.getPosition().getCube().getZ()-1);
+		if ( this.getWorld().getTerrainType(cubeBelow).isPassable() )
+			return true;
+		
+		return false;
+	}
+	
 
 	/**
 	 * Set the position of this material to the given position.
@@ -85,7 +101,8 @@ public abstract class Material {
 	}
 
 	/**
-	 * Variable registering the position of this material.
+	 * Variable registering the position of this material,
+	 * can be null if it is being carried
 	 */
 	private Position position;
 	
@@ -130,7 +147,8 @@ public abstract class Material {
 	}
 
 	/**
-	 * Variable registering the owner carrying this material.
+	 * Variable registering the owner carrying this material,
+	 * can be null if it is not carried.
 	 */
 	private Unit owner;
 	
@@ -148,14 +166,6 @@ public abstract class Material {
 	 */
 	private final World world;
 	
-	
-	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (seconds < 0 || seconds >= 0.2)
-			throw new IllegalArgumentException();
-		
-		//TODO 
-	}
-	
 
 	/**
 	 * Return the weight of this material.
@@ -172,6 +182,75 @@ public abstract class Material {
 	 * Variable registering the weight of this Material.
 	 */
 	private final int weight;
+	
+	
+//	/**
+//	 * return the activity of this material
+//	 */
+//	@Basic
+//	public Activity getActivity(){
+//		return activity;
+//	}
+//	
+//	/**
+//	 * check if the given activity is valid for any material
+//	 * 
+//	 * @return true if the activity is none or falling
+//	 */
+//	public boolean isValidActivity(Activity activity){
+//		if ( (activity==Activity.NONE) && (activity==Activity.FALLING) )
+//			return true;		
+//		return false;
+//	}
+//	
+//	
+//	/**
+//	 * set the activity of this material to the given activity
+//	 * 
+//	 * @param	activity
+//	 * 			the activity to set
+//	 * @throws	IllegalArgumentException
+//	 * 			the given activity is not valid for materials
+//	 */
+//	public void setActivity(Activity activity) throws IllegalArgumentException {
+//		if (!this.isValidActivity(activity))
+//			throw new IllegalArgumentException();
+//		this.activity = activity;
+//	}
+//	
+//	/**
+//	 * variable registering the activity of this material
+//	 */
+//	private Activity activity;
+	
+	/**
+	 * update the position of this material, based on it's current properties 
+	 * and a given duration 'seconds' in seconds of game time
+	 * 
+	 * @param seconds
+	 * @throws IllegalArgumentException
+	 *             the seconds are not in the interval [0,0.2[
+	 */
+	public void advanceTime(float seconds) throws IllegalArgumentException {
+		if (seconds < 0 || seconds >= 0.2)
+			throw new IllegalArgumentException();
+		
+		this.busyTimeMin(seconds);
+
+		if (this.shouldFall())
+			falling(seconds);
+	}
+	
+	
+	public void falling(float seconds) {		
+		double zVelocity = -3.0;
+		Position next = new Position(this.getPosition().getRealX(),
+									 this.getPosition().getRealY(),
+									 this.getPosition().getRealZ() + zVelocity * seconds);
+		this.setPosition(next);
+	}
+	
+	
 	
 	
 }

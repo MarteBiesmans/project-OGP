@@ -3,6 +3,9 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * the class cube is similar to the class position, where position consists of doubles,
+ * cube consists of integers.
+ * 
  * @Value
  * 
  * @author Marte & Ellen
@@ -72,6 +75,10 @@ public class Cube {
 				|| (z > world.getNbCubes()))
 			return false;
 		return true;
+	}
+	
+	public boolean isValidIn(World world) {
+		return isValidCubeCoordinate(this.getX(), this.getY(), this.getZ(), world);
 	}
 
 	@Basic

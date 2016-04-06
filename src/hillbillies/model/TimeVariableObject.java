@@ -3,8 +3,8 @@ package hillbillies.model;
 public abstract class TimeVariableObject {
 
 	/**
-	 * update the properties of a TimeVariableObject, based on that Object's current properties and a given
-	 * duration 'seconds' in seconds of game time
+	 * update the properties of a TimeVariableObject, based on that Object's current properties 
+	 * and a given duration 'seconds' in seconds of game time
 	 * 
 	 * @param seconds
 	 * @throws IllegalArgumentException
@@ -40,5 +40,8 @@ public abstract class TimeVariableObject {
 		this.setBusyTime(this.getBusyTime() - seconds);
 	}
 
+	/**
+	 * a variable representing the time needed to finish the current activity of this object
+	 */
 	private double busyTime;
 }
