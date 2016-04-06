@@ -79,15 +79,6 @@ public class Unit extends TimeVariableObject {
 	private static final int MIN_VAL_PRIMARY_ATTRIBUTE = 1;
 	private static final int MAX_VAL_PRIMARY_ATTRIBUTE = 200;
 
-	/**
-	 * constants for the boundaries of the game world.
-	 */
-	public static final int X_MIN = 0;
-	public static final int Y_MIN = 0;
-	public static final int Z_MIN = 0;
-	public static final int X_MAX = 50;
-	public static final int Y_MAX = 50;
-	public static final int Z_MAX = 50;
 
 	/**
 	 * @post The name of this new unit is equal to the given name. |
@@ -177,7 +168,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public boolean isValidUnit() {
-		return (isValidPosition(this.getPosition()) && isValidName(this.getName())
+		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
 				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
 				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
 				&& isValidOrientation(this.getOrientation()) && this.getFaction() != null && this.getWorld() != null);
@@ -191,29 +182,23 @@ public class Unit extends TimeVariableObject {
 	public Position getPosition() {
 		return this.position;
 	}
-
-	public boolean isValidPosition(Position position) {
+	
+	
+	/**
+	 * check wether the given position is valid for this unit
+	 * 
+	 * @param	position
+	 * 			the position to check
+	 * @return	false if the given position equals null
+	 * @return	false if the given position is not legal in the world of this unit
+	 * @return	true if this unit doesn't have a world (position cannot be invalid)
+	 */
+	public boolean canHaveAsPosition(Position position) {
 		if (position == null)
 			return false;
-		else if (!this.getWorld().isPassableCube(position.getCube()))
-			return false;
-		else
-			return isValidCube(position.getCube())
-					&& areValidCoördinates(position.getRealX(), position.getRealY(), position.getRealZ());
-	}
-
-	public boolean isValidCube(Cube cube) {
-		if (cube == null)
-			return false;
-
-		else
-			return (cube.getX() * Cube.SIDE_LENGTH >= X_MIN && cube.getX() * Cube.SIDE_LENGTH < X_MAX
-					&& cube.getY() * Cube.SIDE_LENGTH >= Y_MIN && cube.getX() * Cube.SIDE_LENGTH < Y_MAX
-					&& cube.getZ() * Cube.SIDE_LENGTH >= Z_MIN && cube.getX() * Cube.SIDE_LENGTH < Z_MAX);
-	}
-
-	public boolean areValidCoördinates(double x, double y, double z) {
-		return (x >= X_MIN && x <= X_MAX && y >= Y_MIN && y <= Y_MAX && z >= Z_MIN && z <= Z_MAX);
+		if (world != null)
+			return position.isValidForObjectIn(this.getWorld());
+		return true;
 	}
 
 	/**
@@ -238,20 +223,20 @@ public class Unit extends TimeVariableObject {
 	@Raw
 	public void setPosition(double x, double y, double z) throws IllegalArgumentException {
 		Position position = new Position(x, y, z);
-		if (isValidPosition(position))
+		if (canHaveAsPosition(position))
 			this.position = position;
 	}
 
 	@Raw
 	public void setPosition(double x, double y, double z, Cube cube) throws IllegalArgumentException {
 		Position position = new Position(x, y, z, cube);
-		if (isValidPosition(position))
+		if (canHaveAsPosition(position))
 			this.position = position;
 	}
 
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
-		if (isValidPosition(position))
+		if (canHaveAsPosition(position))
 			if (this.getActivity() != Activity.FALLING && this.canStartFallingAt(position.getCube()))
 				this.setActivity(Activity.FALLING);
 			this.position = position;
@@ -956,8 +941,13 @@ public class Unit extends TimeVariableObject {
 	private void beingUseless(float seconds) {
 		int randomGetal = RANDOM_GEN.nextInt(4);
 		if (randomGetal == 0) {
-			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN, RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
-					RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
+//			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN,
+//				   RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
+//				   RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
+			int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
+			int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
+			int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
+			moveTo(x,y,z);
 		} else if (randomGetal == 1) {
 			this.work();
 		} else if (randomGetal == 2) {
@@ -1033,7 +1023,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public void setMoveToAdjacent(Cube cube) {
-		if (cube == null || isValidCube(cube))
+		if (cube == null || cube.isValidIn(this.getWorld()))
 			this.moveToAdjacent = cube;
 	}
 
@@ -1102,7 +1092,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public void setMoveToCube(Cube cube) {
-		if (cube == null || isValidCube(cube))
+		if (cube == null || cube.isValidIn(this.getWorld()))
 			this.moveToCube = cube;
 	}
 
@@ -1331,7 +1321,7 @@ public class Unit extends TimeVariableObject {
 		// dodging
 		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
 			Position nextPosition = null;
-			while (nextPosition == this.getPosition() || (!isValidPosition(nextPosition))) {
+			while (nextPosition == this.getPosition() || (!canHaveAsPosition(nextPosition))) {
 				Position minPosition = new Position(RANDOM_GEN.nextInt(3) - 1, RANDOM_GEN.nextInt(3) - 1, 0);
 				nextPosition = this.getPosition().min(minPosition);
 			}

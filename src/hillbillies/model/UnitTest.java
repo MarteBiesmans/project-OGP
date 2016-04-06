@@ -31,7 +31,9 @@ public class UnitTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionX() throws Exception {
-		new Unit(53.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		Unit testUnit = new Unit(53.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		World testWorld = new World(new int[50][50][50]);
+		testWorld.addUnit(testUnit);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
@@ -41,7 +43,9 @@ public class UnitTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionZ() throws Exception {
-		new Unit(3.1, 1.1, 105.9, "James O'Hara", 50, 50, 25, 55, true);
+		Unit testUnit = new Unit(3.1, 1.1, 105.9, "James O'Hara", 50, 50, 25, 55, true);
+		World testWorld = new World(new int[50][50][50]);
+		testWorld.addUnit(testUnit);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
