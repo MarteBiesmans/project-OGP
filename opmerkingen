@@ -3,6 +3,8 @@ extra uitleg bij arrays: https://www.youtube.com/watch?v=1q3brvLgYbs
 in unit mss best een onderverdeling maken in unitWeight/carriedWeight/totalWeight
 we hebben ze niet alle 3 nodig, maar ik weet nog niet welke de minste aanpassingen nodig heeft voor de rest
 want hun eigen gewicht moet aan voorwaarden voldoen en het totale gewicht bepaalt hun bewegingen
+	-> ik heb een functie gemaakt getTotalWeight(), wat ik van de opdracht opmaak is dat dit alleen de snelheid van de unit
+	zou moeten beïnvloeden, dus in de functie getMovementSpeed() roep ik deze functie op
 
 uit IFacade: Your <code>Facade</code> class should offer a <b>default constructor
 
@@ -13,7 +15,12 @@ mogelijke nadelen:
 1) Als ik dan in een functie getAllUnits gebruik om er weer over te itereren, 
 worden het misschien te veel iteraties over elkaar?
 2) addUnit wordt ingewikkelder, maar addFaction mss juist makkelijker
+	-> hmm, ik denk dat dit super ingewikkeld gaat worden... het porbleem is vooral of de klasse world dan wel de
+	methodes van unit gaat ondersteunen
 
 ik dacht om deze invariant te gebruiken en dus als een faction leeg is, die direct weg te halen 
 uit de world (faction.world wordt dan null)
 @invar	Each faction in a world should always be active, i.e. non-empty
+	-> heb ik ook aan gedacht, het zou sowieso geheugen besparen, maar er wordt in de opgave nergens gezegd dat er een
+	terminate() methode voor faction moet bestaan. En ik heb geen idee of dit ooit nog problemen kan geven. We moeten
+	dit eens bekijken
