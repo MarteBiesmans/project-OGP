@@ -15,8 +15,8 @@ import java.util.Set;
  */
 public class World extends TimeVariableObject {
 
-	public static int MAX_FACTIONS = 5;
-	public static int MAX_UNITS = 100;
+	static int MAX_FACTIONS = 5;
+	static int MAX_UNITS = 100;
 
 	/**
 	 * Initialize this World with given number of cubes.
@@ -47,15 +47,11 @@ public class World extends TimeVariableObject {
 	 * 
 	 * @param terrainTypes
 	 *            The array to check.
-	 * @return false if the given array terrainTypes is not cubical
 	 * @return false if the given array contains integers not in [0,3]
 	 */
-	private boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
+	boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
+		//TODO controleren of elke laag in 1 richting even groot is
 		
-		//TODO toch niet cubical :(
-		if ((terrainTypes.length != terrainTypes[0].length) || (terrainTypes.length != terrainTypes[0][0].length))
-			return false;
-
 		// iterate over the array terrainTypes
 		for (int x = 0; x < terrainTypes.length; x++)
 			for (int y = 0; y < terrainTypes[x].length; y++)
@@ -75,17 +71,6 @@ public class World extends TimeVariableObject {
 		return this.terrainTypes;
 	}
 
-	public void setTerrainType(Cube cube, TerrainType type) {
-		if (type == TerrainType.ROCK)
-			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 1;
-		else if (type == TerrainType.WOOD)
-			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 2;
-		else if (type == TerrainType.WORKSHOP)
-			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 3;
-		else
-			this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = 4;
-	}
-
 	/**
 	 * Variable registering the terrain types of this world in a
 	 * three-dimensional array.
@@ -97,7 +82,6 @@ public class World extends TimeVariableObject {
 	 */
 	@Immutable
 	public int getNbCubesX() {
-		//TODO toch niet cubical :(
 		return this.getTerrainTypesArray().length;
 	}
 	
@@ -106,8 +90,7 @@ public class World extends TimeVariableObject {
 	 */
 	@Immutable
 	public int getNbCubesY() {
-		//TODO toch niet cubical :(
-		return this.getTerrainTypesArray().length;
+		return this.getTerrainTypesArray()[0].length;
 	}
 	
 	/**
@@ -115,8 +98,7 @@ public class World extends TimeVariableObject {
 	 */
 	@Immutable
 	public int getNbCubesZ() {
-		//TODO toch niet cubical :(
-		return this.getTerrainTypesArray().length;
+		return this.getTerrainTypesArray()[0][0].length;
 	}
 
 	/**
@@ -142,7 +124,7 @@ public class World extends TimeVariableObject {
 	 * @throws	IllegalArgumentException
 	 * 			the given cube is not within the boundaries of this world
 	 */
-	public TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
+	TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		
@@ -157,24 +139,38 @@ public class World extends TimeVariableObject {
 			return TerrainType.AIR;
 	}
 
-	public boolean isPassableCube(Cube cube) {
+	/**
+	 * sets the terrain type of a given cube in this world to a given value
+	 * 
+	 * @param	cube
+	 * 			the cube to change
+	 * @param	type
+	 * 			the terrain type to set to
+	 * @throws	IllegalArgumentException
+	 * 			the given cube is not within the boundaries of this world
+	 */
+	public void setTerrainType(Cube cube, TerrainType type) throws IllegalArgumentException {
+		if (!cube.isValidIn(this))
+			throw new IllegalArgumentException();
+		this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = type.getAssociatedInt();
+	}
+
+	boolean isPassableCube(Cube cube) {
 		return this.getTerrainType(cube).isPassable();
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// UNITS//
 
-	// TODO: methodes uitwerken
-	public Set<Boulder> getBouldersIn(Cube cube) {
-		return null;
-	}
-
-	public Set<Log> getLogsIn(Cube cube) {
-		return null;
-	}
-
-	// public Material[] getMaterialsInCube(Cube cube){}
-
-	public void removeUnit(Unit unit) {
+	void removeUnit(Unit unit) {
 		if (!this.hasAsUnit(unit))
 			throw new IllegalArgumentException();
 		this.units.remove(unit);
@@ -187,7 +183,6 @@ public class World extends TimeVariableObject {
 		}
 	}
 
-	// public Material[] getMaterialsInCube(Cube cube){}
 
 	public void addUnit(Unit unit) {
 		if (canAddAsUnit(unit)) {
@@ -219,7 +214,7 @@ public class World extends TimeVariableObject {
 		}
 	}
 
-	public boolean canAddAsUnit(Unit unit) {
+	private boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead())
 			return false;
 		if (unit.getWorld() != null)
@@ -229,26 +224,25 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	public boolean hasAsUnit(Unit unit) {
+	boolean hasAsUnit(Unit unit) {
 		if (unit == null)
 			return false;
 		return this.units.contains(unit);
 	}
 
-	public int getNbUnits() {
+	int getNbUnits() {
 		return this.units.size();
 	}
 
-	public boolean hasProperUnits() {
+	boolean hasProperUnits() {
 		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getWorld() != this)
 				return false;
 		return true;
 	}
 
-	// is deze functie nodig? in de opgave staat dat alle objects in een cube
-	// moeten opgelijst
-	// kunnen worden, maar is een unit een 'object'?
+	// TODO is deze functie nodig? in de opgave staat dat alle objects in een cube
+	// moeten opgelijst kunnen worden, maar is een unit een 'object'?
 	/**
 	 * get all units in one cube of the game world presented as a set
 	 * 
@@ -258,7 +252,7 @@ public class World extends TimeVariableObject {
 	 * @throws	IllegalArgumentException
 	 * 			the given cube is not within the boundaries of this world
 	 */
-	public Set<Unit> getUnitsInCube(Cube cube) throws IllegalArgumentException {
+	Set<Unit> getUnitsInCube(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		
@@ -293,25 +287,28 @@ public class World extends TimeVariableObject {
 	// begrepen heb
 	// => zou dat niet gewoon een functie in Faction moeten zijn? zodat ge kunt doen
 	// faction.getAllUnits() ?
+	// => in de opgave staat (p4) dat world een method moet hebben om alle units
+	// op te lijsten per faction, maar ik weet niet of ze daar nu dit mee bedoelen
 	/**
 	 * Return all the units in this world present in a given faction.
 	 * 
 	 * @param faction
 	 *            the faction to which the returned units belong
 	 */
-	public Set<Unit> getAllUnits(Faction faction) {
+	Set<Unit> getAllUnits(Faction faction) {
 		return faction.getAllUnits();
 	}
+
+	private final Set<Unit> units;
 
 	public void spawnUnit() {
 		// TODO
 	}
 
-	private final Set<Unit> units;
-
+	
 	// FACTIONS//
-
-	public void addFaction(Faction faction) {
+	
+	void addFaction(Faction faction) {
 		if (!canAddAsFaction(faction))
 			throw new IllegalArgumentException();
 		this.factions.add(faction);
@@ -324,7 +321,7 @@ public class World extends TimeVariableObject {
 		}
 	}
 
-	public void removeFaction(Faction faction) {
+	void removeFaction(Faction faction) {
 		if (!this.hasAsFaction(faction))
 			throw new IllegalArgumentException();
 		this.factions.remove(faction);
@@ -337,7 +334,7 @@ public class World extends TimeVariableObject {
 		}
 	}
 
-	public boolean canAddAsFaction(Faction faction) {
+	boolean canAddAsFaction(Faction faction) {
 		if (faction.getWorld() != null)
 			return false;
 		if (this.getNbActiveFactions() == MAX_FACTIONS && faction.getNbUnits() > 0)
@@ -345,7 +342,11 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	public int getNbActiveFactions() {
+	
+	//TODO ik dacht om deze invariant te gebruiken en dus als een faction leeg is, die direct weg te halen 
+	//uit de world (faction.world wordt dan null)
+	//@invar	Each faction in a world should always be active, i.e. non-empty
+	int getNbActiveFactions() {
 		int counter = 0;
 		for (Faction faction : this.factions)
 			if (faction.getNbUnits() > 0)
@@ -353,24 +354,24 @@ public class World extends TimeVariableObject {
 		return counter;
 	}
 
-	public boolean hasAsFaction(Faction faction) {
+	boolean hasAsFaction(Faction faction) {
 		if (faction == null)
 			return false;
 		return this.factions.contains(faction);
 	}
 
-	public int getNbFactions() {
+	int getNbFactions() {
 		return this.factions.size();
 	}
 
 	/**
 	 * return all the factions present in this world as a set
 	 */
-	public Set<Faction> getAllFactions() {
+	Set<Faction> getAllFactions() {
 		return factions;
 	}
 
-	public boolean hasProperFactions() {
+	boolean hasProperFactions() {
 		for (Faction faction : this.factions)
 			if (faction == null || faction.getWorld() != this)
 				return false;
@@ -391,7 +392,7 @@ public class World extends TimeVariableObject {
 	 * @post This world has the given material as one of its materials. |
 	 *       new.hasAsMaterial(material)
 	 */
-	public void addMaterial(@Raw Material material) {
+	void addMaterial(@Raw Material material) {
 		if (!canHaveAsMaterial(material))
 			throw new IllegalArgumentException();
 		this.materials.add(material);
@@ -416,7 +417,7 @@ public class World extends TimeVariableObject {
 	 *       materials. | ! new.hasAsMaterial(material)
 	 */
 	@Raw
-	public void removeMaterial(Material material) {
+	void removeMaterial(Material material) {
 		if (!this.hasAsMaterial(material))
 			throw new IllegalArgumentException();
 		this.materials.remove(material);
@@ -438,7 +439,7 @@ public class World extends TimeVariableObject {
 	 *         owner)
 	 * @return false if the position of the material is not a passable cube
 	 */
-	public boolean canHaveAsMaterial(Material material) {
+	boolean canHaveAsMaterial(Material material) {
 		if (material == null)
 			return false;
 		if (material.getPosition() == null)
@@ -448,9 +449,6 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	/**
-	 * a set containing all the materials in this world.
-	 */
 
 	/**
 	 * get all logs in one cube of the game world presented as a set
@@ -461,17 +459,18 @@ public class World extends TimeVariableObject {
 	 * @throws	IllegalArgumentException
 	 * 			the given cube is not within the boundaries of this world
 	 */
-	public Set<Material> getLogsInCube(Cube cube) throws IllegalArgumentException {
+	Set<Log> getLogsIn(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		
-		Set<Material> result = new HashSet<Material>();
+		Set<Log> result = new HashSet<Log>();
 		
 		Iterator<Material> it = materials.iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
 			if ( (material.getPosition().getCube() == cube) && (Log.class.isInstance(material)) )
-				result.add(material);
+				//cast mag gebruikt worden, want je hebt net gecontroleerd of het een log is
+				result.add((Log) material);
 		}
 		
 		return result;
@@ -486,30 +485,58 @@ public class World extends TimeVariableObject {
 	 * @throws	IllegalArgumentException
 	 * 			the given cube is not within the boundaries of this world
 	 */
-	public Set<Material> getBouldersInCube(Cube cube) throws IllegalArgumentException {
+	Set<Boulder> getBouldersIn(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
-		Set<Material> result = new HashSet<Material>();
+		Set<Boulder> result = new HashSet<Boulder>();
 
 		Iterator<Material> it = materials.iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
 			if ( (material.getPosition().getCube() == cube) && (Boulder.class.isInstance(material)) )
-				result.add(material);
+				//cast mag gebruikt worden, want je hebt net gecontroleerd of het een boulder is
+				result.add((Boulder) material);
 		}
 
 		return result;
 	}
 	
+	
+	/**
+	 * return a set containing all the logs in this world
+	 */
 	public Set<Log> getAllLogs() {
-		//TODO
-		return null;
+		Set<Log> result = new HashSet<Log>();
+		
+		Iterator<Material> it = materials.iterator();
+		while (it.hasNext()) {
+			Material material = it.next();
+			if (Log.class.isInstance(material))
+				//cast mag gebruikt worden, want je hebt net gecontroleerd of het een log is
+				result.add((Log) material);
+		}
+		
+		return result;
 	}
 	
+	
+	/**
+	 * return a set containing all the boulders in this world
+	 */
 	public Set<Boulder> getAllBoulders() {
-		//TODO
-		return null;
+		Set<Boulder> result = new HashSet<Boulder>();
+
+		Iterator<Material> it = materials.iterator();
+		while (it.hasNext()) {
+			Material material = it.next();
+			if (Boulder.class.isInstance(material))
+				//cast mag gebruikt worden, want je hebt net gecontroleerd of het een boulder is
+				result.add((Boulder) material);
+		}
+
+		return result;
 	}
+	
 	
 	/**
 	 * Check whether this world has the given material as one of its materials.
@@ -519,7 +546,7 @@ public class World extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	public boolean hasAsMaterial(@Raw Material material) {
+	boolean hasAsMaterial(@Raw Material material) {
 		return materials.contains(material);
 	}
 
@@ -533,7 +560,7 @@ public class World extends TimeVariableObject {
 	 *         (hasAsMaterial(material)) | then canHaveAsMaterial(material) && |
 	 *         (material.getWorld() == this)
 	 */
-	public boolean hasProperMaterials() {
+	boolean hasProperMaterials() {
 		for (Material material : materials) {
 			if (!canHaveAsMaterial(material))
 				return false;
@@ -549,7 +576,7 @@ public class World extends TimeVariableObject {
 	 * @return The total number of materials collected in this world. | result
 	 *         == | card({material:Material | hasAsMaterial({material)})
 	 */
-	public int getNbMaterials() {
+	int getNbMaterials() {
 		return materials.size();
 	}
 
@@ -562,7 +589,7 @@ public class World extends TimeVariableObject {
 	 *        (material != null) && | (! material.isTerminated()) )
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
-	
+	//TODO waarom is dit final? dat kan toch wijzigen in de loop van het spel?
 	
 	
 	

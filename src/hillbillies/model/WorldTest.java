@@ -26,24 +26,6 @@ public class WorldTest {
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void constructorWorld_IllegalDimensionsTerrainTypes1() {
-		int[][][] terrainTypes = new int[50][50][60];
-		new World(terrainTypes);
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
-	public void constructorWorld_IllegalDimensionsTerrainTypes2() {
-		int[][][] terrainTypes = new int[50][60][50];
-		new World(terrainTypes);
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
-	public void constructorWorld_IllegalDimensionsTerrainTypes3() {
-		int[][][] terrainTypes = new int[60][50][50];
-		new World(terrainTypes);
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
 	public void constructorWorld_IllegalNumberInTerrainTypes() {
 		int[][][] terrainTypes = new int[50][50][50];
 		terrainTypes[49][49][49] = 4;
@@ -52,8 +34,29 @@ public class WorldTest {
 	
 	@Test
 	public void getNbCubesX() {
+		int[][][] terrainTypes = new int[60][50][50];
+		World testWorld = new World(terrainTypes);
+		assertEquals(testWorld.getNbCubesX(), 60);
+	}
+	
+	@Test
+	public void getNbCubesY() {
+		int[][][] terrainTypes = new int[50][60][50];
+		World testWorld = new World(terrainTypes);
+		assertEquals(testWorld.getNbCubesY(), 60);
+	}
+	
+	@Test
+	public void getNbCubesZ() {
+		int[][][] terrainTypes = new int[50][50][60];
+		World testWorld = new World(terrainTypes);
+		assertEquals(testWorld.getNbCubesZ(), 60);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void getTerrainTypeInt_IllegalCube() {
 		int[][][] terrainTypes = new int[50][50][50];
 		World testWorld = new World(terrainTypes);
-		assertEquals(testWorld.getNbCubesX(), 50);
+		testWorld.getTerrainTypeInt(new Cube(100,100,100));
 	}
 }

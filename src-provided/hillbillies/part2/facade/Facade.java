@@ -69,8 +69,17 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
-		// TODO Auto-generated method stub
-
+		Cube cube = new Cube(x,y,z);
+		
+		TerrainType type = TerrainType.AIR;
+		if (value == 1)
+			type = TerrainType.ROCK;
+		else if (value == 2)
+			type = TerrainType.WOOD;
+		else if (value == 3)
+			type = TerrainType.WORKSHOP;
+		
+		world.setTerrainType(cube, type);
 	}
 
 	@Override

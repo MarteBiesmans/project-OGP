@@ -43,7 +43,6 @@ public abstract class Material extends TimeVariableObject {
 
 		// create random weight between 10 and 50
 		// Min + RANDOM_GEN.nextInt(Max - Min) + 1)
-		// TODO: todo is opgelost dmv RANDOM_GEN ipv Math.random
 		this.weight = 10 + RANDOM_GEN.nextInt(41);
 	}
 
