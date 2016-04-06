@@ -51,9 +51,9 @@ public class WorldTest {
 	}
 	
 	@Test
-	public void getNbCubes() {
+	public void getNbCubesX() {
 		int[][][] terrainTypes = new int[50][50][50];
 		World testWorld = new World(terrainTypes);
-		assertEquals(testWorld.getNbCubes(), 50);
+		assertEquals(testWorld.getNbCubesX(), 50);
 	}
 }

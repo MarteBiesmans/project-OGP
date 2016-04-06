@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -7,39 +9,44 @@ import be.kuleuven.cs.som.annotate.*;
  *         material.
  * @invar  Each Material can have its weight as weight.
  * @invar	Each material that is not carried by a unit is located in a passable cube
- *         
+ * @invar The world of each material must be a valid world for any material. |
+ *        isValidWorld(getWorld())
+ * 
  * @author Ellen & Marte
  *
  */
 public abstract class Material extends TimeVariableObject {
 
+	private static final Random RANDOM_GEN = new Random();
+
 	/**
 	 * Initialize this new material with given position.
 	 *
-	 * @param	position
-	 *          The position for this new material.
-	 * @param	world
-	 * 			The world where this material is located.
-	 * @effect	The position of this new material is set to the given position.
-	 * @effect	The world where this new material is located is set to the given world.
-	 * @effect	The owner of this new material is set to null.
-	 * @effect	The weight of this new material is given a random value in the range [10, 50].
+	 * @param position
+	 *            The position for this new material.
+	 * @param world
+	 *            The world where this material is located.
+	 * @effect The position of this new material is set to the given position.
+	 * @effect The world where this new material is located is set to the given
+	 *         world.
+	 * @effect The owner of this new material is set to null.
+	 * @effect The weight of this new material is given a random value in the
+	 *         range [10, 50].
 	 */
 	public Material(World world, Position position) throws IllegalArgumentException {
 		this.world = world;
 		this.owner = null;
-		
+
 		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
 		this.setPosition(position);
-		
-		//create random weight between 10 and 50
-		//Min + (int)(Math.random() * ((Max - Min) + 1))
-		//TODO kan dit 51 worden door afrondingsfouten?
-		this.weight = 10 + (int)(Math.random() * ((50 - 10) + 1));
+
+		// create random weight between 10 and 50
+		// Min + RANDOM_GEN.nextInt(Max - Min) + 1)
+		// TODO: todo is opgelost dmv RANDOM_GEN ipv Math.random
+		this.weight = 10 + RANDOM_GEN.nextInt(41);
 	}
 
-	
 	/**
 	 * Return the position of this material.
 	 */
@@ -57,7 +64,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return	false if the cube of the position is not passable
 	 */
 	public boolean canHaveAsPosition(Position position) {
-		if ( ! this.getWorld().getTerrainType(position.getCube()).isPassable() )
+		if (!this.getWorld().getTerrainType(position.getCube()).isPassable())
 			return false;
 		return true;
 	}
@@ -65,15 +72,16 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Check whether this material should fall.
 	 * 
-	 * @return	true if the cube of the position is not directly above a solid cube 
-	 * 			or if the z-coordinate is not 0
+	 * @return	true if the cube of the position is not directly above a solid cube
+	 * @return	false if the z-coordinate is 0
+	 * @return	false if the material is carried by a unit, thus position equals null
 	 */
 	public boolean shouldFall() {
 		if (this.getPosition()==null)
 			return false;
 		
-		if (this.getPosition().getCube().getZ() != 0)
-			return true;
+		if (this.getPosition().getCube().getZ() == 0)
+			return false;
 		Cube cubeBelow = new Cube(this.getPosition().getCube().getX(), 
 								this.getPosition().getCube().getY(), 
 								this.getPosition().getCube().getZ()-1);
@@ -87,11 +95,11 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Set the position of this material to the given position.
 	 * 
-	 * @param	position
-	 *          The new position for this material.
-	 * @post	The position of this new material is equal to the given position.
-	 * @throws	IllegalArgumentException
-	 *          The given position is not a valid position for this material.
+	 * @param position
+	 *            The new position for this material.
+	 * @post The position of this new material is equal to the given position.
+	 * @throws IllegalArgumentException
+	 *             The given position is not a valid position for this material.
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
@@ -100,14 +108,18 @@ public abstract class Material extends TimeVariableObject {
 		this.position = position;
 	}
 
+	public void setPosition(Position position, World world) {
+		this.owner = null;
+		world.addMaterial(this);
+		this.setPosition(position);
+	}
+
 	/**
 	 * Variable registering the position of this material,
 	 * can be null if it is being carried
 	 */
 	private Position position;
-	
-	
-	
+
 	/**
 	 * Return the owner carrying this material.
 	 */
@@ -120,9 +132,10 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Check whether the given owner is a valid owner for this material.
 	 * 
-	 * @param	owner
-	 * 			The owner to check.
-	 * @return	false if the owner is already carrying a maximum of materials TODO is er een max? hoeveel?
+	 * @param owner
+	 *            The owner to check.
+	 * @return false if the owner is already carrying a maximum of materials
+	 *         TODO is er een max? hoeveel?
 	 */
 	public boolean canHaveAsOwner(Unit owner) {
 		return true;
@@ -131,19 +144,22 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Set the unit carrying this material to the given owner.
 	 * 
-	 * @param	owner
-	 *          The new owner for this material.
-	 * @post	The unit carrying this  material is equal to the given owner.
-	 * @post	The position of this material is null.
-	 * @throws	IllegalArgumentException
-	 *          The given owner is not a valid owner for this material.
+	 * @param owner
+	 *            The new owner for this material.
+	 * @post The unit carrying this material is equal to the given owner.
+	 * @post The position of this material is null.
+	 * @throws IllegalArgumentException
+	 *             The given owner is not a valid owner for this material.
 	 */
 	@Raw
 	public void setOwner(Unit owner) throws IllegalArgumentException {
 		if (!canHaveAsOwner(owner))
 			throw new IllegalArgumentException();
 		this.setPosition(null);
+		this.getWorld().removeMaterial(this);
 		this.owner = owner;
+		// TODO: this.world.remove(this) + zorgen dat deze methode this.world =
+		// null zet
 	}
 
 	/**
@@ -151,21 +167,53 @@ public abstract class Material extends TimeVariableObject {
 	 * can be null if it is not carried.
 	 */
 	private Unit owner;
-	
-	
+
 	/**
-	 * Return the world where this material is located.
+	 * Return the world of this material.
 	 */
+	@Basic
 	@Raw
-	public World getWorld(){
+	public World getWorld() {
 		return this.world;
 	}
-	
+
 	/**
-	 * Variable registering the world where this material is located.
+	 * Check whether the given world is a valid world for any material.
+	 * 
+	 * @param world
+	 *            The world to check.
+	 * @return | result ==
 	 */
-	private final World world;
-	
+	public boolean canHaveAsWorld(World world) {
+		return (world != null && world.hasAsMaterial(this) && this.getWorld() == null);
+	}
+
+	/**
+	 * Set the world of this material to the given world.
+	 * 
+	 * @param world
+	 *            The new world for this material.
+	 * @post The world of this new material is equal to the given world. |
+	 *       new.getWorld() == world
+	 * @throws IllegalArgumentException
+	 *             The given world is not a valid world for any material. | !
+	 *             isValidWorld(getWorld())
+	 */
+	@Raw
+	public void setWorld(World world) throws IllegalArgumentException {
+		if (world != null) {
+			if (canHaveAsWorld(world))
+				throw new IllegalArgumentException();
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsMaterial(this)))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	/**
+	 * Variable registering the world of this material.
+	 */
+	private World world;
+
 
 	/**
 	 * Return the weight of this material.
@@ -177,7 +225,6 @@ public abstract class Material extends TimeVariableObject {
 		return this.weight;
 	}
 
-	
 	/**
 	 * Variable registering the weight of this Material.
 	 */
@@ -249,8 +296,4 @@ public abstract class Material extends TimeVariableObject {
 									 this.getPosition().getRealZ() + zVelocity * seconds);
 		this.setPosition(next);
 	}
-	
-	
-	
-	
 }

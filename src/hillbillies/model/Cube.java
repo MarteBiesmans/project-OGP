@@ -71,8 +71,8 @@ public class Cube {
 	}
 
 	public boolean isValidCubeCoordinate(int x, int y, int z, World world) {
-		if ((x < 0) || (x > world.getNbCubes()) || (y < 0) || (y > world.getNbCubes()) || (z < 0)
-				|| (z > world.getNbCubes()))
+		if ((x < 0) || (x > world.getNbCubesX()) || (y < 0) || (y > world.getNbCubesY()) || (z < 0)
+				|| (z > world.getNbCubesZ()))
 			return false;
 		return true;
 	}
@@ -118,11 +118,16 @@ public class Cube {
 	public Cube min(Cube other) {
 		return new Cube(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
 	}
-	
+
 	public boolean equals(Cube other) {
-		return (this.getX() == other.getX() && 
-				this.getY() == other.getY() && 
-				this.getZ() == other.getZ());
+		return (this.getX() == other.getX() && this.getY() == other.getY() && this.getZ() == other.getZ());
+	}
+
+	public boolean isSameOrAdjacentCube(Cube other) {
+		Cube cubeDiff = this.min(other);
+		return ((cubeDiff.getX() == -1 || cubeDiff.getX() == 0 || cubeDiff.getX() == 1)
+				&& (cubeDiff.getY() == -1 || cubeDiff.getY() == 0 || cubeDiff.getY() == 1)
+				&& (cubeDiff.getZ() == -1 || cubeDiff.getZ() == 0 || cubeDiff.getZ() == 1));
 	}
 
 }
