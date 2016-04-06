@@ -90,8 +90,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.spawnUnit(enableDefaultBehavior);
 	}
 
 	@Override

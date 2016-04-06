@@ -1,10 +1,9 @@
 package hillbillies.model;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import be.kuleuven.cs.som.annotate.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 
@@ -15,6 +14,7 @@ import java.util.Set;
  */
 public class World extends TimeVariableObject {
 
+	private static final Random RANDOM_GEN = new Random();
 	static int MAX_FACTIONS = 5;
 	static int MAX_UNITS = 100;
 
@@ -301,8 +301,50 @@ public class World extends TimeVariableObject {
 
 	private final Set<Unit> units;
 
-	public void spawnUnit() {
-		// TODO
+	/**
+	 * create a random unit in this world
+	 * 
+	 * @param	enableDefaultBehaviour
+	 * 			specify wether default behaviour should be enabled for this random unit 
+	 * @return	a new unit part of this world with random stable position, 
+	 * 			random valid initial values, name randomly chosen between 'Ellen' and 'Marte' 
+	 * 			and default behaviour enabled depending on the given value
+	 */
+	public Unit spawnUnit(boolean enableDefaultBehaviour) {
+		//create random stable position
+		Position position = null;
+		while ( (position==null) || (!position.isStableForUnitIn(this)) ) {
+			double x = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesX());
+			double y = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesY());
+			double z = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesZ());
+			position = new Position(x,y,z);				
+		}
+		
+		//choose name random between Ellen and Marte
+		double variable = RANDOM_GEN.nextDouble();
+		String name = null;
+		if (variable<0.5)
+			name = "Ellen";
+		else
+			name = "Marte";
+		
+		//create random initial strength, agility, toughness between 25 and 100
+		// Min + RANDOM_GEN.nextInt(Max - Min) + 1)
+		int strength = 25 + RANDOM_GEN.nextInt(76);
+		int agility = 25 + RANDOM_GEN.nextInt(76);
+		int toughness = 25 + RANDOM_GEN.nextInt(76);
+		
+		//create random initial weight between 25 and 100 that is at least (strength+agility)/2
+		int minimumWeight = Math.min(25, (int) Math.ceil((double) ((strength + agility) / 2.0)) );
+		int weight = minimumWeight + RANDOM_GEN.nextInt((100-minimumWeight)+1);
+		
+		
+		Unit unit = new Unit(position.getRealX(), position.getRealY(), position.getRealZ()
+						,name,strength,agility,toughness,weight,enableDefaultBehaviour);
+		this.addUnit(unit);
+		
+		return unit;
+		
 	}
 
 	

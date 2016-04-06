@@ -64,13 +64,13 @@ public class Cube {
 		this.z = z;
 	}
 
-	public boolean isValidCubeCoordinate(int x, int y, int z) {
+	private boolean isValidCubeCoordinate(int x, int y, int z) {
 		if ((x < 0) || (y < 0) || (z < 0))
 			return false;
 		return true;
 	}
 
-	public boolean isValidCubeCoordinate(int x, int y, int z, World world) {
+	private boolean isValidCubeCoordinate(int x, int y, int z, World world) {
 		if ((x < 0) || (x > world.getNbCubesX()) || (y < 0) || (y > world.getNbCubesY()) || (z < 0)
 				|| (z > world.getNbCubesZ()))
 			return false;

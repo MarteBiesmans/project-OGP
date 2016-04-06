@@ -105,10 +105,12 @@ public class Unit extends TimeVariableObject {
 	 * @post The time that the unit is busy is 0 seconds. | new.getBusyTime == 0
 	 * @post The position of the unit is equal to the given position. |
 	 *       new.getPosition == Position(x, y, z).toCube()
-	 * @post The hitpoints of this new unit are equal to the given hitpoints. |
+	 * @post The hitpoints of this new unit are equal to the maximum possible hitpoints. |
 	 *       new.getHitpoints() == hitpoints
-	 * @post The stamina points of this new unit are equal to the given stamina
-	 *       points. | new.getStaminaPoints() == staminaPoints TODO andere
+	 * @post The stamina points of this new unit are equal to the maximum possible stamina
+	 *       points. | new.getStaminaPoints() == staminaPoints
+	 *       
+	 *       TODO andere
 	 *       post-condities, iets met @param
 	 * @post This new unit has no materials yet. | new.getNbMaterials() == 0
 	 * 
@@ -1229,6 +1231,7 @@ public class Unit extends TimeVariableObject {
 	}
 	
 	public boolean canStartFalling() {
+		//TODO volgens mij moet hier && staan ipv ||, want alle neigbouring cubes moeten passable zijn
 		return (this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) ||
 				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) ||
 				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) ||

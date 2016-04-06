@@ -87,4 +87,91 @@ public class Position {
 	public double getRealZ() {
 		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
 		}
+	
+	/**
+	 * check wether this position is valid for a given world
+	 * 
+	 * @param	world
+	 * 			the world to check
+	 * @return	false if the given world equals null
+	 * @return	false if the position is not within the boundaries of the given world
+	 */
+	public boolean isValidIn(World world) {
+		
+		if (world==null)
+			return false;
+		
+		return !(this.getRealX() < 0 || this.getRealX() > world.getNbCubesX() 
+			  || this.getRealY() < 0 || this.getRealY() > world.getNbCubesY() 
+			  || this.getRealZ() < 0 || this.getRealZ() > world.getNbCubesZ());
+	}
+	
+	/**
+	 * check wether this position is valid for any object in a given world
+	 * 
+	 * @param	world
+	 * 			the world to check
+	 * @return	false if the position is not valid in the given world
+	 * @return	false if the cube where the position is located is not passable
+	 */
+	public boolean isValidForObjectIn(World world) {
+		if (! this.isValidIn(world))
+			return false;
+		if (! world.isPassableCube(this.getCube()))
+			return false;		
+		return true;
+	}
+	
+	/**
+	 * check wether this position is stable for any unit in a given world
+	 * 
+	 * @param	world
+	 * 			the world to check
+	 * @return	false if the position is not valid for any unit in the given world
+	 * @return	false if all the neigbouring cubes are passable
+	 */
+	public boolean isStableForUnitIn(World world) {
+		if (! this.isValidForObjectIn(world))
+			return false;
+		if (world.isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(1, 0, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(1, 0, 1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(1, 1, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(1, 1, 1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(0, 0, -1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(0, -1, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(0, -1, -1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(-1, 0, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(-1, 0, -1))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(-1, -1, 0))) &&
+			world.isPassableCube((this.getCube()).min(new Cube(-1, -1, -1))) )
+			return false;
+		
+		return true;
+	}
+	
+	
+	/**
+	 * check wether this position is stable for any material in a given world
+	 * 
+	 * @param	world
+	 * 			the world to check
+	 * @return	false if the position is not valid for any object in the given world
+	 * @return	false if the cube of the position is not directly above a solid cube and 
+	 * 				the z-coordinate of the cube is not 0
+	 */
+	public boolean isStableForMaterialIn(World world) {
+		if (! this.isValidForObjectIn(world))
+			return false;
+		Cube cubeBelow = new Cube(this.getCube().getX(), 
+								this.getCube().getY(), 
+								this.getCube().getZ()-1);
+		if ( (this.getCube().getZ() != 0) &&
+			 (world.isPassableCube(cubeBelow)) )
+			return false;	
+		return true;
+	}
+	
 }
