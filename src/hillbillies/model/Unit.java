@@ -1221,42 +1221,48 @@ public class Unit extends TimeVariableObject {
 	}
 	
 	public boolean canStartFalling() {
-		//TODO volgens mij moet hier && staan ipv ||, want alle neigbouring cubes moeten passable zijn
-		return (this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, -1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, -1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, -1))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, 0))) ||
-				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, -1))));
+		//TODO hieronder maak je cubes aan met negatieve xyz, geeft errors
+//		return (this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, -1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, -1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, -1))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, 0))) ||
+//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, -1))));
+		return this.getPosition().isStableForUnitIn(this.getWorld());
 	}
 	
 	public boolean canStartFallingAt(Cube cube) {
-		return (this.getWorld().isPassableCube(cube.min(new Cube(0, 0, 1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(0, 0, -1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, -1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, -1))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, 0))) ||
-				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, -1))));
+		//TODO hieronder maak je cubes aan met negatieve xyz, geeft errors
+//		return (this.getWorld().isPassableCube(cube.min(new Cube(0, 0, 1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(0, 0, -1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, -1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, -1))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, 0))) ||
+//				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, -1))));
+		Position position = new Position(cube.getX(), cube.getY(), cube.getZ());
+		return position.isStableForUnitIn(this.getWorld());
 	}
 	
 	public boolean canStopFalling() {
-		return (this.isFalling() && !this.world.isPassableCube(this.getCube().min(new Cube(0, 0, 1))));
+//		return (this.isFalling() && !this.world.isPassableCube(this.getCube().min(new Cube(0, 0, 1))));
+		return (this.isFalling() && !(this.getCube().min(new Cube(0, 0, 1)) ).isPassableIn(this.getWorld()));
+
 	}
 
 	private Activity activity;
@@ -1352,7 +1358,7 @@ public class Unit extends TimeVariableObject {
 
 	public void setWorld(World world) {
 		if (world != null) {
-			if (canHaveAsWorld(world))
+			if ( ! canHaveAsWorld(world))
 				throw new IllegalArgumentException();
 		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
 			throw new IllegalArgumentException();
@@ -1371,7 +1377,7 @@ public class Unit extends TimeVariableObject {
 
 	public void setFaction(Faction faction) throws IllegalArgumentException {
 		if (faction != null) {
-			if (canHaveAsFaction(faction))
+			if (! canHaveAsFaction(faction))
 				throw new IllegalArgumentException();
 		} else if ((this.getFaction() != null) && (this.getFaction().hasAsUnit(this)))
 			throw new IllegalArgumentException();

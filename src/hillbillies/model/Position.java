@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.Iterator;
+
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -117,7 +119,7 @@ public class Position {
 	public boolean isValidForObjectIn(World world) {
 		if (! this.isValidIn(world))
 			return false;
-		if (! world.isPassableCube(this.getCube()))
+		if (! this.getCube().isPassableIn(world))
 			return false;		
 		return true;
 	}
@@ -128,28 +130,20 @@ public class Position {
 	 * @param	world
 	 * 			the world to check
 	 * @return	false if the position is not valid for any unit in the given world
-	 * @return	false if all the neigbouring cubes are passable
+	 * @return	true if the position is valid and at least one neigbouring cube is solid/impassable
 	 */
 	public boolean isStableForUnitIn(World world) {
 		if (! this.isValidForObjectIn(world))
 			return false;
-		if (world.isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(1, 0, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(1, 0, 1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(1, 1, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(1, 1, 1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(0, 0, -1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(0, -1, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(0, -1, -1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(-1, 0, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(-1, 0, -1))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(-1, -1, 0))) &&
-			world.isPassableCube((this.getCube()).min(new Cube(-1, -1, -1))) )
-			return false;
 		
-		return true;
+		Iterator<Cube> it = this.getCube().getAllAdjacentCubes(world).iterator();
+		while (it.hasNext()) {
+			Cube NeighbouringCube = it.next();
+			if (!NeighbouringCube.isPassableIn(world))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	
@@ -169,9 +163,57 @@ public class Position {
 								this.getCube().getY(), 
 								this.getCube().getZ()-1);
 		if ( (this.getCube().getZ() != 0) &&
-			 (world.isPassableCube(cubeBelow)) )
+			 (cubeBelow.isPassableIn(world)) )
 			return false;	
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "(" + this.getRealX() + "," + this.getRealY() + "," + this.getRealZ() + ")";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cube == null) ? 0 : cube.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(z);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Position other = (Position) obj;
+		if (cube == null) {
+			if (other.cube != null)
+				return false;
+		} else if (!cube.equals(other.cube))
+			return false;
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+			return false;
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
+			return false;
+		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
+			return false;
+		return true;
+	}
 }

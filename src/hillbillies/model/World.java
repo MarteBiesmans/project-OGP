@@ -30,6 +30,7 @@ public class World extends TimeVariableObject {
 	 * @post The terrain types of this new world are equal to the given terrain
 	 *       types.
 	 * @post This new world has no materials yet. | new.getNbMaterials() == 0
+	 * @effect	update the private instance connectedUtil to be able to use the given algorithms in ConnectedToBorder
 	 * @throws IllegalArgumentException
 	 *             terrainTypes is not valid for this world
 	 */
@@ -37,10 +38,16 @@ public class World extends TimeVariableObject {
 		if (!canHaveAsTerrainTypes(terrainTypes))
 			throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
+		
 		this.units = new HashSet<Unit>();
 		this.factions = new HashSet<Faction>();
 	}
 
+	
+	
+	
+	//TERRAIN//
+	
 	/**
 	 * Check if the three-dimensional array terrainTypes is valid for this
 	 * world.
@@ -51,6 +58,7 @@ public class World extends TimeVariableObject {
 	 */
 	boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
 		//TODO controleren of elke laag in 1 richting even groot is
+		//TODO controleren of er geen cave-ins moeten gebeuren
 		
 		// iterate over the array terrainTypes
 		for (int x = 0; x < terrainTypes.length; x++)
@@ -76,7 +84,7 @@ public class World extends TimeVariableObject {
 	 * three-dimensional array.
 	 */
 	private int[][][] terrainTypes;
-
+	
 	/**
 	 * Return the number of cubes in the X direction of this world.
 	 */
@@ -146,6 +154,9 @@ public class World extends TimeVariableObject {
 	 * 			the cube to change
 	 * @param	type
 	 * 			the terrain type to set to
+	 * @effect	update the private instance connectedUtil to be able to use 
+	 * 			the given algorithms in ConnectedToBorder
+	 * @effect	if necessary initiate cave-in
 	 * @throws	IllegalArgumentException
 	 * 			the given cube is not within the boundaries of this world
 	 */
@@ -153,11 +164,23 @@ public class World extends TimeVariableObject {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = type.getAssociatedInt();
+		
+//		List<int[]> caveIns = null;
+//		//TODO extra voorwaarde: cube moet connected to border zijn, method in cube aanmaken isConnectedToBorder
+//		if (type.isPassable() && !this.getTerrainType(cube).isPassable()) {
+//			caveIns = connectedUtil.changeSolidToPassable(cube.getX(), cube.getY(), cube.getZ());
+//			for (int[] cube1 : caveIns)
+//				
+//		}
+//		
+//		if (!type.isPassable() && this.getTerrainType(cube).isPassable()) {
+//			caveIns = connectedUtil.changePassableToSolid(cube.getX(), cube.getY(), cube.getZ());
+//		}
 	}
 
-	boolean isPassableCube(Cube cube) {
-		return this.getTerrainType(cube).isPassable();
-	}
+//	boolean isPassableCube(Cube cube) {
+//		return this.getTerrainType(cube).isPassable();
+//	}
 
 	
 	
@@ -317,8 +340,13 @@ public class World extends TimeVariableObject {
 			double x = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesX());
 			double y = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesY());
 			double z = ThreadLocalRandom.current().nextDouble(0, this.getNbCubesZ());
-			position = new Position(x,y,z);				
+			position = new Position(x,y,z);
 		}
+		
+//		System.out.println("random positie");
+//		System.out.println(position.getRealX());
+//		System.out.println(position.getRealY());
+//		System.out.println(position.getRealZ());
 		
 		//choose name random between Ellen and Marte
 		double variable = RANDOM_GEN.nextDouble();
@@ -338,11 +366,9 @@ public class World extends TimeVariableObject {
 		int minimumWeight = Math.min(25, (int) Math.ceil((double) ((strength + agility) / 2.0)) );
 		int weight = minimumWeight + RANDOM_GEN.nextInt((100-minimumWeight)+1);
 		
-		
 		Unit unit = new Unit(position.getRealX(), position.getRealY(), position.getRealZ()
 						,name,strength,agility,toughness,weight,enableDefaultBehaviour);
 		this.addUnit(unit);
-		
 		return unit;
 		
 	}
@@ -486,7 +512,7 @@ public class World extends TimeVariableObject {
 			return false;
 		if (material.getPosition() == null)
 			return false;
-		if (!this.isPassableCube(material.getPosition().getCube()))
+		if (! material.getPosition().getCube().isPassableIn(this))
 			return false;
 		return true;
 	}
@@ -543,6 +569,12 @@ public class World extends TimeVariableObject {
 		return result;
 	}
 	
+	/**
+	 * return a set containing all the materials in this world
+	 */
+	public Set<Material> getAllMaterials() {
+		return this.materials;
+	}
 	
 	/**
 	 * return a set containing all the logs in this world
@@ -550,7 +582,7 @@ public class World extends TimeVariableObject {
 	public Set<Log> getAllLogs() {
 		Set<Log> result = new HashSet<Log>();
 		
-		Iterator<Material> it = materials.iterator();
+		Iterator<Material> it = this.getAllMaterials().iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
 			if (Log.class.isInstance(material))
@@ -568,7 +600,7 @@ public class World extends TimeVariableObject {
 	public Set<Boulder> getAllBoulders() {
 		Set<Boulder> result = new HashSet<Boulder>();
 
-		Iterator<Material> it = materials.iterator();
+		Iterator<Material> it = this.getAllMaterials().iterator();
 		while (it.hasNext()) {
 			Material material = it.next();
 			if (Boulder.class.isInstance(material))
@@ -589,7 +621,7 @@ public class World extends TimeVariableObject {
 	@Basic
 	@Raw
 	boolean hasAsMaterial(@Raw Material material) {
-		return materials.contains(material);
+		return this.getAllMaterials().contains(material);
 	}
 
 	/**
@@ -603,7 +635,7 @@ public class World extends TimeVariableObject {
 	 *         (material.getWorld() == this)
 	 */
 	boolean hasProperMaterials() {
-		for (Material material : materials) {
+		for (Material material : this.getAllMaterials()) {
 			if (!canHaveAsMaterial(material))
 				return false;
 			if (material.getWorld() != this)
@@ -619,7 +651,7 @@ public class World extends TimeVariableObject {
 	 *         == | card({material:Material | hasAsMaterial({material)})
 	 */
 	int getNbMaterials() {
-		return materials.size();
+		return this.getAllMaterials().size();
 	}
 
 	/**
@@ -642,9 +674,26 @@ public class World extends TimeVariableObject {
 	
 	
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		// if (seconds < 0 || seconds >= 0.2)
-		// throw new IllegalArgumentException();
-		//	 this.busyTimeMin(seconds);
-		// TODO
+//		if (seconds < 0 || seconds >= 0.2)
+//			throw new IllegalArgumentException();
+//		this.busyTimeMin(seconds);
+//		TODO work in progress
+		//update terrainTypes
+		
+		// iterate over the array terrainTypes
+//		for (int x = 0; x < terrainTypes.length; x++)
+//			for (int y = 0; y < terrainTypes[x].length; y++)
+//				for (int z = 0; z < terrainTypes[x][y].length; z++)
+					
+		
+		//advanceTime voor elke unit
+		for (Unit unit : this.getAllUnits())
+			unit.advanceTime(seconds);
+		
+		//advanceTime voor elk material
+		for (Material material : this.getAllMaterials())
+			material.advanceTime(seconds);
+		
+		
 	}
 }

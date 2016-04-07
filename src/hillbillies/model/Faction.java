@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Faction {
 
-	private final int MAX_UNITS = 50;
+	final static int MAX_UNITS = 50;
 
 	public Faction() {
 		this.units = new HashSet<Unit>();
@@ -91,7 +91,7 @@ public class Faction {
 
 	public void setWorld(World world) {
 		if (world != null) {
-			if (this.canHaveAsWorld(world))
+			if (! this.canHaveAsWorld(world))
 				throw new IllegalArgumentException();
 		} else if ((this.getWorld() != null) && (this.getWorld().hasAsFaction(this)))
 			throw new IllegalArgumentException();
