@@ -943,25 +943,43 @@ public class Unit extends TimeVariableObject {
 
 	private void beingUseless(float seconds) {
 		int randomGetal = RANDOM_GEN.nextInt(4);
-		if (randomGetal == 0) {
+		if (randomGetal == 0 && this.getPotentialEnemies().size() != 0) {
+			// fight potential enemies
+		} else {
+			randomGetal = RANDOM_GEN.nextInt(3);
+			if (randomGetal == 0) {
 			// moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN,
-			// RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
-			// RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
-			int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
-			int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
-			int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
-			moveTo(x, y, z);
+						// RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
+						// RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
+						int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
+						int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
+						int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
+						moveTo(x, y, z);
+			
 		} else if (randomGetal == 1) {
 			this.work();
-		} else if (randomGetal == 2) {
+			
+		} else {
 			this.rest();
 			double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
 			double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
 					/ this.getToughness();
 			this.setBusyTime(hitpointsTime + staminaTime);
-		} else {
-			// TODO: fight potential enemies
 		}
+		}
+	}
+
+	//TODO
+	private Set<Unit> getPotentialEnemies() {
+		Set<Unit> allEnemies = new HashSet<Unit>();
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				for (int k = -1; k < 2; k++) {
+					Set<Unit> unitsInCube = this.getWorld().getUnitsInCube(this.getCube().min(new Cube(i, j, k)));
+				}
+			}
+		}
+		return allEnemies;
 	}
 
 	private void levelUp() {

@@ -114,6 +114,7 @@ public class World extends TimeVariableObject {
 		return allCubes;
 	}
 	
+	//TODO: cube == passable && cube grenst aan passable cube
 	public boolean canMoveInCube(Cube cube) {
 		return false;
 	}

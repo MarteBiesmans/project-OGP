@@ -24,3 +24,9 @@ uit de world (faction.world wordt dan null)
 	-> heb ik ook aan gedacht, het zou sowieso geheugen besparen, maar er wordt in de opgave nergens gezegd dat er een
 	terminate() methode voor faction moet bestaan. En ik heb geen idee of dit ooit nog problemen kan geven. We moeten
 	dit eens bekijken
+	
+we moeten alle commentaar in unit nog nakijken...
+
+DOODGAAN UNIT: een unit moet dus doodgaan van zodra de hitpoints 0 zijn. Momenteel checkt
+advanceTime() op het einde of de hitpoints 0 zijn en laat dan de unit doodgaan. Is het een
+beter idee om bij de setHitpoints(hitpoints) een if (hitpoints == 0) -> this.die() te doen?
