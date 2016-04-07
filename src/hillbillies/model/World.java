@@ -93,12 +93,29 @@ public class World extends TimeVariableObject {
 		return this.getTerrainTypesArray()[0].length;
 	}
 	
-	/**
+	/**)
 	 * Return the number of cubes in the Z direction of this world.
 	 */
 	@Immutable
 	public int getNbCubesZ() {
 		return this.getTerrainTypesArray()[0][0].length;
+	}
+	
+	public Set<Cube> getAllCubes() {
+		Set<Cube> allCubes = new HashSet<Cube>();
+		for (int i = 0; i < this.getNbCubesX(); i++) {
+			for (int j = 0; j < this.getNbCubesY(); j++) {
+				for (int k = 0; k < this.getNbCubesZ(); k++) {
+					allCubes.add(new Cube(i, j, k));
+				}
+			}
+		}
+		
+		return allCubes;
+	}
+	
+	public boolean canMoveInCube(Cube cube) {
+		return false;
 	}
 
 	/**
