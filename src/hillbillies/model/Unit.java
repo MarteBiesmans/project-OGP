@@ -1,8 +1,5 @@
 package hillbillies.model;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 /**
  * TODO
  * dependent properties (OK voor weight met agility en strength, ook voor hitpoints en stamina points)
@@ -21,7 +18,12 @@ import java.util.Iterator;
 
 import java.util.Random;
 import java.util.Set;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
@@ -79,7 +81,6 @@ public class Unit extends TimeVariableObject {
 	private static final int MIN_VAL_PRIMARY_ATTRIBUTE = 1;
 	private static final int MAX_VAL_PRIMARY_ATTRIBUTE = 200;
 
-
 	/**
 	 * @post The name of this new unit is equal to the given name. |
 	 *       new.getName() == name
@@ -96,13 +97,12 @@ public class Unit extends TimeVariableObject {
 	 * @post The time that the unit is busy is 0 seconds. | new.getBusyTime == 0
 	 * @post The position of the unit is equal to the given position. |
 	 *       new.getPosition == Position(x, y, z).toCube()
-	 * @post The hitpoints of this new unit are equal to the maximum possible hitpoints. |
-	 *       new.getHitpoints() == hitpoints
-	 * @post The stamina points of this new unit are equal to the maximum possible stamina
-	 *       points. | new.getStaminaPoints() == staminaPoints
-	 *       
-	 *       TODO andere
-	 *       post-condities, iets met @param
+	 * @post The hitpoints of this new unit are equal to the maximum possible
+	 *       hitpoints. | new.getHitpoints() == hitpoints
+	 * @post The stamina points of this new unit are equal to the maximum
+	 *       possible stamina points. | new.getStaminaPoints() == staminaPoints
+	 * 
+	 *       TODO andere post-condities, iets met @param
 	 * @post This new unit has no materials yet. | new.getNbMaterials() == 0
 	 * 
 	 */
@@ -182,16 +182,17 @@ public class Unit extends TimeVariableObject {
 	public Position getPosition() {
 		return this.position;
 	}
-	
-	
+
 	/**
 	 * check wether the given position is valid for this unit
 	 * 
-	 * @param	position
-	 * 			the position to check
-	 * @return	false if the given position equals null
-	 * @return	false if the given position is not legal in the world of this unit
-	 * @return	true if this unit doesn't have a world (position cannot be invalid)
+	 * @param position
+	 *            the position to check
+	 * @return false if the given position equals null
+	 * @return false if the given position is not legal in the world of this
+	 *         unit
+	 * @return true if this unit doesn't have a world (position cannot be
+	 *         invalid)
 	 */
 	public boolean canHaveAsPosition(Position position) {
 		if (position == null)
@@ -239,7 +240,7 @@ public class Unit extends TimeVariableObject {
 		if (canHaveAsPosition(position))
 			if (this.getActivity() != Activity.FALLING && this.canStartFallingAt(position.getCube()))
 				this.setActivity(Activity.FALLING);
-			this.position = position;
+		this.position = position;
 	}
 
 	private Position position;
@@ -826,7 +827,7 @@ public class Unit extends TimeVariableObject {
 				this.setActivity(Activity.NONE);
 
 		} else {
-			
+
 			if (this.isSprinting()) {
 				double stamina = this.getStaminaPoints() - seconds * 10;
 				if (stamina > 0)
@@ -835,45 +836,47 @@ public class Unit extends TimeVariableObject {
 					this.setStaminaPoints(0);
 					this.stopSprinting();
 				}
-				
-			Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
 
-			double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
-					+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
+				Position moveDiff = this.getMoveToAdjacent().getCenter().min(this.getPosition());
 
-			double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
-			double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
-			double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
+				double moveDistance = Math.sqrt(moveDiff.getRealX() * moveDiff.getRealX()
+						+ moveDiff.getRealY() * moveDiff.getRealY() + moveDiff.getRealZ() * moveDiff.getRealZ());
 
-			Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
-					this.getPosition().getRealY() + yVelocity * seconds,
-					this.getPosition().getRealZ() + zVelocity * seconds);
+				double xVelocity = this.getMovementSpeed() * moveDiff.getRealX() / moveDistance;
+				double yVelocity = this.getMovementSpeed() * moveDiff.getRealY() / moveDistance;
+				double zVelocity = this.getMovementSpeed() * moveDiff.getRealZ() / moveDistance;
 
-			this.setOrientation(Math.atan2(yVelocity, xVelocity));
-			
-			Position diffNext = this.getMoveToAdjacent().getCenter().min(next);
-			if ((moveDiff.getRealX() == 0 || Math.signum(moveDiff.getRealX()) != Math.signum(diffNext.getRealX()))
-					&& (moveDiff.getRealY() == 0
-							|| Math.signum(moveDiff.getRealY()) != Math.signum(diffNext.getRealY()))
-					&& (moveDiff.getRealZ() == 0
-							|| Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
-				this.setPosition(this.getMoveToAdjacent().getCenter());
-				this.setMoveToAdjacent(null);
-				this.setExperiencePoints(this.getExperiencePoints() + 1);
+				Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
+						this.getPosition().getRealY() + yVelocity * seconds,
+						this.getPosition().getRealZ() + zVelocity * seconds);
 
-				// Check whether the unit is moving to a cube far away (not an
-				// adjacent cube)
-				if (this.getMoveToCube() != null) {
-					findNextCubeInPath();
-				}
+				this.setOrientation(Math.atan2(yVelocity, xVelocity));
 
-				// Check whether the unit is not pathfinding. If this is true,
-				// it stops moving.
-				if (this.getMoveToCube() == null) {
-					this.setActivity(Activity.NONE);
-				}
-			} else
-				this.setPosition(next);
+				Position diffNext = this.getMoveToAdjacent().getCenter().min(next);
+				if ((moveDiff.getRealX() == 0 || Math.signum(moveDiff.getRealX()) != Math.signum(diffNext.getRealX()))
+						&& (moveDiff.getRealY() == 0
+								|| Math.signum(moveDiff.getRealY()) != Math.signum(diffNext.getRealY()))
+						&& (moveDiff.getRealZ() == 0
+								|| Math.signum(moveDiff.getRealZ()) != Math.signum(diffNext.getRealZ()))) {
+					this.setPosition(this.getMoveToAdjacent().getCenter());
+					this.setMoveToAdjacent(null);
+					this.setExperiencePoints(this.getExperiencePoints() + 1);
+
+					// Check whether the unit is moving to a cube far away (not
+					// an
+					// adjacent cube)
+					if (this.getMoveToCube() != null) {
+						findNextCubeInPath();
+					}
+
+					// Check whether the unit is not pathfinding. If this is
+					// true,
+					// it stops moving.
+					if (this.getMoveToCube() == null) {
+						this.setActivity(Activity.NONE);
+					}
+				} else
+					this.setPosition(next);
 			}
 		}
 	}
@@ -940,25 +943,43 @@ public class Unit extends TimeVariableObject {
 
 	private void beingUseless(float seconds) {
 		int randomGetal = RANDOM_GEN.nextInt(4);
-		if (randomGetal == 0) {
-//			moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN,
-//				   RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
-//				   RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
-			int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
-			int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
-			int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
-			moveTo(x,y,z);
+		if (randomGetal == 0 && this.getPotentialEnemies().size() != 0) {
+			// fight potential enemies
+		} else {
+			randomGetal = RANDOM_GEN.nextInt(3);
+			if (randomGetal == 0) {
+			// moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN,
+						// RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
+						// RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
+						int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
+						int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
+						int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
+						moveTo(x, y, z);
+			
 		} else if (randomGetal == 1) {
 			this.work();
-		} else if (randomGetal == 2) {
+			
+		} else {
 			this.rest();
 			double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
 			double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
 					/ this.getToughness();
 			this.setBusyTime(hitpointsTime + staminaTime);
-		} else {
-			// TODO: fight potential enemies
 		}
+		}
+	}
+
+	//TODO
+	private Set<Unit> getPotentialEnemies() {
+		Set<Unit> allEnemies = new HashSet<Unit>();
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				for (int k = -1; k < 2; k++) {
+					Set<Unit> unitsInCube = this.getWorld().getUnitsInCube(this.getCube().min(new Cube(i, j, k)));
+				}
+			}
+		}
+		return allEnemies;
 	}
 
 	private void levelUp() {
@@ -1066,34 +1087,89 @@ public class Unit extends TimeVariableObject {
 	 * away.
 	 */
 	private void findNextCubeInPath() {
-		int adjacentX = -1;
-		int adjacentY = -1;
-		int adjacentZ = -1;
+		Set<Cube> allCubes = this.getWorld().getAllCubes();
+		for (Cube cube : new HashSet<Cube>(allCubes)) {
+			if (!cube.isPassableIn(this.getWorld()))
+				allCubes.remove(cube);
+			else if (!this.getWorld().canMoveInCube(cube))
+				allCubes.remove(cube);
+		}
 
-		if (this.getPosition().getCube().getX() == this.getMoveToCube().getX())
-			adjacentX = 0;
-		else if (this.getPosition().getCube().getX() < this.getMoveToCube().getX())
-			adjacentX = 1;
+		Cube current = this.getCube();
+		double currentDistance = 0;
+		Map<Cube, Double> unvisited = new HashMap<Cube, Double>();
+		for (Cube cube : allCubes) {
+			if (cube.equals(this.getCube())) {
+				unvisited.put(cube, currentDistance);
+				current = cube;
+			} else
+				unvisited.put(cube, Double.MAX_VALUE);
+		}
+		Map<Cube, Double> visited = new HashMap<Cube, Double>();
+		Map<Cube, Cube> shortestPath = new HashMap<Cube, Cube>();
+		Queue<CubeDistPair> queue = new PriorityQueue<CubeDistPair>();
 
-		if (this.getPosition().getCube().getY() == this.getMoveToCube().getY())
-			adjacentY = 0;
-		else if (this.getPosition().getCube().getY() < this.getMoveToCube().getY())
-			adjacentY = 1;
+		while (currentDistance != Double.MAX_VALUE) {
+			if (current.equals(this.getMoveToCube())) {
+				Cube previous = shortestPath.get(current);
+				while (!shortestPath.get(previous).equals(this.getCube()))
+					previous = shortestPath.get(previous);
+				this.setMoveToAdjacent(previous);
+			}
 
-		if (this.getPosition().getCube().getZ() == this.getMoveToCube().getZ())
-			adjacentZ = 0;
-		else if (this.getPosition().getCube().getZ() < this.getMoveToCube().getZ())
-			adjacentZ = 1;
+			for (Cube cube : unvisited.keySet()) {
+				if (cube.isSameOrAdjacentCube(current) && !cube.equals(current)) {
+					double weight = 1; // TODO: bereken gewicht als afstand tss
+										// midden + omhoog/omlaag + etc
+					double newDistance = currentDistance + weight;
+					if (newDistance < unvisited.get(cube)) {
+						unvisited.put(cube, newDistance);
+						shortestPath.put(cube, current);
+						queue.offer(new CubeDistPair(cube, newDistance));
+					}
+				}
+			}
 
-		if (adjacentX != 0 || adjacentY != 0 || adjacentZ != 0) {
-			moveToAdjacent(adjacentX, adjacentY, adjacentZ);
-		} else
-			this.setMoveToCube(null);
+			visited.put(current, currentDistance);
+			unvisited.remove(current);
+
+			while (!queue.isEmpty() && visited.containsKey(queue.peek().getCube()))
+				queue.poll();
+
+			// No next node -> no path
+			if (queue.isEmpty())
+				return;
+			CubeDistPair next = queue.poll();
+			current = next.getCube();
+			currentDistance = next.getDistance();
+		}
+
+		return;
 	}
 
-	public void setMoveToCube(Cube cube) {
-		if (cube == null || cube.isValidIn(this.getWorld()))
-			this.moveToCube = cube;
+	private class CubeDistPair implements Comparable<CubeDistPair> {
+
+		private final Double distance;
+		private final Cube cube;
+
+		public CubeDistPair(Cube cube, Double distance) {
+			this.cube = cube;
+			this.distance = distance;
+		}
+
+		public Double getDistance() {
+			return distance;
+		}
+
+		public Cube getCube() {
+			return cube;
+		}
+
+		@Override
+		public int compareTo(CubeDistPair other) {
+			return this.getDistance().compareTo(other.getDistance());
+		}
+
 	}
 
 	/**
@@ -1103,6 +1179,11 @@ public class Unit extends TimeVariableObject {
 	 */
 	public Cube getMoveToCube() {
 		return this.moveToCube;
+	}
+
+	public void setMoveToCube(Cube cube) {
+		if (cube == null || cube.isValidIn(this.getWorld()))
+			this.moveToCube = cube;
 	}
 
 	private Cube moveToCube;
@@ -1219,7 +1300,7 @@ public class Unit extends TimeVariableObject {
 	public boolean isFalling() {
 		return (this.getActivity() == Activity.FALLING);
 	}
-	
+
 	public boolean canStartFalling() {
 		//TODO hieronder maak je cubes aan met negatieve xyz, geeft errors
 //		return (this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) ||
@@ -1255,10 +1336,9 @@ public class Unit extends TimeVariableObject {
 //				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, -1))) ||
 //				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, 0))) ||
 //				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, -1))));
-		Position position = new Position(cube.getX(), cube.getY(), cube.getZ());
-		return position.isStableForUnitIn(this.getWorld());
+		return cube.getCenter().isStableForUnitIn(this.getWorld());
 	}
-	
+
 	public boolean canStopFalling() {
 //		return (this.isFalling() && !this.world.isPassableCube(this.getCube().min(new Cube(0, 0, 1))));
 		return (this.isFalling() && !(this.getCube().min(new Cube(0, 0, 1)) ).isPassableIn(this.getWorld()));
@@ -1266,7 +1346,6 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private Activity activity;
-
 
 	/**
 	 * starts the default behaviour of this unit
