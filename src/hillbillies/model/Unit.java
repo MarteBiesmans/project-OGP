@@ -1532,7 +1532,8 @@ public class Unit extends TimeVariableObject {
 	public void removeMaterial(Material material, Position position) {
 		assert this.hasAsMaterial(material) && (material.getOwner() == null);
 		materials.remove(material);
-		material.setPosition(position, this.getWorld());
+		material.setPosition(position);
+		this.getWorld().addMaterial(material);
 	}
 
 	/**
@@ -1555,7 +1556,7 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void die() {
 		for (Material material : this.materials)
-			material.setPosition(this.getPosition(), this.getWorld());
+			this.removeMaterial(material, this.getPosition());
 		this.getWorld().removeUnit(this);
 		this.getFaction().removeUnit(this);
 		this.isDead = true;

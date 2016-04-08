@@ -68,36 +68,66 @@ public class Cube {
 		this.y = y;
 		this.z = z;
 	}
-
+	
+	/**
+	 * Checks if the given coördinates are valid.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return true if all coördinates are greater or equal than zero.
+	 */
 	private boolean isValidCubeCoordinate(int x, int y, int z) {
 		if ((x < 0) || (y < 0) || (z < 0))
 			return false;
 		return true;
 	}
 
+	/**
+	 * Checks if the given coördinates are valid in the given world.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param world
+	 * @return true if all coördinates fit in the given world.
+	 */
 	private boolean isValidCubeCoordinate(int x, int y, int z, World world) {
 		if ((x < 0) || (x >= world.getNbCubesX()) || (y < 0) || (y >= world.getNbCubesY()) || (z < 0)
 				|| (z >= world.getNbCubesZ()))
 			return false;
 		return true;
 	}
-
+	
+	/**
+	 * Checks if this cube is valid in de given world.
+	 * @param world
+	 * @return true if the cube coördinates fit in the given world.
+	 */
 	public boolean isValidIn(World world) {
 		return isValidCubeCoordinate(this.getX(), this.getY(), this.getZ(), world);
 	}
 
+	/**
+	 * returns the coördinate on the x-axis.
+	 */
 	@Basic
 	@Raw
 	public int getX() {
 		return this.x;
 	}
-
+	
+	/**
+	 * returns the coördinate on the y-axis.
+	 */
 	@Basic
 	@Raw
 	public int getY() {
 		return this.y;
 	}
 
+	/**
+	 * returns the coördinate on the z-axis.
+	 */
 	@Basic
 	@Raw
 	public int getZ() {
@@ -115,19 +145,32 @@ public class Cube {
 	 * constant registering the side length of one cube
 	 */
 	public static final double SIDE_LENGTH = 1;
-
+	
+	/**
+	 * returns the center position of this cube.
+	 */
 	public Position getCenter() {
 		return new Position(SIDE_LENGTH / 2, SIDE_LENGTH / 2, SIDE_LENGTH / 2, this);
 	}
 
+	/**
+	 * returns the difference of this cube with another cube.
+	 * @param other  The cube to substract from this cube.
+	 */
 	public Cube min(Cube other) {
 		return new Cube(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
 	}
 
+	/**
+	 * returns if the cube is passable in the given world.
+	 */
 	public boolean isPassableIn(World world) {
 		return world.getTerrainType(this).isPassable();
 	}
 
+	/**
+	 * returns whether the other cube is the same or an adjacent cube.
+	 */
 	public boolean isSameOrAdjacentCube(Cube other) {
 		int diffX = this.getX() - other.getX();
 		int diffY = this.getY() - other.getY();
@@ -137,6 +180,9 @@ public class Cube {
 				&& ((diffZ == -1) || (diffZ == 0) || (diffZ == 1)));
 	}
 
+	/**
+	 * returns whether the other cube is the same or an directly adjacent cube.
+	 */
 	public boolean isSameOrDirectlyAdjacentCube(Cube other) {
 		if (this.equals(other))
 			return true;
@@ -160,6 +206,9 @@ public class Cube {
 		return (nbDiff == 1);
 	}
 
+	/**
+	 * returns a set of all adjacent cubes that are valid in the given world.
+	 */
 	public Set<Cube> getAllAdjacentCubes(World world) {
 
 		Set<Cube> result = new HashSet<Cube>();
@@ -175,7 +224,10 @@ public class Cube {
 		result.remove(this);
 		return result;
 	}
-
+	
+	/**
+	 * returns a set of all directly adjacent cubes that are valid in the given world.
+	 */
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
 		for (Cube cube : this.getAllAdjacentCubes(world)){
