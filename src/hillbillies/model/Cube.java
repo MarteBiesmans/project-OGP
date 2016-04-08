@@ -237,6 +237,10 @@ public class Cube {
 
 		return result;
 	}
+	
+	public boolean isSolidConnectedToBorderIn(World world) {
+		return world.connectedUtil.isSolidConnectedToBorder(this.getX(), this.getY(), this.getZ());
+	}
 
 	@Override
 	public String toString() {
