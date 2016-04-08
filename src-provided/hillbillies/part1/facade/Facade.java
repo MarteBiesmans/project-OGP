@@ -1,5 +1,6 @@
 package hillbillies.part1.facade;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.part1.facade.IFacade;
 import ogp.framework.util.ModelException;
@@ -447,7 +448,7 @@ public class Facade implements IFacade {
 	 */
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
 		try{
-			unit.moveTo(cube[0], cube[1], cube[2]);
+			unit.moveTo(new Cube(cube[0], cube[1], cube[2]));
 		}
 		
 		catch (Throwable e){

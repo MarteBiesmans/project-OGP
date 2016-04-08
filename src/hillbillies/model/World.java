@@ -481,6 +481,15 @@ public class World extends TimeVariableObject {
 				counter += 1;
 		return counter;
 	}
+	
+	public Set<Faction> getActiveFactions() {
+		Set<Faction> activeFactionsSoFar = new HashSet<Faction>();
+		for (Faction faction: this.getAllFactions()) {
+			if (faction.getNbUnits() > 0)
+				activeFactionsSoFar.add(faction);
+		}
+		return activeFactionsSoFar;
+	}
 
 	boolean hasAsFaction(Faction faction) {
 		if (faction == null)

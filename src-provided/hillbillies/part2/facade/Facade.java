@@ -136,6 +136,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
+		unit.workAt(new Cube(x, y, z));
 	}
 
 	/**
@@ -171,8 +172,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getActiveFactions();
 	}
 
 	@Override

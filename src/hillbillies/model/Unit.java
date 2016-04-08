@@ -758,8 +758,9 @@ public class Unit extends TimeVariableObject {
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		// if (seconds < 0 || seconds >= 0.2)
 		// throw new IllegalArgumentException();
-
-		this.busyTimeMin(seconds);
+		
+		if (!(this.isMoving() || this.isBeingUseless()))
+			this.busyTimeMin(seconds);
 
 		if (this.isAttacking())
 			attacking(seconds);
@@ -885,9 +886,10 @@ public class Unit extends TimeVariableObject {
 				Log log = (Log) iterLog.next();
 				this.addMaterial(log);
 
-			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD || this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
+			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD
+					|| this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
 				this.getWorld().collapse(this.getCube());
-				
+
 			}
 			this.nextActivity();
 			this.setExperiencePoints(this.getExperiencePoints() + 10);
@@ -922,13 +924,24 @@ public class Unit extends TimeVariableObject {
 		} else {
 			randomGetal = RANDOM_GEN.nextInt(3);
 			if (randomGetal == 0) {
-				int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
-				int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
-				int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
-				moveTo(x, y, z);
+				Set<Cube> allCubes = this.getWorld().getAllCubes();
+				for (Cube cube : new HashSet<Cube>(allCubes)) {
+					if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
+						allCubes.remove(cube);
+				}
+				Iterator<Cube> iter = allCubes.iterator();
+				Cube nextCube = (Cube) iter.next();
+				moveTo(nextCube);
 
 			} else if (randomGetal == 1) {
-				this.work();
+				Set<Cube> allCubes = this.getWorld().getAllCubes();
+				for (Cube cube : new HashSet<Cube>(allCubes)) {
+					if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
+						allCubes.remove(cube);
+				}
+				Iterator<Cube> iter = allCubes.iterator();
+				Cube nextCube = (Cube) iter.next();
+				this.workAt(nextCube);
 
 			} else {
 				this.rest();
@@ -1049,8 +1062,8 @@ public class Unit extends TimeVariableObject {
 	 * @param y
 	 * @param z
 	 */
-	public void moveTo(int x, int y, int z) {
-		this.setMoveToCube(new Cube(x, y, z));
+	public void moveTo(Cube cube) {
+		this.setMoveToCube(cube);
 		setNextCubeInPath();
 	}
 
@@ -1061,9 +1074,7 @@ public class Unit extends TimeVariableObject {
 	private void setNextCubeInPath() {
 		Set<Cube> allCubes = this.getWorld().getAllCubes();
 		for (Cube cube : new HashSet<Cube>(allCubes)) {
-			if (!cube.isPassableIn(this.getWorld()))
-				allCubes.remove(cube);
-			else if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
+			if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
 				allCubes.remove(cube);
 		}
 
@@ -1086,7 +1097,10 @@ public class Unit extends TimeVariableObject {
 				Cube previous = shortestPath.get(current);
 				while (!shortestPath.get(previous).equals(this.getCube()))
 					previous = shortestPath.get(previous);
-				this.setMoveToAdjacent(previous);
+				int x = previous.getX() - this.getCube().getX();
+				int y = previous.getY() - this.getCube().getY();
+				int z = previous.getZ() - this.getCube().getZ();
+				this.moveToAdjacent(x, y, z);
 				if (previous == this.getMoveToCube()) {
 					this.setMoveToCube(null);
 					this.nextActivity();
@@ -1332,10 +1346,8 @@ public class Unit extends TimeVariableObject {
 	// }
 
 	public boolean canStopFalling() {
-		return (this.isFalling() && 
-				(this.getPosition().getRealZ() == 0 || 
-				(this.getCube().min(new Cube(0, 0, 1))).isPassableIn(this.getWorld())));
-	
+		return (this.isFalling() && (this.getPosition().getRealZ() == 0
+				|| (this.getCube().min(new Cube(0, 0, 1))).isPassableIn(this.getWorld())));
 
 	}
 
@@ -1367,9 +1379,14 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * this unit starts working.
 	 */
-	//TODO: workAt ipv work
+	public void workAt(Cube cube) {
+		this.setActivity(Activity.WORKING);
+		this.setBusyTime(500 / this.getStrength());
+		this.moveTo(cube);
+	}
+	
 	public void work() {
-		this.insertActivity(Activity.WORKING);
+		this.setActivity(Activity.WORKING);
 		this.setBusyTime(500 / this.getStrength());
 	}
 
