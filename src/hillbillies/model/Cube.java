@@ -6,10 +6,10 @@ import java.util.Set;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * the class cube is similar to the class position, where position consists of doubles,
- * cube consists of integers.
+ * the class cube is similar to the class position, where position consists of
+ * doubles, cube consists of integers.
  * 
- * @invar	x, y and z are always positive integers
+ * @invar x, y and z are always positive integers
  * 
  * @Value
  * 
@@ -36,7 +36,7 @@ public class Cube {
 	 */
 	@Raw
 	public Cube(int x, int y, int z) throws IllegalArgumentException {
-		if (!isValidCubeCoordinate(x, y, z)) 
+		if (!isValidCubeCoordinate(x, y, z))
 			throw new IllegalArgumentException();
 		this.x = x;
 		this.y = y;
@@ -76,13 +76,12 @@ public class Cube {
 	}
 
 	private boolean isValidCubeCoordinate(int x, int y, int z, World world) {
-		if ((x < 0) || (x >= world.getNbCubesX()) || 
-			(y < 0) || (y >= world.getNbCubesY()) || 
-			(z < 0) || (z >= world.getNbCubesZ()))
+		if ((x < 0) || (x >= world.getNbCubesX()) || (y < 0) || (y >= world.getNbCubesY()) || (z < 0)
+				|| (z >= world.getNbCubesZ()))
 			return false;
 		return true;
 	}
-	
+
 	public boolean isValidIn(World world) {
 		return isValidCubeCoordinate(this.getX(), this.getY(), this.getZ(), world);
 	}
@@ -124,7 +123,7 @@ public class Cube {
 	public Cube min(Cube other) {
 		return new Cube(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
 	}
-	
+
 	public boolean isPassableIn(World world) {
 		return world.getTerrainType(this).isPassable();
 	}
@@ -134,36 +133,35 @@ public class Cube {
 		int diffY = this.getY() - other.getY();
 		int diffZ = this.getZ() - other.getZ();
 
-		return (( (diffX == -1) || (diffX == 0) || (diffX == 1) ) && 
-				( (diffY == -1) || (diffY == 0) || (diffY == 1) ) && 
-				( (diffZ == -1) || (diffZ == 0) || (diffZ == 1) ) );
+		return (((diffX == -1) || (diffX == 0) || (diffX == 1)) && ((diffY == -1) || (diffY == 0) || (diffY == 1))
+				&& ((diffZ == -1) || (diffZ == 0) || (diffZ == 1)));
 	}
-	
+
 	public boolean isSameOrDirectlyAdjacentCube(Cube other) {
 		if (this.equals(other))
 			return true;
 		int diffX = this.getX() - other.getX();
 		int diffY = this.getY() - other.getY();
 		int diffZ = this.getZ() - other.getZ();
-		
-		if (( (diffX != -1) && (diffX != 0) && (diffX != 1) ) || 
-			( (diffY != -1) && (diffY != 0) && (diffY != 1) ) || 
-			( (diffZ != -1) && (diffZ != 0) && (diffZ != 1) ) ) {
-			return false; }
-		
+
+		if (((diffX != -1) && (diffX != 0) && (diffX != 1)) || ((diffY != -1) && (diffY != 0) && (diffY != 1))
+				|| ((diffZ != -1) && (diffZ != 0) && (diffZ != 1))) {
+			return false;
+		}
+
 		int nbDiff = 0;
-		if (diffX!=0)
+		if (diffX != 0)
 			nbDiff += 1;
-		if (diffY!=0)
-			nbDiff +=1;
-		if (diffZ!=0)
-			nbDiff +=1;
-		
-		return (nbDiff==1);
+		if (diffY != 0)
+			nbDiff += 1;
+		if (diffZ != 0)
+			nbDiff += 1;
+
+		return (nbDiff == 1);
 	}
-	
+
 	public Set<Cube> getAllAdjacentCubes(World world) {
-		
+
 		Set<Cube> result = new HashSet<Cube>();
 		for (int x=-1; x<2; x++)
 			for (int y=-1; y<2; y++)
@@ -175,27 +173,27 @@ public class Cube {
 					} catch (IllegalArgumentException e) {}
 		}
 		result.remove(this);
-		
 		return result;
 	}
-	
+
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
 		for (Cube cube : this.getAllAdjacentCubes(world)){
 			if (cube.isSameOrDirectlyAdjacentCube(this))
 				result.add(cube);
 		}
-		
+
 		return result;
 	}
-	
-	
+
 	@Override
 	public String toString() {
 		return "(" + this.getX() + "," + this.getY() + "," + this.getZ() + ")";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -208,7 +206,9 @@ public class Cube {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

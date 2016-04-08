@@ -1,21 +1,5 @@
 package hillbillies.model;
 
-/**
- * TODO
- * dependent properties (OK voor weight met agility en strength, ook voor hitpoints en stamina points)
- * regular expressions (name)
- * fuzzyequals gebruiken in documentatie en testen
- * value classes (position, cube...) (OK denk ik)
- * documentatie schrijven
- * testen schrijven
- * hulpmethodes voor advanceTime (OK)
- * code opkuisen (volgorde) (OK)
- * user interface aan de praat krijgen
- * interface-class -> hoe implementeren (copy-paste lijkt me louche)
- * null pointers (niet nodig voor primary attributes, want int is basic type) (OK voor name)
- * toggleSprinting opsplitsen
- */
-
 import java.util.Random;
 import java.util.Set;
 import java.util.HashMap;
@@ -101,8 +85,6 @@ public class Unit extends TimeVariableObject {
 	 *       hitpoints. | new.getHitpoints() == hitpoints
 	 * @post The stamina points of this new unit are equal to the maximum
 	 *       possible stamina points. | new.getStaminaPoints() == staminaPoints
-	 * 
-	 *       TODO andere post-condities, iets met @param
 	 * @post This new unit has no materials yet. | new.getNbMaterials() == 0
 	 * 
 	 */
@@ -238,7 +220,7 @@ public class Unit extends TimeVariableObject {
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
 		if (canHaveAsPosition(position))
-			if (this.getActivity() != Activity.FALLING && this.canStartFallingAt(position.getCube()))
+			if (this.getActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube()))
 				this.setActivity(Activity.FALLING);
 		this.position = position;
 	}
@@ -269,8 +251,7 @@ public class Unit extends TimeVariableObject {
 	 *         uppercase letter. Names can only use letters (both upper- and
 	 *         lowercase), quotes (both single and double) and spaces. |if
 	 *         (length(name) < 2) | result == false |if
-	 *         (!isUpperCase(name.charAt(0))) | return == false |TODO for each
-	 *         ...
+	 *         (!isUpperCase(name.charAt(0))) | return == false |
 	 */
 	public static boolean isValidName(String name) {
 		if (name == null)
@@ -911,14 +892,15 @@ public class Unit extends TimeVariableObject {
 
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD) {
 				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
-				if (RANDOM_GEN.nextDouble() < 0.25) {
+				if (RANDOM_GEN.nextDouble() < 0.25) 
 					this.getWorld().addMaterial(new Log(this.getWorld(), this.getCube().getCenter()));
-				}
+				//TODO: check in elke cube rondom of er geen units moeten beginnen vallen
+				
 			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
 				this.getWorld().setTerrainType(this.getCube(), TerrainType.AIR);
-				if (RANDOM_GEN.nextDouble() < 0.25) {
+				if (RANDOM_GEN.nextDouble() < 0.25) 
 					this.getWorld().addMaterial(new Boulder(this.getWorld(), this.getCube().getCenter()));
-				}
+				//TODO: check in elke cube rondom of er geen units moeten beginnen vallen
 			}
 			this.setActivity(Activity.NONE);
 			this.setExperiencePoints(this.getExperiencePoints() + 10);
@@ -944,42 +926,43 @@ public class Unit extends TimeVariableObject {
 	private void beingUseless(float seconds) {
 		int randomGetal = RANDOM_GEN.nextInt(4);
 		if (randomGetal == 0 && this.getPotentialEnemies().size() != 0) {
-			// fight potential enemies
+			Set<Unit> potentialEnemies = this.getPotentialEnemies();
+			Iterator<Unit> iter = potentialEnemies.iterator();
+			Unit enemie = (Unit) iter.next();
+			this.attack(enemie);
 		} else {
 			randomGetal = RANDOM_GEN.nextInt(3);
 			if (randomGetal == 0) {
-			// moveTo(RANDOM_GEN.nextInt(X_MAX - X_MIN) + X_MIN,
-						// RANDOM_GEN.nextInt(Y_MAX - Y_MIN) + Y_MIN,
-						// RANDOM_GEN.nextInt(Z_MAX - Z_MIN) + Z_MIN);
-						int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
-						int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
-						int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
-						moveTo(x, y, z);
-			
-		} else if (randomGetal == 1) {
-			this.work();
-			
-		} else {
-			this.rest();
-			double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
-			double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
-					/ this.getToughness();
-			this.setBusyTime(hitpointsTime + staminaTime);
-		}
+				int x = RANDOM_GEN.nextInt(this.getWorld().getNbCubesX());
+				int y = RANDOM_GEN.nextInt(this.getWorld().getNbCubesY());
+				int z = RANDOM_GEN.nextInt(this.getWorld().getNbCubesZ());
+				moveTo(x, y, z);
+
+			} else if (randomGetal == 1) {
+				this.work();
+
+			} else {
+				this.rest();
+				double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
+				double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
+						/ this.getToughness();
+				this.setBusyTime(hitpointsTime + staminaTime);
+			}
 		}
 	}
 
-	//TODO
 	private Set<Unit> getPotentialEnemies() {
-		Set<Unit> allEnemies = new HashSet<Unit>();
-		for (int i = -1; i < 2; i++) {
-			for (int j = -1; j < 2; j++) {
-				for (int k = -1; k < 2; k++) {
-					Set<Unit> unitsInCube = this.getWorld().getUnitsInCube(this.getCube().min(new Cube(i, j, k)));
-				}
+		Set<Cube> sameOrAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
+		sameOrAdjacentCubes.add(this.getCube());
+		Set<Unit> enemiesSoFar = new HashSet<Unit>();
+		for (Cube cube : sameOrAdjacentCubes) {
+			Set<Unit> unitsInCube = this.getWorld().getUnitsInCube(cube);
+			for (Unit unit : unitsInCube) {
+				if (this.getFaction() != unit.getFaction() && !unit.isFalling())
+					enemiesSoFar.add(unit);
 			}
 		}
-		return allEnemies;
+		return enemiesSoFar;
 	}
 
 	private void levelUp() {
@@ -1091,7 +1074,7 @@ public class Unit extends TimeVariableObject {
 		for (Cube cube : new HashSet<Cube>(allCubes)) {
 			if (!cube.isPassableIn(this.getWorld()))
 				allCubes.remove(cube);
-			else if (!this.getWorld().canMoveInCube(cube))
+			else if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
 				allCubes.remove(cube);
 		}
 
@@ -1119,7 +1102,8 @@ public class Unit extends TimeVariableObject {
 
 			for (Cube cube : unvisited.keySet()) {
 				if (cube.isSameOrAdjacentCube(current) && !cube.equals(current)) {
-					double weight = 1; // TODO: bereken gewicht als afstand tss
+					double weight = 1; // TODO: (priority low) bereken gewicht
+										// als afstand tss
 										// midden + omhoog/omlaag + etc
 					double newDistance = currentDistance + weight;
 					if (newDistance < unvisited.get(cube)) {
@@ -1301,47 +1285,42 @@ public class Unit extends TimeVariableObject {
 		return (this.getActivity() == Activity.FALLING);
 	}
 
-	public boolean canStartFalling() {
-		//TODO hieronder maak je cubes aan met negatieve xyz, geeft errors
-//		return (this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, 1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 1, 1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 0, 1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(1, 1, 1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, 0, -1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(0, -1, -1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, 0, -1))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, 0))) ||
-//				this.getWorld().isPassableCube((this.getCube()).min(new Cube(-1, -1, -1))));
-		return this.getPosition().isStableForUnitIn(this.getWorld());
-	}
-	
-	public boolean canStartFallingAt(Cube cube) {
-		//TODO hieronder maak je cubes aan met negatieve xyz, geeft errors
-//		return (this.getWorld().isPassableCube(cube.min(new Cube(0, 0, 1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(0, 1, 1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(1, 0, 1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(1, 1, 1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(0, 0, -1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(0, -1, -1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(-1, 0, -1))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, 0))) ||
-//				this.getWorld().isPassableCube(cube.min(new Cube(-1, -1, -1))));
-		return cube.getCenter().isStableForUnitIn(this.getWorld());
+	public boolean shouldFall() {
+		return !this.getPosition().isStableForUnitIn(this.getWorld());
 	}
 
+	public boolean shouldStartFallingAt(Cube cube) {
+		return !cube.getCenter().isStableForUnitIn(this.getWorld());
+	}
+
+	// /**
+	// * Check whether this unit should fall.
+	// *
+	// * @return true if the cube of the position is not directly above a solid
+	// cube
+	// * @return false if the z-coordinate is 0
+	// * @return false if the material is carried by a unit, thus position
+	// equals null
+	// */
+	// public boolean shouldFall() {
+	// if (this.getPosition()==null)
+	// return false;
+	//
+	// if (this.getPosition().getCube().getZ() == 0)
+	// return false;
+	// Cube cubeBelow = new Cube(this.getPosition().getCube().getX(),
+	// this.getPosition().getCube().getY(),
+	// this.getPosition().getCube().getZ()-1);
+	// if ( this.getWorld().getTerrainType(cubeBelow).isPassable() )
+	// return true;
+	//
+	// return false;
+	// }
+
 	public boolean canStopFalling() {
-//		return (this.isFalling() && !this.world.isPassableCube(this.getCube().min(new Cube(0, 0, 1))));
-		return (this.isFalling() && !(this.getCube().min(new Cube(0, 0, 1)) ).isPassableIn(this.getWorld()));
+		// return (this.isFalling() &&
+		// !this.world.isPassableCube(this.getCube().min(new Cube(0, 0, 1))));
+		return (this.isFalling() && !(this.getCube().min(new Cube(0, 0, 1))).isPassableIn(this.getWorld()));
 
 	}
 
@@ -1437,7 +1416,7 @@ public class Unit extends TimeVariableObject {
 
 	public void setWorld(World world) {
 		if (world != null) {
-			if ( ! canHaveAsWorld(world))
+			if (!canHaveAsWorld(world))
 				throw new IllegalArgumentException();
 		} else if ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
 			throw new IllegalArgumentException();
@@ -1456,7 +1435,7 @@ public class Unit extends TimeVariableObject {
 
 	public void setFaction(Faction faction) throws IllegalArgumentException {
 		if (faction != null) {
-			if (! canHaveAsFaction(faction))
+			if (!canHaveAsFaction(faction))
 				throw new IllegalArgumentException();
 		} else if ((this.getFaction() != null) && (this.getFaction().hasAsUnit(this)))
 			throw new IllegalArgumentException();

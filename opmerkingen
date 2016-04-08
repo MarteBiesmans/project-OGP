@@ -30,3 +30,14 @@ we moeten alle commentaar in unit nog nakijken...
 DOODGAAN UNIT: een unit moet dus doodgaan van zodra de hitpoints 0 zijn. Momenteel checkt
 advanceTime() op het einde of de hitpoints 0 zijn en laat dan de unit doodgaan. Is het een
 beter idee om bij de setHitpoints(hitpoints) een if (hitpoints == 0) -> this.die() te doen?
+
+TODO's die in unit bovenaan stonden:
+/**
+ * TODO:
+ * regular expressions (name)
+ * fuzzyequals gebruiken in documentatie en testen
+ * documentatie schrijven
+ * testen schrijven
+ * user interface aan de praat krijgen (hihi, nu terug een TODO)
+ * null pointers (niet nodig voor primary attributes, want int is basic type) (OK voor name) -> zeker nog nachecken!
+ */

@@ -60,14 +60,14 @@ public class Faction {
 			return false;
 		return this.units.contains(unit);
 	}
-	
+
 	/**
 	 * Return all the units in this faction.
 	 */
 	public Set<Unit> getAllUnits() {
 		return units;
 	}
-	
+
 	public int getNbUnits() {
 		return this.units.size();
 	}
@@ -91,7 +91,7 @@ public class Faction {
 
 	public void setWorld(World world) {
 		if (world != null) {
-			if (! this.canHaveAsWorld(world))
+			if (!this.canHaveAsWorld(world))
 				throw new IllegalArgumentException();
 		} else if ((this.getWorld() != null) && (this.getWorld().hasAsFaction(this)))
 			throw new IllegalArgumentException();
