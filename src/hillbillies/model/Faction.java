@@ -12,8 +12,10 @@ public class Faction {
 	}
 
 	public void addUnit(Unit unit) {
-		if (!canAddAsUnit(unit))
+		if (!canAddAsUnit(unit)) {
+			System.out.println("can't add as unit");
 			throw new IllegalArgumentException();
+		}
 		this.units.add(unit);
 
 		try {
@@ -38,19 +40,23 @@ public class Faction {
 	}
 
 	public boolean canAddAsUnit(Unit unit) {
-		if (unit.isDead())
+		if (unit.isDead()) {
+			System.out.println("isDead");
 			return false;
-		if (unit.getFaction() != null)
+		} if (unit.getFaction() != null) {
+			System.out.println("unit.getFaction != null");
 			return false;
-		if (this.units.size() == MAX_UNITS)
+		} if (this.units.size() == MAX_UNITS) {
+			System.out.println("faction.MAX_UNITS");
 			return false;
-		if (this.getWorld() != null) {
-			if (this.getWorld().getNbFactions() == World.MAX_FACTIONS)
+		} if (this.getWorld() != null) {
+			if (this.getNbUnits() == 0 && this.getWorld().getNbActiveFactions() == World.MAX_FACTIONS) {
+				System.out.println("world != null, world.MAX_FACTIONS");
 				return false;
-			if (this.getWorld().getNbUnits() == World.MAX_UNITS)
+			} if (this.getWorld().getNbUnits() == World.MAX_UNITS) {
+				System.out.println("world != null, world.MAX_UNITS");
 				return false;
-			if (this.units.size() == 0 && this.getWorld().getNbActiveFactions() == World.MAX_FACTIONS)
-				return false;
+			} 
 		}
 		return true;
 	}

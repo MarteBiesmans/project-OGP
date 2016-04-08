@@ -232,33 +232,37 @@ public class World extends TimeVariableObject {
 	public void collapse(Cube cube) throws IllegalArgumentException {
 		// TODO checken of er units moeten vallen -> marte is dit aan het doen
 		// voor als er geworkt wordt op een cube, kijk daar af ;)
+		// oke marte is dit nog niet aan het doen, en het is inderdaad het beste als
+		// we hier checken of er units moeten vallen
 		// + uitleggen aan marte: hoe wordt deze functie precies opgeroepen?
 		if (cube == null)
 			throw new IllegalArgumentException();
 		if (cube.isPassableIn(this))
 			return;
-
-		TerrainType oldType = this.getTerrainType(cube);
-		this.setTerrainType(cube, TerrainType.AIR);
-
+		
 		double probability = RANDOM_GEN.nextDouble();
 		if (probability < 0.25) {
-			if (oldType == TerrainType.WOOD)
+			if (this.getTerrainType(cube) == TerrainType.WOOD)
 				this.addMaterial(new Log(this, cube.getCenter()));
-			else if (oldType == TerrainType.ROCK)
+			else if (this.getTerrainType(cube) == TerrainType.ROCK)
 				this.addMaterial(new Boulder(this, cube.getCenter()));
+
+		this.setTerrainType(cube, TerrainType.AIR);
 		}
 	}
 
 	// UNITS//
 
 	void removeUnit(Unit unit) {
-		if (!this.hasAsUnit(unit))
-			throw new IllegalArgumentException();
-		this.units.remove(unit);
+//		if (!this.hasAsUnit(unit))
+//			throw new IllegalArgumentException();
+//		this.units.remove(unit);
+		
+		if (this.hasAsUnit(unit))
+			this.units.remove(unit);
 
 		try {
-			unit.setFaction(null);
+			unit.setWorld(null);
 		} catch (IllegalArgumentException e) {
 			this.units.add(unit);
 			throw e;
