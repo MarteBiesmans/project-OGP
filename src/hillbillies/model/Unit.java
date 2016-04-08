@@ -208,14 +208,17 @@ public class Unit extends TimeVariableObject {
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
-		if (canHaveAsPosition(position))
+		if (canHaveAsPosition(position)) {
 			if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 				this.insertActivity(Activity.FALLING);
 			}
-		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
-			this.nextActivity();
-		}
-		this.position = position;
+
+			if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
+				this.nextActivity();
+			}
+			this.position = position;
+		} else
+			System.out.println("setposition not valid");
 	}
 
 	private Position position;
@@ -758,7 +761,7 @@ public class Unit extends TimeVariableObject {
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		// if (seconds < 0 || seconds >= 0.2)
 		// throw new IllegalArgumentException();
-		
+
 		if (!(this.isMoving() || this.isBeingUseless()))
 			this.busyTimeMin(seconds);
 
@@ -787,13 +790,14 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void attacking(float seconds) {
-		// System.out.println("attacking");
+		System.out.println("attacking");
 		if (this.getBusyTime() == 0)
 			this.nextActivity();
 	}
 
 	private void moving(float seconds) {
 		if (this.isFalling()) {
+			System.out.println("falling");
 			Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
 					Math.max(this.getPosition().getRealZ() - 3.0 * seconds, 0.));
 			if (!this.getCube().equals(next.getCube()))
@@ -803,6 +807,7 @@ public class Unit extends TimeVariableObject {
 		} else {
 			System.out.println("moving");
 			if (this.isSprinting()) {
+				System.out.println("sprinting");
 				double stamina = this.getStaminaPoints() - seconds * 10;
 				if (stamina > 0)
 					this.setStaminaPoints(stamina);
@@ -810,49 +815,53 @@ public class Unit extends TimeVariableObject {
 					this.setStaminaPoints(0);
 					this.stopSprinting();
 				}
+			}
 
-				double moveDiffX = this.getMoveToAdjacent().getCenter().getRealX() - this.getPosition().getRealX();
-				double moveDiffY = this.getMoveToAdjacent().getCenter().getRealY() - this.getPosition().getRealY();
-				double moveDiffZ = this.getMoveToAdjacent().getCenter().getRealZ() - this.getPosition().getRealZ();
+			double moveDiffX = this.getMoveToAdjacent().getCenter().getRealX() - this.getPosition().getRealX();
+			double moveDiffY = this.getMoveToAdjacent().getCenter().getRealY() - this.getPosition().getRealY();
+			double moveDiffZ = this.getMoveToAdjacent().getCenter().getRealZ() - this.getPosition().getRealZ();
 
-				double moveDistance = Math.sqrt(moveDiffX * moveDiffX + moveDiffY * moveDiffY + moveDiffZ * moveDiffZ);
+			double moveDistance = Math.sqrt(moveDiffX * moveDiffX + moveDiffY * moveDiffY + moveDiffZ * moveDiffZ);
 
-				double xVelocity = this.getMovementSpeed() * moveDiffX / moveDistance;
-				double yVelocity = this.getMovementSpeed() * moveDiffY / moveDistance;
-				double zVelocity = this.getMovementSpeed() * moveDiffZ / moveDistance;
+			double xVelocity = this.getMovementSpeed() * moveDiffX / moveDistance;
+			double yVelocity = this.getMovementSpeed() * moveDiffY / moveDistance;
+			double zVelocity = this.getMovementSpeed() * moveDiffZ / moveDistance;
 
-				Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
-						this.getPosition().getRealY() + yVelocity * seconds,
-						this.getPosition().getRealZ() + zVelocity * seconds);
+			Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
+					this.getPosition().getRealY() + yVelocity * seconds,
+					this.getPosition().getRealZ() + zVelocity * seconds);
 
-				this.setOrientation(Math.atan2(yVelocity, xVelocity));
+			this.setOrientation(Math.atan2(yVelocity, xVelocity));
 
-				double moveDiffNextX = this.getMoveToAdjacent().getCenter().getRealX() - next.getRealX();
-				double moveDiffNextY = this.getMoveToAdjacent().getCenter().getRealY() - next.getRealY();
-				double moveDiffNextZ = this.getMoveToAdjacent().getCenter().getRealZ() - next.getRealZ();
+			double moveDiffNextX = this.getMoveToAdjacent().getCenter().getRealX() - next.getRealX();
+			double moveDiffNextY = this.getMoveToAdjacent().getCenter().getRealY() - next.getRealY();
+			double moveDiffNextZ = this.getMoveToAdjacent().getCenter().getRealZ() - next.getRealZ();
 
-				if ((moveDiffX == 0 || Math.signum(moveDiffX) != Math.signum(moveDiffNextX))
-						&& (moveDiffY == 0 || Math.signum(moveDiffY) != Math.signum(moveDiffNextY))
-						&& (moveDiffZ == 0 || Math.signum(moveDiffZ) != Math.signum(moveDiffNextZ))) {
-					this.setPosition(this.getMoveToAdjacent().getCenter());
-					this.setMoveToAdjacent(null);
-					this.setExperiencePoints(this.getExperiencePoints() + 1);
+			if ((moveDiffX == 0 || Math.signum(moveDiffX) != Math.signum(moveDiffNextX))
+					&& (moveDiffY == 0 || Math.signum(moveDiffY) != Math.signum(moveDiffNextY))
+					&& (moveDiffZ == 0 || Math.signum(moveDiffZ) != Math.signum(moveDiffNextZ))) {
+				System.out.println("REACHED ADJACENT");
+				this.setPosition(this.getMoveToAdjacent().getCenter());
+				this.setMoveToAdjacent(null);
+				this.setExperiencePoints(this.getExperiencePoints() + 1);
 
-					// Check whether the unit is moving to a cube far away (not
-					// an
-					// adjacent cube)
-					if (this.getMoveToCube() != null) {
-						setNextCubeInPath();
-					}
+				// Check whether the unit is moving to a cube far away (not
+				// an
+				// adjacent cube)
+				if (this.getMoveToCube() != null) {
+					setNextCubeInPath();
+				}
 
-					// Check whether the unit is not pathfinding. If this is
-					// true,
-					// it stops moving.
-					if (this.getMoveToCube() == null) {
-						this.nextActivity();
-					}
-				} else
-					this.setPosition(next);
+				// Check whether the unit is not pathfinding. If this is
+				// true,
+				// it stops moving.
+				if (this.getMoveToCube() == null) {
+					System.out.println("REACHED MOVETO");
+					this.nextActivity();
+				}
+			} else {
+				System.out.println("NOTHING REACHED");
+				this.setPosition(next);
 			}
 		}
 	}
@@ -1018,10 +1027,14 @@ public class Unit extends TimeVariableObject {
 		Cube moveToAdjacent = new Cube(this.getPosition().getCube().getX() + x, this.getPosition().getCube().getY() + y,
 				this.getPosition().getCube().getZ() + z);
 
+		if (!moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld()))
+			System.out.println("movetoadjacent not in reach");
+
 		if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING))
 			this.insertActivity(Activity.WALKING);
 
 		this.setMoveToAdjacent(moveToAdjacent);
+		System.out.println("ADJACENT: " + moveToAdjacent.getX() + moveToAdjacent.getY() + moveToAdjacent.getZ());
 	}
 
 	public Cube getMoveToAdjacent() {
@@ -1064,6 +1077,7 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void moveTo(Cube cube) {
 		this.setMoveToCube(cube);
+		System.out.println("MOVETOCUBE: " + cube.getX() + cube.getY() + cube.getZ());
 		setNextCubeInPath();
 	}
 
@@ -1072,8 +1086,14 @@ public class Unit extends TimeVariableObject {
 	 * away.
 	 */
 	private void setNextCubeInPath() {
+		if (this.getCube().equals(this.getMoveToCube())) {
+			this.setMoveToCube(null);
+			this.nextActivity();
+		}
 		Set<Cube> allCubes = this.getWorld().getAllCubes();
 		for (Cube cube : new HashSet<Cube>(allCubes)) {
+			if (!cube.isPassableIn(this.getWorld()))
+				allCubes.remove(cube);
 			if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
 				allCubes.remove(cube);
 		}
@@ -1094,17 +1114,18 @@ public class Unit extends TimeVariableObject {
 
 		while (currentDistance != Double.MAX_VALUE) {
 			if (current.equals(this.getMoveToCube())) {
-				Cube previous = shortestPath.get(current);
-				while (!shortestPath.get(previous).equals(this.getCube()))
-					previous = shortestPath.get(previous);
-				int x = previous.getX() - this.getCube().getX();
-				int y = previous.getY() - this.getCube().getY();
-				int z = previous.getZ() - this.getCube().getZ();
+				while (!shortestPath.get(current).equals(this.getCube()))
+					current = shortestPath.get(current);
+				int x = current.getX() - this.getCube().getX();
+				int y = current.getY() - this.getCube().getY();
+				int z = current.getZ() - this.getCube().getZ();
 				this.moveToAdjacent(x, y, z);
-				if (previous == this.getMoveToCube()) {
+				if (current == this.getMoveToCube()) {
 					this.setMoveToCube(null);
 					this.nextActivity();
 				}
+				
+				return;
 			}
 
 			for (Cube cube : unvisited.keySet()) {
@@ -1187,7 +1208,10 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public Activity getCurrentActivity() {
-		return this.activityQueue.get(0);
+		if (!this.getActivityQueue().isEmpty())
+			return this.activityQueue.get(0);
+		else
+			return Activity.NONE;
 	}
 
 	/**
@@ -1210,6 +1234,8 @@ public class Unit extends TimeVariableObject {
 	 * @return
 	 */
 	public void setActivity(Activity activity) {
+		if (this.getWorld() == null && activity == Activity.NONE)
+			this.activityQueue.add(0, activity);
 		if (this.isResting() && !this.canStopResting)
 			return;
 		else if (this.isAttacking() && this.getBusyTime() > 0)
@@ -1232,11 +1258,11 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public void nextActivity() {
-		while (this.getActivityQueue().get(0) == Activity.NONE)
-			this.activityQueue.remove(0);
 		if (this.getActivityQueue().isEmpty())
 			this.setActivity(Activity.NONE);
 		else
+			while (this.getActivityQueue().get(0) == Activity.NONE)
+				this.activityQueue.remove(0);
 			this.activityQueue.remove(0);
 	}
 
@@ -1384,7 +1410,7 @@ public class Unit extends TimeVariableObject {
 		this.setBusyTime(500 / this.getStrength());
 		this.moveTo(cube);
 	}
-	
+
 	public void work() {
 		this.setActivity(Activity.WORKING);
 		this.setBusyTime(500 / this.getStrength());

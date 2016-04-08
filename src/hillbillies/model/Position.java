@@ -115,8 +115,9 @@ public class Position {
 	public boolean isValidForObjectIn(World world) {
 		if (!this.isValidIn(world))
 			return false;
-		if (!this.getCube().isPassableIn(world))
+		if (!this.getCube().isPassableIn(world)) {
 			return false;
+		}
 		return true;
 	}
 
