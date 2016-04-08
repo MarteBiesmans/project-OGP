@@ -168,29 +168,19 @@ public class Cube {
 		for (int x=-1; x<2; x++)
 			for (int y=-1; y<2; y++)
 				for (int z=-1; z<2; z++){
-					if (! ( (x==0) && (y==0) && (z==0) ) )
-						try {
-							Cube possibleCube = new Cube(this.getX()+x, this.getY()+y, this.getZ()+z);
-							if (possibleCube.isValidIn(world))
-								result.add(possibleCube);
-						} catch (IllegalArgumentException e) {}
+					try {
+						Cube possibleCube = new Cube(this.getX()+x, this.getY()+y, this.getZ()+z);
+						if (possibleCube.isValidIn(world))
+							result.add(possibleCube);
+					} catch (IllegalArgumentException e) {}
 		}
-		
-//		result.remove(this);
+		result.remove(this);
 		
 		return result;
 	}
 	
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
-
-//		Iterator<Cube> it = this.getAllNeighbouringCubes(world).iterator();
-//		while (it.hasNext()) {
-//			Cube possibleCube = it.next();
-//			if (possibleCube.isSameOrAdjacentCube(this))
-//				result.add(possibleCube);
-//		}
-		
 		for (Cube cube : this.getAllAdjacentCubes(world)){
 			if (cube.isSameOrDirectlyAdjacentCube(this))
 				result.add(cube);
@@ -199,42 +189,6 @@ public class Cube {
 		return result;
 	}
 	
-	/**
-	 * check wether this cube is located directly beside a border of the given world
-	 * 
-	 * @param	world
-	 * 			the world the checked cube belongs to
-	 * @return	true if the number of neighbouring cubes is not equal to 26
-	 * @throws	IllegalArgumentException
-	 * 			the given world equals null or this cubes is not within the boundaries of the given world
-	 */
-	boolean isDirectlyConnectedToBorder(World world) throws IllegalArgumentException {
-		if ( (world==null) || (! this.isValidIn(world)) )
-			throw new IllegalArgumentException();
-		if (this.getAllAdjacentCubes(world).size() != 26)
-			return true;		
-		return false;
-	}
-	
-	/**
-	 * check wether this cube is solid and legally connected to the border of the game world
-	 * 
-	 * @param	world
-	 * 			the world the checked cube belongs to
-	 * @return	false if this cube is not solid
-	 * @return	true if this cube is solid and directly connected to the border
-	 * @return	true if this cube is solid and at least one adjacent cube 
-	 * 			is solid and connected to the border
-	 * @throws	IllegalArgumentException
-	 * 			world equals null or this cube is not within the boundaries of the given world
-	 */
-	public boolean isSolidConnectedToBorder(World world) throws IllegalArgumentException {
-		if ( (world==null) || (! this.isValidIn(world)) )
-			throw new IllegalArgumentException();
-//		TODO work in progress
-		return false;
-		
-	}
 	
 	@Override
 	public String toString() {

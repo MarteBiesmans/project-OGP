@@ -200,38 +200,4 @@ public class CubeTest {
 		
 		assertEquals(calculatedAdjacentCubes, adjacentCubes);
 	}
-	
-	@Test
-	public void isDirectlyConnectedToBorder() {
-		World testWorld = new World(new int[50][50][50]);
-		Cube cornerCube = new Cube(49,49,49);
-		Cube sideCube = new Cube(0,25,25);
-		Cube centreCube = new Cube(25,25,25);
-		assertTrue(cornerCube.isDirectlyConnectedToBorder(testWorld));
-		assertTrue(sideCube.isDirectlyConnectedToBorder(testWorld));
-		assertFalse(centreCube.isDirectlyConnectedToBorder(testWorld));		
-	}
-	
-//	@Test
-//	public void isSolidConnectedToBorder_passableCube() {
-//		World testWorld = new World(new int[50][50][50]);
-//		Cube cornerCube = new Cube(49,49,49);
-//		assertFalse(cornerCube.isSolidConnectedToBorder(testWorld));		
-//	}
-//	
-//	@Test
-//	public void isSolidConnectedToBorder_solidCube() {
-//		World testWorld = new World(new int[50][50][50]);
-//		
-//		Cube cornerCube = new Cube(49,49,49);
-//		Cube centreCube = new Cube(25,25,25);
-//		
-//		testWorld.setTerrainType(cornerCube, TerrainType.ROCK);
-//		for (int z = 0; z < 50; z++)
-//			testWorld.setTerrainType(new Cube(25,25,z), TerrainType.WOOD);
-//		
-//		assertTrue(cornerCube.isSolidConnectedToBorder(testWorld));
-//		assertTrue(centreCube.isSolidConnectedToBorder(testWorld));
-//	}
-
 }
