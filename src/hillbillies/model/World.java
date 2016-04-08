@@ -1,11 +1,8 @@
 package hillbillies.model;
 
-
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import hillbillies.util.ConnectedToBorder;
-
-
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -31,41 +28,37 @@ public class World extends TimeVariableObject {
 	 *            A three-dimensional array (structured as [x][y][z]) with the
 	 *            types of the terrain, encoded as integers. The integer types
 	 *            are as follows: 0: air 1: rock 2: tree 3: workshop
-	 * @post	The terrain types of this new world are equal to the given terrain types.
-	 * @post	This new world has no units yet.
-	 * @post	This new world has no factions yet.
-	 * @post	this new world can have materials if some part of the world specified in terrainTypes should cave in
-	 * @effect	initialize the private instance connectedUtil to be able to use the given algorithms in ConnectedToBorder
+	 * @post The terrain types of this new world are equal to the given terrain
+	 *       types.
+	 * @post This new world has no units yet.
+	 * @post This new world has no factions yet.
+	 * @post this new world can have materials if some part of the world
+	 *       specified in terrainTypes should cave in
+	 * @effect initialize the private instance connectedUtil to be able to use
+	 *         the given algorithms in ConnectedToBorder
 	 * @throws IllegalArgumentException
 	 *             terrainTypes is not valid for this world
 	 */
 	public World(int[][][] terrainTypes) throws IllegalArgumentException {
 		if (!canHaveAsTerrainTypes(terrainTypes))
 			throw new IllegalArgumentException();
-		
-		this.units = new HashSet<Unit>();
-		this.factions = new HashSet<Faction>();
-		
+
 		this.terrainTypes = terrainTypes;
-		
-		this.connectedUtil = new ConnectedToBorder(terrainTypes.length, 
-				   							  terrainTypes[0].length, 
-				   							  terrainTypes[0][0].length);
-		//iterate over the 3D-array terrainTypes to initialize connectedUtil
+
+		this.connectedUtil = new ConnectedToBorder(terrainTypes.length, terrainTypes[0].length,
+				terrainTypes[0][0].length);
+		// iterate over the 3D-array terrainTypes to initialize connectedUtil
 		Set<int[]> caveIns = new HashSet<int[]>();
 		for (int x = 0; x < terrainTypes.length; x++)
 			for (int y = 0; y < terrainTypes[x].length; y++)
 				for (int z = 0; z < terrainTypes[x][y].length; z++) {
 					if (terrainTypes[x][y][z] == 0 || terrainTypes[x][y][z] == 3)
-						caveIns.addAll( connectedUtil.changeSolidToPassable(x, y, z) );
+						caveIns.addAll(connectedUtil.changeSolidToPassable(x, y, z));
 				}
-		//make the caveIns collapse
+		// make the caveIns collapse
 		for (int[] cubeCoordinate : caveIns)
 			this.collapse(new Cube(cubeCoordinate[0], cubeCoordinate[1], cubeCoordinate[2]));
-			
 
-		
-		
 	}
 
 	// TERRAIN//
@@ -84,8 +77,8 @@ public class World extends TimeVariableObject {
 			for (int y = 0; y < terrainTypes[x].length; y++)
 				for (int z = 0; z < terrainTypes[x][y].length; z++)
 					// check if the value is legal
-					if ((terrainTypes[x][y][z] != 0) && (terrainTypes[x][y][z] != 1) && 
-						(terrainTypes[x][y][z] != 2) && (terrainTypes[x][y][z] != 3))
+					if ((terrainTypes[x][y][z] != 0) && (terrainTypes[x][y][z] != 1) && (terrainTypes[x][y][z] != 2)
+							&& (terrainTypes[x][y][z] != 3))
 						return false;
 		return true;
 	}
@@ -105,7 +98,8 @@ public class World extends TimeVariableObject {
 	private int[][][] terrainTypes;
 
 	/**
-	 * instance of the provided class ConnectedToBorder to be able to access these methods
+	 * instance of the provided class ConnectedToBorder to be able to access
+	 * these methods
 	 */
 	private final ConnectedToBorder connectedUtil;
 
@@ -186,74 +180,75 @@ public class World extends TimeVariableObject {
 	/**
 	 * sets the terrain type of a given cube in this world to a given value
 	 * 
-	 * @param	cube
-	 * 			the cube to change
-	 * @param	type
-	 * 			the terrain type to set to
-	 * @effect	update the private instance connectedUtil to be able to use 
-	 * 			the given algorithms in ConnectedToBorder
-	 * @effect	if necessary make other cubes collapse
-	 * @effect	update 3D-array terrainTypes for the given cube
-	 * @throws	IllegalArgumentException
-	 * 			the given cube is not within the boundaries of this world
+	 * @param cube
+	 *            the cube to change
+	 * @param type
+	 *            the terrain type to set to
+	 * @effect update the private instance connectedUtil to be able to use the
+	 *         given algorithms in ConnectedToBorder
+	 * @effect if necessary make other cubes collapse
+	 * @effect update 3D-array terrainTypes for the given cube
+	 * @throws IllegalArgumentException
+	 *             the given cube is not within the boundaries of this world
 	 */
 	public void setTerrainType(Cube cube, TerrainType type) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
-			throw new IllegalArgumentException();		
-		
-		//update connectedUtil and collect caveIns	
+			throw new IllegalArgumentException();
+
+		// update connectedUtil and collect caveIns
 		Set<int[]> caveIns = new HashSet<int[]>();
-		
-		//solid to passable
-		if ( !cube.isPassableIn(this) && type.isPassable() )
-			caveIns.addAll( connectedUtil.changeSolidToPassable(cube.getX(), cube.getY(), cube.getZ()) );
-		
-		//passable to solid
-		if ( cube.isPassableIn(this) && !type.isPassable() ) {
+
+		// solid to passable
+		if (!cube.isPassableIn(this) && type.isPassable())
+			caveIns.addAll(connectedUtil.changeSolidToPassable(cube.getX(), cube.getY(), cube.getZ()));
+
+		// passable to solid
+		if (cube.isPassableIn(this) && !type.isPassable()) {
 			connectedUtil.changePassableToSolid(cube.getX(), cube.getY(), cube.getZ());
-			if ( !connectedUtil.isSolidConnectedToBorder(cube.getX(), cube.getY(), cube.getZ()) ) {
+			if (!connectedUtil.isSolidConnectedToBorder(cube.getX(), cube.getY(), cube.getZ())) {
 				connectedUtil.changeSolidToPassable(cube.getX(), cube.getY(), cube.getZ());
 				return;
 			}
 		}
-		
-		//update terrainTypes
+
+		// update terrainTypes
 		this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = type.getAssociatedInt();
-		
-		//make the caveIns collapse
+
+		// make the caveIns collapse
 		for (int[] cubeCoordinate : caveIns)
 			this.collapse(new Cube(cubeCoordinate[0], cubeCoordinate[1], cubeCoordinate[2]));
 	}
-	
+
 	/**
 	 * make the given cube collapse with the possibility to create a material
 	 * 
-	 * @param	cube
-	 * 			the cube to collapse
-	 * @post	nothing changes if the given cube is not solid 
+	 * @param cube
+	 *            the cube to collapse
+	 * @post nothing changes if the given cube is not solid
 	 * 
 	 * @throws IllegalArgumentException
-	 * 			the given cube equals null
+	 *             the given cube equals null
 	 */
 	public void collapse(Cube cube) throws IllegalArgumentException {
-		//TODO checken of er units moeten vallen
-		if (cube==null)
+		// TODO checken of er units moeten vallen -> marte is dit aan het doen
+		// voor als er geworkt wordt op een cube, kijk daar af ;)
+		// + uitleggen aan marte: hoe wordt deze functie precies opgeroepen?
+		if (cube == null)
 			throw new IllegalArgumentException();
 		if (cube.isPassableIn(this))
 			return;
-		
+
 		TerrainType oldType = this.getTerrainType(cube);
 		this.setTerrainType(cube, TerrainType.AIR);
-		
+
 		double probability = RANDOM_GEN.nextDouble();
-		if (probability<0.25) {
+		if (probability < 0.25) {
 			if (oldType == TerrainType.WOOD)
 				this.addMaterial(new Log(this, cube.getCenter()));
 			else if (oldType == TerrainType.ROCK)
 				this.addMaterial(new Boulder(this, cube.getCenter()));
 		}
 	}
-
 
 	// UNITS//
 
@@ -269,7 +264,6 @@ public class World extends TimeVariableObject {
 			throw e;
 		}
 	}
-
 
 	public void addUnit(Unit unit) throws IllegalArgumentException {
 		if (!unit.getPosition().isValidForObjectIn(this))
@@ -330,7 +324,6 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-
 	/**
 	 * get all units in one cube of the game world presented as a set
 	 * 
@@ -381,7 +374,7 @@ public class World extends TimeVariableObject {
 		return faction.getAllUnits();
 	}
 
-	private final Set<Unit> units;
+	private final Set<Unit> units = new HashSet<Unit>();
 
 	/**
 	 * create a random unit in this world
@@ -509,7 +502,7 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	private Set<Faction> factions;
+	private final Set<Faction> factions = new HashSet<Faction>();
 
 	// MATERIALS//
 
@@ -727,23 +720,15 @@ public class World extends TimeVariableObject {
 	 *        (material != null) && | (! material.isTerminated()) )
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
-	// TODO waarom is dit final? dat kan toch wijzigen in de loop van het spel?
-	// -> hier heb ik ook over nagedacht, templates deden dit vanzelf. het
-	// antwoord is dat de elementen in de set wel kunnen veranderen
-	// (bijvoegen/weghalen, maar dat de set zelf wel altijd dezelfde plaats in
-	// het geheugen blijft behouden
-	// -> mss ook met units en factions doen dan?
 
-	
-	
 	// OTHERS//
 
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-//		if (seconds < 0 || seconds >= 0.2)
-//			throw new IllegalArgumentException();
-//		this.busyTimeMin(seconds);
+		// if (seconds < 0 || seconds >= 0.2)
+		// throw new IllegalArgumentException();
+		// this.busyTimeMin(seconds);
 
-		//advanceTime voor elke unit
+		// advanceTime voor elke unit
 		for (Unit unit : this.getAllUnits())
 			unit.advanceTime(seconds);
 
