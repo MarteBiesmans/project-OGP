@@ -12,33 +12,29 @@ import be.kuleuven.cs.som.annotate.*;
 @Value
 public class Position {
 
-
 	public Position(double x, double y, double z) throws IllegalArgumentException {
-		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH),
-								(int) (y / Cube.SIDE_LENGTH),
-								(int) (z / Cube.SIDE_LENGTH));
+		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH), (int) (y / Cube.SIDE_LENGTH), (int) (z / Cube.SIDE_LENGTH));
 		x %= Cube.SIDE_LENGTH;
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
-		
+
 		this.cube = cube;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public Position(double x, double y, double z, Cube cube) throws IllegalArgumentException, NullPointerException {
 		if (cube == null)
-				throw new NullPointerException();
-		
-		this.cube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)),
-				(int) (cube.getY() + (y / Cube.SIDE_LENGTH)),
+			throw new NullPointerException();
+
+		this.cube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)), (int) (cube.getY() + (y / Cube.SIDE_LENGTH)),
 				(int) (cube.getZ() + (z / Cube.SIDE_LENGTH)));
-		
+
 		x %= Cube.SIDE_LENGTH;
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
-		
+
 		if (x < 0)
 			x += Cube.SIDE_LENGTH;
 		if (y < 0)
@@ -49,20 +45,19 @@ public class Position {
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public Cube getCube() {
 		return this.cube;
 	}
-	
+
 	private Cube cube;
-	
+
 	private double x;
 	private double y;
 	private double z;
-	
+
 	public Position min(Position other) {
-		return new Position(this.getRealX() - other.getRealX(),
-				this.getRealY() - other.getRealY(),
+		return new Position(this.getRealX() - other.getRealX(), this.getRealY() - other.getRealY(),
 				this.getRealZ() - other.getRealZ());
 	}
 
@@ -80,7 +75,7 @@ public class Position {
 
 	public double getRealY() {
 		return this.cube.getY() * Cube.SIDE_LENGTH + this.getY();
-		}
+	}
 
 	public double getZ() {
 		return this.z;
@@ -88,92 +83,97 @@ public class Position {
 
 	public double getRealZ() {
 		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
-		}
-	
+	}
+
 	/**
 	 * check wether this position is valid for a given world
 	 * 
-	 * @param	world
-	 * 			the world to check
-	 * @return	false if the given world equals null
-	 * @return	false if the position is not within the boundaries of the given world
+	 * @param world
+	 *            the world to check
+	 * @return false if the given world equals null
+	 * @return false if the position is not within the boundaries of the given
+	 *         world
 	 */
 	public boolean isValidIn(World world) {
-		
-		if (world==null)
+
+		if (world == null)
 			return false;
-		
-		return !(this.getRealX() < 0 || this.getRealX() > world.getNbCubesX() 
-			  || this.getRealY() < 0 || this.getRealY() > world.getNbCubesY() 
-			  || this.getRealZ() < 0 || this.getRealZ() > world.getNbCubesZ());
+
+		return !(this.getRealX() < 0 || this.getRealX() > world.getNbCubesX() || this.getRealY() < 0
+				|| this.getRealY() > world.getNbCubesY() || this.getRealZ() < 0
+				|| this.getRealZ() > world.getNbCubesZ());
 	}
-	
+
 	/**
 	 * check wether this position is valid for any object in a given world
 	 * 
-	 * @param	world
-	 * 			the world to check
-	 * @return	false if the position is not valid in the given world
-	 * @return	false if the cube where the position is located is not passable
+	 * @param world
+	 *            the world to check
+	 * @return false if the position is not valid in the given world
+	 * @return false if the cube where the position is located is not passable
 	 */
 	public boolean isValidForObjectIn(World world) {
-		if (! this.isValidIn(world))
+		if (!this.isValidIn(world))
 			return false;
-		if (! this.getCube().isPassableIn(world))
-			return false;		
+		if (!this.getCube().isPassableIn(world))
+			return false;
 		return true;
 	}
-	
+
 	/**
 	 * check wether this position is stable for any unit in a given world
 	 * 
-	 * @param	world
-	 * 			the world to check
-	 * @return	false if the position is not valid for any unit in the given world
-	 * @return	true if the position is valid and at least one neigbouring cube is solid/impassable
+	 * @param world
+	 *            the world to check
+	 * @return false if the position is not valid for any unit in the given
+	 *         world
+	 * @return true if the position is valid and at least one neigbouring cube
+	 *         is solid/impassable
 	 */
 	public boolean isStableForUnitIn(World world) {
-		if (! this.isValidForObjectIn(world))
+		if (!this.isValidForObjectIn(world))
 			return false;
-		
+
+		if (this.getCube().getZ() == 0)
+			return true;
+
 		Iterator<Cube> it = this.getCube().getAllAdjacentCubes(world).iterator();
 		while (it.hasNext()) {
 			Cube NeighbouringCube = it.next();
 			if (!NeighbouringCube.isPassableIn(world))
 				return true;
 		}
-		
+
 		return false;
 	}
-	
-	
+
 	/**
 	 * check wether this position is stable for any material in a given world
 	 * 
-	 * @param	world
-	 * 			the world to check
-	 * @return	false if the position is not valid for any object in the given world
-	 * @return	false if the cube of the position is not directly above a solid cube and 
-	 * 				the z-coordinate of the cube is not 0
+	 * @param world
+	 *            the world to check
+	 * @return false if the position is not valid for any object in the given
+	 *         world
+	 * @return false if the cube of the position is not directly above a solid
+	 *         cube and the z-coordinate of the cube is not 0
 	 */
 	public boolean isStableForMaterialIn(World world) {
-		if (! this.isValidForObjectIn(world))
+		if (!this.isValidForObjectIn(world))
 			return false;
-		Cube cubeBelow = new Cube(this.getCube().getX(), 
-								this.getCube().getY(), 
-								this.getCube().getZ()-1);
-		if ( (this.getCube().getZ() != 0) &&
-			 (cubeBelow.isPassableIn(world)) )
-			return false;	
+		Cube cubeBelow = new Cube(this.getCube().getX(), this.getCube().getY(), this.getCube().getZ() - 1);
+		if ((this.getCube().getZ() != 0) && (cubeBelow.isPassableIn(world)))
+			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "(" + this.getRealX() + "," + this.getRealY() + "," + this.getRealZ() + ")";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -191,7 +191,9 @@ public class Position {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
