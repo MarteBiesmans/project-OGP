@@ -48,12 +48,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		try {
+//		try {
 			world.advanceTime((float) dt);
-		}
-		catch (Throwable e) {
-			throw new ModelException();
-		}
+//		}
+//		catch (Throwable e) {
+//			throw new ModelException();
+//		}
 
 	}
 
@@ -95,12 +95,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		try {
+//		try {
 			world.addUnit(unit);
-		}
-		catch (Throwable e) {
-			throw new ModelException();
-		}
+//		}
+//		catch (Throwable e) {
+//			throw new ModelException();
+//		}
 
 	}
 
@@ -116,14 +116,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public boolean isCarryingLog(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.hasLog();
 	}
 
 	@Override
 	public boolean isCarryingBoulder(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.hasBoulder();
 	}
 
 	@Override
@@ -138,8 +136,6 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

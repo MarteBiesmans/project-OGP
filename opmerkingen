@@ -41,3 +41,11 @@ TODO's die in unit bovenaan stonden:
  * user interface aan de praat krijgen (hihi, nu terug een TODO)
  * null pointers (niet nodig voor primary attributes, want int is basic type) (OK voor name) -> zeker nog nachecken!
  */
+ 
+ METHODES CUBE/WORLD: nu staan enkele methoden voor cubes in world (vb: world.methodeVoorCube(cube))
+ en andere methodes staan in cube (vb cube.methodeVoorCube(world)) -> moeten we hier niet consistent
+ in zijn en alle methodes in 1 klasse zetten?
+ 
+ OMG IK HAD IN DE OPDRZCHT ERGENS OVER GELEZEN: oke dit is geen ramp, gewoon nog een beetje werk dat ik niet
+ verwacht had, activity is nu een lijst (omdat een unit na vallen/vechten zijn vorige activiteit zou moeten kunnen
+ verderzetten, en moet kunnen lopen naar een cube om er dan op te werken enzo
