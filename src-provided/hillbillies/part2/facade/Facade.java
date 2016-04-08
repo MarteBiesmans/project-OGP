@@ -84,8 +84,13 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			Cube cube = new Cube(x,y,z);
+			return cube.isSolidConnectedToBorderIn(world);
+		}
+		catch (Throwable e){
+			throw new ModelException();
+		}
 	}
 
 	@Override
@@ -137,6 +142,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
 		unit.workAt(new Cube(x, y, z));
+
 	}
 
 	/**
@@ -172,7 +178,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		return world.getActiveFactions();
+		return world.getAllActiveFactions();
 	}
 
 	@Override

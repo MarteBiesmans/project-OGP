@@ -101,7 +101,7 @@ public class World extends TimeVariableObject {
 	 * instance of the provided class ConnectedToBorder to be able to access
 	 * these methods
 	 */
-	private final ConnectedToBorder connectedUtil;
+	final ConnectedToBorder connectedUtil;
 
 	/**
 	 * Return the number of cubes in the X direction of this world.
@@ -475,22 +475,9 @@ public class World extends TimeVariableObject {
 	// -> zie txt bestand opmerkingen, dat kan in principe, zou geheugen
 	// besparen, maar de rvaag is of dat ooit problemen met iets gaat geven
 	int getNbActiveFactions() {
-		int counter = 0;
-		for (Faction faction : this.factions)
-			if (faction.getNbUnits() > 0)
-				counter += 1;
-		return counter;
+		return this.getAllActiveFactions().size();
 	}
 	
-	public Set<Faction> getActiveFactions() {
-		Set<Faction> activeFactionsSoFar = new HashSet<Faction>();
-		for (Faction faction: this.getAllFactions()) {
-			if (faction.getNbUnits() > 0)
-				activeFactionsSoFar.add(faction);
-		}
-		return activeFactionsSoFar;
-	}
-
 	boolean hasAsFaction(Faction faction) {
 		if (faction == null)
 			return false;
@@ -506,6 +493,17 @@ public class World extends TimeVariableObject {
 	 */
 	Set<Faction> getAllFactions() {
 		return factions;
+	}
+	
+	/**
+	 * return all the active factions present in this world as a set
+	 */
+	public Set<Faction> getAllActiveFactions() {
+		Set<Faction> activeFactionsSoFar = new HashSet<Faction>();
+		for (Faction faction : this.getAllFactions())
+			if (faction.getNbUnits() > 0)
+				activeFactionsSoFar.add(faction);
+		return activeFactionsSoFar;
 	}
 
 	boolean hasProperFactions() {
