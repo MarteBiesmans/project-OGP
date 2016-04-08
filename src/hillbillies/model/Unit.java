@@ -790,14 +790,12 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void attacking(float seconds) {
-		System.out.println("attacking");
 		if (this.getBusyTime() == 0)
 			this.nextActivity();
 	}
 
 	private void moving(float seconds) {
 		if (this.isFalling()) {
-			System.out.println("falling");
 			Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
 					Math.max(this.getPosition().getRealZ() - 3.0 * seconds, 0.));
 			if (!this.getCube().equals(next.getCube()))
@@ -805,9 +803,7 @@ public class Unit extends TimeVariableObject {
 			this.setPosition(next);
 
 		} else {
-			System.out.println("moving");
 			if (this.isSprinting()) {
-				System.out.println("sprinting");
 				double stamina = this.getStaminaPoints() - seconds * 10;
 				if (stamina > 0)
 					this.setStaminaPoints(stamina);
@@ -840,7 +836,6 @@ public class Unit extends TimeVariableObject {
 			if ((moveDiffX == 0 || Math.signum(moveDiffX) != Math.signum(moveDiffNextX))
 					&& (moveDiffY == 0 || Math.signum(moveDiffY) != Math.signum(moveDiffNextY))
 					&& (moveDiffZ == 0 || Math.signum(moveDiffZ) != Math.signum(moveDiffNextZ))) {
-				System.out.println("REACHED ADJACENT");
 				this.setPosition(this.getMoveToAdjacent().getCenter());
 				this.setMoveToAdjacent(null);
 				this.setExperiencePoints(this.getExperiencePoints() + 1);
@@ -856,18 +851,15 @@ public class Unit extends TimeVariableObject {
 				// true,
 				// it stops moving.
 				if (this.getMoveToCube() == null) {
-					System.out.println("REACHED MOVETO");
 					this.nextActivity();
 				}
 			} else {
-				System.out.println("NOTHING REACHED");
 				this.setPosition(next);
 			}
 		}
 	}
 
 	private void working(float seconds) {
-		System.out.println("working");
 		if (this.getBusyTime() == 0) {
 
 			if (this.getNbMaterials() > 0) {
@@ -906,7 +898,6 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void resting(float seconds) {
-		System.out.println("resting");
 		if (this.getHitpoints() != this.getMaxHitpoints()) {
 			double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (200 * 0.2);
 			this.setHitpoints(Math.min(hitpoints, this.getMaxHitpoints()));
@@ -923,7 +914,6 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void beingUseless(float seconds) {
-		System.out.println("being useless");
 		int randomGetal = RANDOM_GEN.nextInt(4);
 		if (randomGetal == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
@@ -1028,13 +1018,11 @@ public class Unit extends TimeVariableObject {
 				this.getPosition().getCube().getZ() + z);
 
 		if (!moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld()))
-			System.out.println("movetoadjacent not in reach");
 
 		if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING))
 			this.insertActivity(Activity.WALKING);
 
 		this.setMoveToAdjacent(moveToAdjacent);
-		System.out.println("ADJACENT: " + moveToAdjacent.getX() + moveToAdjacent.getY() + moveToAdjacent.getZ());
 	}
 
 	public Cube getMoveToAdjacent() {
@@ -1077,7 +1065,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void moveTo(Cube cube) {
 		this.setMoveToCube(cube);
-		System.out.println("MOVETOCUBE: " + cube.getX() + cube.getY() + cube.getZ());
 		setNextCubeInPath();
 	}
 
@@ -1214,18 +1201,18 @@ public class Unit extends TimeVariableObject {
 			return Activity.NONE;
 	}
 
-	/**
-	 * sets the activity of this unit to the given activity. Returns true if it
-	 * succeeded.
-	 * 
-	 * @param activity
-	 * @param busyTime
-	 * @return
-	 */
-	public void setActivity(Activity activity, double busyTime) {
-		this.setActivity(activity);
-		this.setBusyTime(busyTime);
-	}
+//	/**
+//	 * sets the activity of this unit to the given activity. Returns true if it
+//	 * succeeded.
+//	 * 
+//	 * @param activity
+//	 * @param busyTime
+//	 * @return
+//	 */
+//	public void setActivity(Activity activity, double busyTime) {
+//		this.setActivity(activity);
+//		this.setBusyTime(busyTime);
+//	}
 
 	/**
 	 * sets the activity of this unit to the given activity.
@@ -1245,6 +1232,7 @@ public class Unit extends TimeVariableObject {
 		if (!this.getActivityQueue().isEmpty())
 			this.activityQueue.remove(0);
 		this.activityQueue.add(0, activity);
+		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
 	public void insertActivity(Activity activity) {
@@ -1255,6 +1243,7 @@ public class Unit extends TimeVariableObject {
 		if (this.isFalling() && !this.canStopFalling())
 			return;
 		this.activityQueue.add(0, activity);
+		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
 	public void nextActivity() {
@@ -1264,6 +1253,19 @@ public class Unit extends TimeVariableObject {
 			while (this.getActivityQueue().get(0) == Activity.NONE)
 				this.activityQueue.remove(0);
 			this.activityQueue.remove(0);
+			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)));
+			
+	}
+	
+	public double getBusyTimeFor(Activity activity) {
+		if (activity == Activity.WORKING) 
+			return (500 / this.getStrength());
+		else if  (activity == Activity.RESTING)
+			return Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness());
+		else if (activity == Activity.ATTACKING)
+			return 1.0;
+		else
+			return 0;
 	}
 
 	/**
@@ -1407,18 +1409,15 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void workAt(Cube cube) {
 		this.setActivity(Activity.WORKING);
-		this.setBusyTime(500 / this.getStrength());
 		this.moveTo(cube);
 	}
 
 	public void work() {
 		this.setActivity(Activity.WORKING);
-		this.setBusyTime(500 / this.getStrength());
 	}
 
 	public void rest() {
-		double busytime = Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness());
-		this.setActivity(Activity.RESTING, busytime);
+		this.setActivity(Activity.RESTING);
 		if (this.isResting())
 			this.canStopResting = false;
 	}
@@ -1426,7 +1425,7 @@ public class Unit extends TimeVariableObject {
 	public void attack(Unit defender) {
 		if (this.getCube().isSameOrAdjacentCube(defender.getCube()) && !defender.isFalling()
 				&& this.getFaction() != defender.getFaction()) {
-			this.setActivity(Activity.ATTACKING, 1.0);
+			this.setActivity(Activity.ATTACKING);
 			if (this.isAttacking())
 				defender.defend(this);
 			this.setOrientation(Math.atan2(defender.getPosition().getRealY() - this.getPosition().getRealY(),
@@ -1633,6 +1632,7 @@ public class Unit extends TimeVariableObject {
 	 *       same position the unit has died. |
 	 */
 	public void die() {
+		System.out.println("DIEDIEDIEDIE");
 		for (Material material : this.materials)
 			this.removeMaterial(material, this.getPosition());
 		this.getWorld().removeUnit(this);
