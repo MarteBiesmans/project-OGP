@@ -611,6 +611,8 @@ public class Unit extends TimeVariableObject {
 	public void setHitpoints(double hitpoints) {
 		assert this.canHaveAsHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
+		if (hitpoints == 0)
+			this.die();
 	}
 
 	/**
@@ -782,11 +784,6 @@ public class Unit extends TimeVariableObject {
 
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
-
-		// TODO: of doen bij setHitpoints(hitpoints) -> if hitpoints == 0 ->
-		// this.die()?
-		if (this.getHitpoints() == 0)
-			this.die();
 	}
 
 	private void attacking(float seconds) {
@@ -844,7 +841,7 @@ public class Unit extends TimeVariableObject {
 				// an
 				// adjacent cube)
 				if (this.getMoveToCube() != null) {
-					setNextCubeInPath();
+					findNextCubeInPath();
 				}
 
 				// Check whether the unit is not pathfinding. If this is
@@ -921,9 +918,8 @@ public class Unit extends TimeVariableObject {
 		int randomFight = RANDOM_GEN.nextInt(4);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
-			Iterator<Unit> iter = potentialEnemies.iterator();
-			Unit enemie = (Unit) iter.next();
-			this.attack(enemie);
+			ArrayList<Unit> potentialEnemiesArray = new ArrayList<Unit>(potentialEnemies);
+			this.attack(potentialEnemiesArray.get(RANDOM_GEN.nextInt(potentialEnemiesArray.size())));
 		} else {
 
 			int randomWork = RANDOM_GEN.nextInt(3);
@@ -934,9 +930,8 @@ public class Unit extends TimeVariableObject {
 					allAdjacentCubes.remove(cube);
 			}
 			if (randomWork == 0 && allAdjacentCubes.size() != 0) {
-				Iterator<Cube> iter = allAdjacentCubes.iterator();
-				Cube nextCube = (Cube) iter.next();
-				this.workAt(nextCube);
+				ArrayList<Cube> allAdjacentCubesArray = new ArrayList<Cube>(allAdjacentCubes);
+				this.workAt(allAdjacentCubesArray.get(RANDOM_GEN.nextInt(allAdjacentCubesArray.size())));
 			} else {
 
 				int randomMoveOrRest = RANDOM_GEN.nextInt(2);
@@ -955,9 +950,8 @@ public class Unit extends TimeVariableObject {
 						if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
 							allCubes.remove(cube);
 					}
-					Iterator<Cube> iter = allCubes.iterator();
-					Cube nextCube = (Cube) iter.next();
-					moveTo(nextCube);
+					ArrayList<Cube> allCubesArray = new ArrayList<Cube>(allCubes);
+					moveTo(allCubesArray.get(RANDOM_GEN.nextInt(allCubesArray.size())));
 				}
 			}
 		}
@@ -1077,14 +1071,14 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void moveTo(Cube cube) {
 		this.setMoveToCube(cube);
-		setNextCubeInPath();
+		findNextCubeInPath();
 	}
 
 	/**
 	 * Moves this unit to the next cube when it's pathfinding to a cube far
 	 * away.
 	 */
-	private void setNextCubeInPath() {
+	private void findNextCubeInPath() {
 		if (this.getCube().equals(this.getMoveToCube())) {
 			this.nextActivity();
 			return;
@@ -1120,15 +1114,12 @@ public class Unit extends TimeVariableObject {
 				if (current == this.getMoveToCube()) {
 					this.nextActivity();
 				}
-
 				return;
 			}
 
 			for (Cube cube : unvisited.keySet()) {
 				if (cube.isSameOrAdjacentCube(current) && !cube.equals(current)) {
-					double weight = 1; // TODO: (priority low) bereken gewicht
-										// als afstand tss
-										// midden + omhoog/omlaag + etc
+					double weight = current.getDistanceWeightTo(cube);
 					double newDistance = currentDistance + weight;
 					if (newDistance < unvisited.get(cube)) {
 						unvisited.put(cube, newDistance);

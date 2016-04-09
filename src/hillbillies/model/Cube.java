@@ -68,7 +68,7 @@ public class Cube {
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	/**
 	 * Checks if the given coördinates are valid.
 	 * 
@@ -85,6 +85,7 @@ public class Cube {
 
 	/**
 	 * Checks if the given coördinates are valid in the given world.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -97,9 +98,10 @@ public class Cube {
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * Checks if this cube is valid in de given world.
+	 * 
 	 * @param world
 	 * @return true if the cube coördinates fit in the given world.
 	 */
@@ -115,7 +117,7 @@ public class Cube {
 	public int getX() {
 		return this.x;
 	}
-	
+
 	/**
 	 * returns the coördinate on the y-axis.
 	 */
@@ -145,7 +147,7 @@ public class Cube {
 	 * constant registering the side length of one cube
 	 */
 	public static final double SIDE_LENGTH = 1;
-	
+
 	/**
 	 * returns the center position of this cube.
 	 */
@@ -155,7 +157,9 @@ public class Cube {
 
 	/**
 	 * returns the difference of this cube with another cube.
-	 * @param other  The cube to substract from this cube.
+	 * 
+	 * @param other
+	 *            The cube to substract from this cube.
 	 */
 	public Cube min(Cube other) {
 		return new Cube(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
@@ -212,32 +216,34 @@ public class Cube {
 	public Set<Cube> getAllAdjacentCubes(World world) {
 
 		Set<Cube> result = new HashSet<Cube>();
-		for (int x=-1; x<2; x++)
-			for (int y=-1; y<2; y++)
-				for (int z=-1; z<2; z++){
+		for (int x = -1; x < 2; x++)
+			for (int y = -1; y < 2; y++)
+				for (int z = -1; z < 2; z++) {
 					try {
-						Cube possibleCube = new Cube(this.getX()+x, this.getY()+y, this.getZ()+z);
+						Cube possibleCube = new Cube(this.getX() + x, this.getY() + y, this.getZ() + z);
 						if (possibleCube.isValidIn(world))
 							result.add(possibleCube);
-					} catch (IllegalArgumentException e) {}
-		}
+					} catch (IllegalArgumentException e) {
+					}
+				}
 		result.remove(this);
 		return result;
 	}
-	
+
 	/**
-	 * returns a set of all directly adjacent cubes that are valid in the given world.
+	 * returns a set of all directly adjacent cubes that are valid in the given
+	 * world.
 	 */
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
-		for (Cube cube : this.getAllAdjacentCubes(world)){
+		for (Cube cube : this.getAllAdjacentCubes(world)) {
 			if (cube.isSameOrDirectlyAdjacentCube(this))
 				result.add(cube);
 		}
 
 		return result;
 	}
-	
+
 	public boolean isSolidConnectedToBorderIn(World world) {
 		return world.connectedUtil.isSolidConnectedToBorder(this.getX(), this.getY(), this.getZ());
 	}
@@ -284,22 +290,33 @@ public class Cube {
 			return false;
 		return true;
 	}
-	
+
 	public boolean isWorkableCubeInBy(World world, Unit unit) {
 		if (unit.getNbMaterials() > 0) {
 			return true;
-		} else if (world.getTerrainType(this) == TerrainType.WORKSHOP
-				&& world.getBouldersIn(this).size() > 0
+		} else if (world.getTerrainType(this) == TerrainType.WORKSHOP && world.getBouldersIn(this).size() > 0
 				&& world.getLogsIn(this).size() > 0) {
-					return true;
+			return true;
 		} else if (world.getBouldersIn(this).size() > 0) {
 			return true;
 		} else if (world.getLogsIn(this).size() > 0) {
 			return true;
-		} else if (world.getTerrainType(this) == TerrainType.WOOD
-				|| world.getTerrainType(this) == TerrainType.ROCK) {
+		} else if (world.getTerrainType(this) == TerrainType.WOOD || world.getTerrainType(this) == TerrainType.ROCK) {
 			return true;
 		}
-	return false;
+		return false;
+	}
+
+	public double getDistanceWeightTo(Cube next) {
+		double weight = 1;
+		double distance = ((this.getX() - next.getX()) * (this.getX() - next.getX())
+				+ (this.getY() - next.getY()) * (this.getY() - next.getY())
+				+ (this.getZ() - next.getZ()) * (this.getZ() - next.getZ()));
+		weight *= distance;
+		if (this.getZ() - next.getZ() == -1)
+			weight *= 0.5*0.5;
+		else if (this.getZ() - next.getZ() == 1)
+			weight *= 1.2*1.2;
+		return weight;
 	}
 }
