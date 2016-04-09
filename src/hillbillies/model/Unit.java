@@ -1086,7 +1086,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private void setNextCubeInPath() {
 		if (this.getCube().equals(this.getMoveToCube())) {
-			this.setMoveToCube(null);
 			this.nextActivity();
 			return;
 		}
@@ -1119,7 +1118,6 @@ public class Unit extends TimeVariableObject {
 				int z = current.getZ() - this.getCube().getZ();
 				this.moveToAdjacent(x, y, z);
 				if (current == this.getMoveToCube()) {
-					this.setMoveToCube(null);
 					this.nextActivity();
 				}
 
@@ -1265,8 +1263,12 @@ public class Unit extends TimeVariableObject {
 				this.setActivity(Activity.NONE);
 				return;
 			} else {
-				if (this.getCurrentActivity() == Activity.WORKING)
+				if (this.isWorking())
 					this.setWorkAtCube(null);
+				if (this.isMoving() && !this.isFalling()) {
+					this.setMoveToCube(null);
+					this.setMoveToAdjacent(null);
+				}
 				this.activityQueue.remove(0);
 				if (!this.getActivityQueue().isEmpty()) {
 					if (this.getActivityQueue().get(0) == Activity.NONE)
