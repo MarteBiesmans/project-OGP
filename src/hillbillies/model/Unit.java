@@ -141,9 +141,10 @@ public class Unit extends TimeVariableObject {
 		// behaviour
 		this.defaultBehaviour = enableDefaultBehaviour;
 
-		// moveTo and moveToAdjacent
+		// moveTo and moveToAdjacent, workAtCube
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
+		this.setWorkAtCube(null);
 
 		// world, faction, experience points and level
 		this.world = null;
@@ -865,31 +866,34 @@ public class Unit extends TimeVariableObject {
 			if (this.getNbMaterials() > 0) {
 				Iterator<Material> iter = this.materials.iterator();
 				Material material = (Material) iter.next();
-				this.removeMaterial(material, this.getCube().getCenter());
+				if (this.getWorkAtCube().getCenter().isValidForObjectIn(this.getWorld()))
+					this.removeMaterial(material, this.getWorkAtCube().getCenter());
+				else
+					this.removeMaterial(material, this.getCube().getCenter());
 
-			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WORKSHOP
-					&& this.getWorld().getBouldersIn(this.getCube()).size() > 0
-					&& this.getWorld().getLogsIn(this.getCube()).size() > 0) {
-				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getCube()).iterator();
+			} else if (this.getWorld().getTerrainType(this.getWorkAtCube()) == TerrainType.WORKSHOP
+					&& this.getWorld().getBouldersIn(this.getWorkAtCube()).size() > 0
+					&& this.getWorld().getLogsIn(this.getWorkAtCube()).size() > 0) {
+				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getWorkAtCube()).iterator();
 				Boulder boulder = (Boulder) iterBoulder.next();
-				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getCube()).iterator();
+				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getWorkAtCube()).iterator();
 				Log log = (Log) iterLog.next();
 				this.addMaterial(boulder);
 				this.addMaterial(log);
 
-			} else if (this.getWorld().getBouldersIn(this.getCube()).size() > 0) {
-				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getCube()).iterator();
+			} else if (this.getWorld().getBouldersIn(this.getWorkAtCube()).size() > 0) {
+				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getWorkAtCube()).iterator();
 				Boulder boulder = (Boulder) iterBoulder.next();
 				this.addMaterial(boulder);
 
-			} else if (this.getWorld().getLogsIn(this.getCube()).size() > 0) {
-				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getCube()).iterator();
+			} else if (this.getWorld().getLogsIn(this.getWorkAtCube()).size() > 0) {
+				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getWorkAtCube()).iterator();
 				Log log = (Log) iterLog.next();
 				this.addMaterial(log);
 
-			} else if (this.getWorld().getTerrainType(this.getCube()) == TerrainType.WOOD
-					|| this.getWorld().getTerrainType(this.getCube()) == TerrainType.ROCK) {
-				this.getWorld().collapse(this.getCube());
+			} else if (this.getWorld().getTerrainType(this.getWorkAtCube()) == TerrainType.WOOD
+					|| this.getWorld().getTerrainType(this.getWorkAtCube()) == TerrainType.ROCK) {
+				this.getWorld().collapse(this.getWorkAtCube());
 
 			}
 			this.nextActivity();
@@ -914,40 +918,53 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void beingUseless(float seconds) {
-		int randomGetal = RANDOM_GEN.nextInt(4);
-		if (randomGetal == 0 && this.getPotentialEnemies().size() != 0) {
+		
+		int randomFight = RANDOM_GEN.nextInt(4);
+		System.out.println("randomFight: " + randomFight);
+		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
 			Iterator<Unit> iter = potentialEnemies.iterator();
 			Unit enemie = (Unit) iter.next();
 			this.attack(enemie);
+			System.out.println("RANDOM ATTACK");
 		} else {
-			randomGetal = RANDOM_GEN.nextInt(3);
-			if (randomGetal == 0) {
-				Set<Cube> allCubes = this.getWorld().getAllCubes();
-				for (Cube cube : new HashSet<Cube>(allCubes)) {
-					if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
-						allCubes.remove(cube);
-				}
-				Iterator<Cube> iter = allCubes.iterator();
-				Cube nextCube = (Cube) iter.next();
-				moveTo(nextCube);
 
-			} else if (randomGetal == 1) {
-				Set<Cube> allCubes = this.getWorld().getAllCubes();
-				for (Cube cube : new HashSet<Cube>(allCubes)) {
-					if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
-						allCubes.remove(cube);
-				}
-				Iterator<Cube> iter = allCubes.iterator();
+			int randomWork = RANDOM_GEN.nextInt(3);
+			System.out.println("randomWork: " + randomWork);
+			Set<Cube> allAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
+			allAdjacentCubes.add(this.getCube());
+			for (Cube cube : new HashSet<Cube>(allAdjacentCubes)) {
+				if (!cube.isWorkableCubeInBy(this.getWorld(), this))
+					allAdjacentCubes.remove(cube);
+			}
+			if (randomWork == 0 && allAdjacentCubes.size() != 0) {
+				Iterator<Cube> iter = allAdjacentCubes.iterator();
 				Cube nextCube = (Cube) iter.next();
 				this.workAt(nextCube);
-
+				System.out.println("RANDOM WORK");
 			} else {
-				this.rest();
-				double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2 / this.getToughness();
-				double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
-						/ this.getToughness();
-				this.setBusyTime(hitpointsTime + staminaTime);
+
+				int randomMoveOrRest = RANDOM_GEN.nextInt(2);
+				System.out.println("randomMoveOrRest: " + randomMoveOrRest);
+				if (randomMoveOrRest == 0) {
+					Set<Cube> allCubes = this.getWorld().getAllCubes();
+					for (Cube cube : new HashSet<Cube>(allCubes)) {
+						if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
+							allCubes.remove(cube);
+					}
+					Iterator<Cube> iter = allCubes.iterator();
+					Cube nextCube = (Cube) iter.next();
+					moveTo(nextCube);
+					System.out.println("RANDOM MOVE TO: "+ nextCube.toString());
+				} else {
+					this.rest();
+					double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2
+							/ this.getToughness();
+					double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
+							/ this.getToughness();
+					this.setBusyTime(hitpointsTime + staminaTime);
+					System.out.println("RANDOM REST");
+				}
 			}
 		}
 	}
@@ -1019,8 +1036,8 @@ public class Unit extends TimeVariableObject {
 
 		if (!moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld()))
 
-		if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING))
-			this.insertActivity(Activity.WALKING);
+			if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING))
+				this.setActivity(Activity.WALKING);
 
 		this.setMoveToAdjacent(moveToAdjacent);
 	}
@@ -1111,7 +1128,7 @@ public class Unit extends TimeVariableObject {
 					this.setMoveToCube(null);
 					this.nextActivity();
 				}
-				
+
 				return;
 			}
 
@@ -1181,8 +1198,11 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public void setMoveToCube(Cube cube) {
-		if (cube == null || cube.isValidIn(this.getWorld()))
+		if (cube == null || cube.getCenter().isStableForUnitIn(this.getWorld())) {
 			this.moveToCube = cube;
+			if (cube != null)
+			System.out.println("movetocube set to: " + cube.toString());
+		}
 	}
 
 	private Cube moveToCube;
@@ -1201,18 +1221,19 @@ public class Unit extends TimeVariableObject {
 			return Activity.NONE;
 	}
 
-//	/**
-//	 * sets the activity of this unit to the given activity. Returns true if it
-//	 * succeeded.
-//	 * 
-//	 * @param activity
-//	 * @param busyTime
-//	 * @return
-//	 */
-//	public void setActivity(Activity activity, double busyTime) {
-//		this.setActivity(activity);
-//		this.setBusyTime(busyTime);
-//	}
+	// /**
+	// * sets the activity of this unit to the given activity. Returns true if
+	// it
+	// * succeeded.
+	// *
+	// * @param activity
+	// * @param busyTime
+	// * @return
+	// */
+	// public void setActivity(Activity activity, double busyTime) {
+	// this.setActivity(activity);
+	// this.setBusyTime(busyTime);
+	// }
 
 	/**
 	 * sets the activity of this unit to the given activity.
@@ -1247,20 +1268,31 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public void nextActivity() {
-		if (this.getActivityQueue().isEmpty())
-			this.setActivity(Activity.NONE);
-		else
-			while (this.getActivityQueue().get(0) == Activity.NONE)
+		while (true) {
+			if (this.getActivityQueue().isEmpty()) {
+				this.setActivity(Activity.NONE);
+				return;
+			} else {
+				if (this.getCurrentActivity() == Activity.WORKING)
+					this.setWorkAtCube(null);
 				this.activityQueue.remove(0);
-			this.activityQueue.remove(0);
-			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)));
-			
+				if (!this.getActivityQueue().isEmpty()) {
+					if (this.getActivityQueue().get(0) == Activity.NONE)
+						this.activityQueue.remove(0);
+					else {
+						this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)));
+						return;
+					}
+				}
+			}
+		}
+
 	}
-	
+
 	public double getBusyTimeFor(Activity activity) {
-		if (activity == Activity.WORKING) 
+		if (activity == Activity.WORKING)
 			return (500 / this.getStrength());
-		else if  (activity == Activity.RESTING)
+		else if (activity == Activity.RESTING)
 			return Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness());
 		else if (activity == Activity.ATTACKING)
 			return 1.0;
@@ -1408,9 +1440,31 @@ public class Unit extends TimeVariableObject {
 	 * this unit starts working.
 	 */
 	public void workAt(Cube cube) {
-		this.setActivity(Activity.WORKING);
-		this.moveTo(cube);
+		if (this.canHaveAsWorkAtCube(cube)) {
+			System.out.println("workat: " + cube.toString());
+			this.setWorkAtCube(cube);
+			this.setActivity(Activity.WORKING);
+		}
 	}
+
+	public Cube getWorkAtCube() {
+		return this.workAtCube;
+	}
+
+	public boolean canHaveAsWorkAtCube(Cube cube) {
+		return (this.moveToCube != null && this.getPosition().getCube().isSameOrAdjacentCube(cube)
+				&& cube.isWorkableCubeInBy(this.getWorld(), this));
+	}
+
+	public void setWorkAtCube(Cube cube) {
+		if (cube != null) {
+			if (!this.canHaveAsWorkAtCube(cube))
+				return;
+		}
+		this.workAtCube = cube;
+	}
+
+	private Cube workAtCube;
 
 	public void work() {
 		this.setActivity(Activity.WORKING);
@@ -1419,6 +1473,7 @@ public class Unit extends TimeVariableObject {
 	public void rest() {
 		this.setActivity(Activity.RESTING);
 		if (this.isResting())
+			System.out.println("resting");
 			this.canStopResting = false;
 	}
 
@@ -1427,6 +1482,7 @@ public class Unit extends TimeVariableObject {
 				&& this.getFaction() != defender.getFaction()) {
 			this.setActivity(Activity.ATTACKING);
 			if (this.isAttacking())
+				System.out.println("attacking");
 				defender.defend(this);
 			this.setOrientation(Math.atan2(defender.getPosition().getRealY() - this.getPosition().getRealY(),
 					defender.getPosition().getRealX() - this.getPosition().getRealX()));
@@ -1439,6 +1495,7 @@ public class Unit extends TimeVariableObject {
 	 * @param attacker
 	 */
 	public void defend(Unit attacker) {
+		System.out.println("defending");
 		boolean succeeded = true;
 		// dodging
 		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {

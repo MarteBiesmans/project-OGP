@@ -284,4 +284,22 @@ public class Cube {
 			return false;
 		return true;
 	}
+	
+	public boolean isWorkableCubeInBy(World world, Unit unit) {
+		if (unit.getNbMaterials() > 0) {
+			return true;
+		} else if (world.getTerrainType(this) == TerrainType.WORKSHOP
+				&& world.getBouldersIn(this).size() > 0
+				&& world.getLogsIn(this).size() > 0) {
+					return true;
+		} else if (world.getBouldersIn(this).size() > 0) {
+			return true;
+		} else if (world.getLogsIn(this).size() > 0) {
+			return true;
+		} else if (world.getTerrainType(this) == TerrainType.WOOD
+				|| world.getTerrainType(this) == TerrainType.ROCK) {
+			return true;
+		}
+	return false;
+	}
 }
