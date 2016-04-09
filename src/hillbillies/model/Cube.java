@@ -309,14 +309,14 @@ public class Cube {
 
 	public double getDistanceWeightTo(Cube next) {
 		double weight = 1;
-		double distance = ((this.getX() - next.getX()) * (this.getX() - next.getX())
+		double distance = Math.sqrt((this.getX() - next.getX()) * (this.getX() - next.getX())
 				+ (this.getY() - next.getY()) * (this.getY() - next.getY())
 				+ (this.getZ() - next.getZ()) * (this.getZ() - next.getZ()));
 		weight *= distance;
 		if (this.getZ() - next.getZ() == -1)
-			weight *= 0.5*0.5;
+			weight *= 0.5;
 		else if (this.getZ() - next.getZ() == 1)
-			weight *= 1.2*1.2;
+			weight *= 1.2;
 		return weight;
 	}
 }
