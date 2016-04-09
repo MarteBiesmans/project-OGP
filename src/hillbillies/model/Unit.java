@@ -218,8 +218,7 @@ public class Unit extends TimeVariableObject {
 				this.nextActivity();
 			}
 			this.position = position;
-		} else
-			System.out.println("setposition not valid");
+		}
 	}
 
 	private Position position;
@@ -918,19 +917,16 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private void beingUseless(float seconds) {
-		
+
 		int randomFight = RANDOM_GEN.nextInt(4);
-		System.out.println("randomFight: " + randomFight);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
 			Iterator<Unit> iter = potentialEnemies.iterator();
 			Unit enemie = (Unit) iter.next();
 			this.attack(enemie);
-			System.out.println("RANDOM ATTACK");
 		} else {
 
 			int randomWork = RANDOM_GEN.nextInt(3);
-			System.out.println("randomWork: " + randomWork);
 			Set<Cube> allAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
 			allAdjacentCubes.add(this.getCube());
 			for (Cube cube : new HashSet<Cube>(allAdjacentCubes)) {
@@ -941,12 +937,19 @@ public class Unit extends TimeVariableObject {
 				Iterator<Cube> iter = allAdjacentCubes.iterator();
 				Cube nextCube = (Cube) iter.next();
 				this.workAt(nextCube);
-				System.out.println("RANDOM WORK");
 			} else {
 
 				int randomMoveOrRest = RANDOM_GEN.nextInt(2);
-				System.out.println("randomMoveOrRest: " + randomMoveOrRest);
-				if (randomMoveOrRest == 0) {
+				if (randomMoveOrRest == 0 && (this.getStaminaPoints() != this.getMaxStaminaPoints()
+						|| this.getHitpoints() != this.getMaxHitpoints())) {
+					this.rest();
+					double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2
+							/ this.getToughness();
+					double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
+							/ this.getToughness();
+					this.setBusyTime(hitpointsTime + staminaTime);
+
+				} else {
 					Set<Cube> allCubes = this.getWorld().getAllCubes();
 					for (Cube cube : new HashSet<Cube>(allCubes)) {
 						if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
@@ -955,15 +958,6 @@ public class Unit extends TimeVariableObject {
 					Iterator<Cube> iter = allCubes.iterator();
 					Cube nextCube = (Cube) iter.next();
 					moveTo(nextCube);
-					System.out.println("RANDOM MOVE TO: "+ nextCube.toString());
-				} else {
-					this.rest();
-					double hitpointsTime = (this.getMaxHitpoints() - this.getHitpoints()) * 200 * 0.2
-							/ this.getToughness();
-					double staminaTime = (this.getMaxStaminaPoints() - this.getStaminaPoints()) * 100 * 0.1
-							/ this.getToughness();
-					this.setBusyTime(hitpointsTime + staminaTime);
-					System.out.println("RANDOM REST");
 				}
 			}
 		}
@@ -1034,12 +1028,13 @@ public class Unit extends TimeVariableObject {
 		Cube moveToAdjacent = new Cube(this.getPosition().getCube().getX() + x, this.getPosition().getCube().getY() + y,
 				this.getPosition().getCube().getZ() + z);
 
-		if (!moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld()))
-
-			if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING))
+		if (moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld())) {
+			if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING)) {
 				this.setActivity(Activity.WALKING);
+			}
 
-		this.setMoveToAdjacent(moveToAdjacent);
+			this.setMoveToAdjacent(moveToAdjacent);
+		}
 	}
 
 	public Cube getMoveToAdjacent() {
@@ -1093,11 +1088,10 @@ public class Unit extends TimeVariableObject {
 		if (this.getCube().equals(this.getMoveToCube())) {
 			this.setMoveToCube(null);
 			this.nextActivity();
+			return;
 		}
 		Set<Cube> allCubes = this.getWorld().getAllCubes();
 		for (Cube cube : new HashSet<Cube>(allCubes)) {
-			if (!cube.isPassableIn(this.getWorld()))
-				allCubes.remove(cube);
 			if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
 				allCubes.remove(cube);
 		}
@@ -1200,8 +1194,6 @@ public class Unit extends TimeVariableObject {
 	public void setMoveToCube(Cube cube) {
 		if (cube == null || cube.getCenter().isStableForUnitIn(this.getWorld())) {
 			this.moveToCube = cube;
-			if (cube != null)
-			System.out.println("movetocube set to: " + cube.toString());
 		}
 	}
 
@@ -1441,7 +1433,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	public void workAt(Cube cube) {
 		if (this.canHaveAsWorkAtCube(cube)) {
-			System.out.println("workat: " + cube.toString());
 			this.setWorkAtCube(cube);
 			this.setActivity(Activity.WORKING);
 		}
@@ -1473,7 +1464,6 @@ public class Unit extends TimeVariableObject {
 	public void rest() {
 		this.setActivity(Activity.RESTING);
 		if (this.isResting())
-			System.out.println("resting");
 			this.canStopResting = false;
 	}
 
@@ -1482,7 +1472,6 @@ public class Unit extends TimeVariableObject {
 				&& this.getFaction() != defender.getFaction()) {
 			this.setActivity(Activity.ATTACKING);
 			if (this.isAttacking())
-				System.out.println("attacking");
 				defender.defend(this);
 			this.setOrientation(Math.atan2(defender.getPosition().getRealY() - this.getPosition().getRealY(),
 					defender.getPosition().getRealX() - this.getPosition().getRealX()));
@@ -1495,7 +1484,6 @@ public class Unit extends TimeVariableObject {
 	 * @param attacker
 	 */
 	public void defend(Unit attacker) {
-		System.out.println("defending");
 		boolean succeeded = true;
 		// dodging
 		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
