@@ -152,6 +152,8 @@ public class Unit extends TimeVariableObject {
 		this.setExperiencePoints(0);
 		this.setLevel(0);
 	}
+	
+	// ATTRIBUTES: getAlpha(), isValidAlpha(), canHaveAsAlpha(), setAlpha() ...
 
 	public boolean isValidUnit() {
 		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
@@ -750,6 +752,8 @@ public class Unit extends TimeVariableObject {
 
 	private int level;
 
+	//ADVANCE TIME en help methods
+	
 	/**
 	 * 
 	 * update the position, activity status, hitpoints and stamina points of a
@@ -1187,6 +1191,8 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private Cube moveToCube;
+	
+	//ACTIVITY//
 
 	/**
 	 * returns the current activity of this unit.
@@ -1421,6 +1427,8 @@ public class Unit extends TimeVariableObject {
 
 	private boolean defaultBehaviour;
 
+	//COMMANDS and help methods
+	
 	/**
 	 * this unit starts working.
 	 */
@@ -1480,14 +1488,13 @@ public class Unit extends TimeVariableObject {
 		boolean succeeded = true;
 		// dodging
 		if (RANDOM_GEN.nextDouble() < 0.2 * this.getAgility() / attacker.getAgility()) {
-			Position nextPosition = null;
-			while (nextPosition == this.getPosition() || (!canHaveAsPosition(nextPosition))) {
-				int x = RANDOM_GEN.nextInt(3) - 1;
-				int y = RANDOM_GEN.nextInt(3) - 1;
-				nextPosition = new Position(this.getPosition().getRealX() + x, this.getPosition().getRealY() + y,
-						this.getPosition().getRealZ());
+			Set<Cube> allAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
+			for (Cube cube : new HashSet<Cube>(allAdjacentCubes)) {
+				if (!cube.getCenter().isValidForObjectIn(this.getWorld()))
+					allAdjacentCubes.remove(cube);
 			}
-			this.setPosition(nextPosition);
+			ArrayList<Cube> allAdjacentCubesArray = new ArrayList<Cube>(allAdjacentCubes);
+			this.setPosition((allAdjacentCubesArray.get(RANDOM_GEN.nextInt(allAdjacentCubesArray.size())).getCenter()));
 			// blocking
 		} else if (RANDOM_GEN.nextDouble() < 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
@@ -1504,6 +1511,8 @@ public class Unit extends TimeVariableObject {
 			attacker.setExperiencePoints(attacker.getExperiencePoints() + 20);
 	}
 
+	// RELATIONS with world, faction and material
+	
 	public World getWorld() {
 		return this.world;
 	}
@@ -1661,6 +1670,8 @@ public class Unit extends TimeVariableObject {
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
 
+	//TERMINATION//
+	
 	/**
 	 * Terminate this unit.
 	 *
