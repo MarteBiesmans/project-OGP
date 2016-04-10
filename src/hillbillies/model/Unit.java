@@ -943,15 +943,15 @@ public class Unit extends TimeVariableObject {
 		} else {
 
 			int randomWork = RANDOM_GEN.nextInt(3);
-			Set<Cube> allAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
-			allAdjacentCubes.add(this.getCube());
-			for (Cube cube : new HashSet<Cube>(allAdjacentCubes)) {
+			Set<Cube> allNeighbouringCubes = this.getCube().getAllNeighbouringCubes(this.getWorld());
+			allNeighbouringCubes.add(this.getCube());
+			for (Cube cube : new HashSet<Cube>(allNeighbouringCubes)) {
 				if (!cube.isWorkableCubeInBy(this.getWorld(), this))
-					allAdjacentCubes.remove(cube);
+					allNeighbouringCubes.remove(cube);
 			}
-			if (randomWork == 0 && allAdjacentCubes.size() != 0) {
-				ArrayList<Cube> allAdjacentCubesArray = new ArrayList<Cube>(allAdjacentCubes);
-				this.workAt(allAdjacentCubesArray.get(RANDOM_GEN.nextInt(allAdjacentCubesArray.size())));
+			if (randomWork == 0 && allNeighbouringCubes.size() != 0) {
+				ArrayList<Cube> allNeighbouringCubesArray = new ArrayList<Cube>(allNeighbouringCubes);
+				this.workAt(allNeighbouringCubesArray.get(RANDOM_GEN.nextInt(allNeighbouringCubesArray.size())));
 			} else {
 
 				int randomMoveOrRest = RANDOM_GEN.nextInt(2);
@@ -1462,7 +1462,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public boolean canHaveAsWorkAtCube(Cube cube) {
-		return (cube != null && this.getPosition().getCube().isSameOrAdjacentCube(cube)
+		return (cube != null && this.getCube().isSameOrNeighbouringCube(cube)
 				&& cube.isWorkableCubeInBy(this.getWorld(), this));
 	}
 

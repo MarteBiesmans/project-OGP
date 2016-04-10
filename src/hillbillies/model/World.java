@@ -252,6 +252,7 @@ public class World extends TimeVariableObject {
 		double probability = RANDOM_GEN.nextDouble();
 		this.setTerrainType(cube, TerrainType.AIR);
 		if (probability < 0.25) {
+			System.out.println("material appears!");
 			if (this.getTerrainType(cube) == TerrainType.WOOD)
 				this.addMaterial(new Log(this, cube.getCenter()));
 			else if (this.getTerrainType(cube) == TerrainType.ROCK)

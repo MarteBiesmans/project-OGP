@@ -209,6 +209,10 @@ public class Cube {
 
 		return (nbDiff == 1);
 	}
+	
+	public boolean isSameOrNeighbouringCube(Cube other) {
+		return (this.isSameOrAdjacentCube(other) && (this.getZ() == other.getZ()));
+	}
 
 	/**
 	 * returns a set of all adjacent cubes that are valid in the given world.
@@ -240,7 +244,15 @@ public class Cube {
 			if (cube.isSameOrDirectlyAdjacentCube(this))
 				result.add(cube);
 		}
-
+		return result;
+	}
+	
+	public Set<Cube> getAllNeighbouringCubes(World world) {
+		Set<Cube> result = new HashSet<Cube>();
+		for (Cube cube : this.getAllAdjacentCubes(world)) {
+			if (this.isSameOrNeighbouringCube(cube))
+				result.add(cube);
+		}
 		return result;
 	}
 
