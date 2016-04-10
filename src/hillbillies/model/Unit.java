@@ -152,7 +152,7 @@ public class Unit extends TimeVariableObject {
 		this.setExperiencePoints(0);
 		this.setLevel(0);
 	}
-	
+
 	// ATTRIBUTES: getAlpha(), isValidAlpha(), canHaveAsAlpha(), setAlpha() ...
 
 	public boolean isValidUnit() {
@@ -211,16 +211,17 @@ public class Unit extends TimeVariableObject {
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
-		if (canHaveAsPosition(position)) {
-			if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
-				this.insertActivity(Activity.FALLING);
-			}
-
-			if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
-				this.nextActivity();
-			}
-			this.position = position;
+		if (!canHaveAsPosition(position))
+			throw new IllegalArgumentException();
+		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
+			this.insertActivity(Activity.FALLING);
 		}
+
+		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
+			this.nextActivity();
+		}
+		this.position = position;
+
 	}
 
 	private Position position;
@@ -752,8 +753,8 @@ public class Unit extends TimeVariableObject {
 
 	private int level;
 
-	//ADVANCE TIME en help methods
-	
+	// ADVANCE TIME en help methods
+
 	/**
 	 * 
 	 * update the position, activity status, hitpoints and stamina points of a
@@ -855,7 +856,22 @@ public class Unit extends TimeVariableObject {
 					this.nextActivity();
 				}
 			} else {
-				this.setPosition(next);
+				try {
+					this.setPosition(next);
+				} catch (IllegalArgumentException e) {
+					if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
+						while (!next.getCube().equals(this.getMoveToAdjacent())) {
+							next = new Position(next.getRealX() + (xVelocity * seconds / 10),
+									next.getRealY() + (yVelocity * seconds / 10),
+									next.getRealZ() + (zVelocity * seconds / 10));
+							try {
+								this.setPosition(next);
+							} catch (IllegalArgumentException r) {
+								continue;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1089,7 +1105,7 @@ public class Unit extends TimeVariableObject {
 		}
 		Set<Cube> allCubes = this.getWorld().getAllCubes();
 		for (Cube cube : new HashSet<Cube>(allCubes)) {
-			if (!cube.getCenter().isStableForUnitIn(this.getWorld()))
+			if (!this.canHaveAsPosition(cube.getCenter()) || !cube.getCenter().isStableForUnitIn(this.getWorld()))
 				allCubes.remove(cube);
 		}
 
@@ -1191,8 +1207,8 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private Cube moveToCube;
-	
-	//ACTIVITY//
+
+	// ACTIVITY//
 
 	/**
 	 * returns the current activity of this unit.
@@ -1427,8 +1443,8 @@ public class Unit extends TimeVariableObject {
 
 	private boolean defaultBehaviour;
 
-	//COMMANDS and help methods
-	
+	// COMMANDS and help methods
+
 	/**
 	 * this unit starts working.
 	 */
@@ -1436,8 +1452,6 @@ public class Unit extends TimeVariableObject {
 		if (this.canHaveAsWorkAtCube(cube)) {
 			this.setWorkAtCube(cube);
 			this.setActivity(Activity.WORKING);
-		} else {
-			System.out.println("cube not workable");
 		}
 	}
 
@@ -1514,7 +1528,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	// RELATIONS with world, faction and material
-	
+
 	public World getWorld() {
 		return this.world;
 	}
@@ -1672,8 +1686,8 @@ public class Unit extends TimeVariableObject {
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
 
-	//TERMINATION//
-	
+	// TERMINATION//
+
 	/**
 	 * Terminate this unit.
 	 *
