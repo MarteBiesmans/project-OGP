@@ -1436,6 +1436,8 @@ public class Unit extends TimeVariableObject {
 		if (this.canHaveAsWorkAtCube(cube)) {
 			this.setWorkAtCube(cube);
 			this.setActivity(Activity.WORKING);
+		} else {
+			System.out.println("cube not workable");
 		}
 	}
 
@@ -1444,7 +1446,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	public boolean canHaveAsWorkAtCube(Cube cube) {
-		return (this.moveToCube != null && this.getPosition().getCube().isSameOrAdjacentCube(cube)
+		return (cube != null && this.getPosition().getCube().isSameOrAdjacentCube(cube)
 				&& cube.isWorkableCubeInBy(this.getWorld(), this));
 	}
 
@@ -1681,7 +1683,6 @@ public class Unit extends TimeVariableObject {
 	 *       same position the unit has died. |
 	 */
 	public void die() {
-		System.out.println("DIEDIEDIEDIE");
 		for (Material material : this.materials)
 			this.removeMaterial(material, this.getPosition());
 		this.getWorld().removeUnit(this);
