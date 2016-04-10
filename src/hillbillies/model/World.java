@@ -9,9 +9,13 @@ import hillbillies.util.ConnectedToBorder;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * a class describing a game world filled with units (devided in factions) 
+ * and materials (logs and boulders)
  * 
  * @invar Each world has a valid array terrainTypes.
- * @invar Each world must have proper materials. | hasProperMaterials()
+ * @invar Each world must have proper materials.
+ * @invar Each world must have proper units.
+ * @invar Each world must have proper factions.
  * 
  * @author Ellen & Marte
  */
@@ -22,14 +26,16 @@ public class World extends TimeVariableObject {
 	static final int MAX_UNITS = 100;
 
 	/**
-	 * Initialize this World with given number of cubes.
+	 * create a new game world
 	 * 
 	 * @pre The terrain always has the shape of a box (i.e., the array
 	 *      terrainTypes[0] has the same length as terrainTypes[1] etc.).
 	 * @param terrainTypes
 	 *            A three-dimensional array (structured as [x][y][z]) with the
 	 *            types of the terrain, encoded as integers. The integer types
-	 *            are as follows: 0: air 1: rock 2: tree 3: workshop
+	 *            are as follows: 0-air 1-rock 2-tree 3-workshop
+	 * @param modelListener
+	 * 			an instance to update the GUI
 	 * @post The terrain types of this new world are equal to the given terrain
 	 *       types.
 	 * @post This new world has no units yet.
@@ -136,6 +142,9 @@ public class World extends TimeVariableObject {
 		return this.getTerrainTypesArray()[0][0].length;
 	}
 
+	/**
+	 * Return a set of all cubes in this world.
+	 */
 	public Set<Cube> getAllCubes() {
 		Set<Cube> allCubes = new HashSet<Cube>();
 		for (int i = 0; i < this.getNbCubesX(); i++) {
@@ -145,7 +154,6 @@ public class World extends TimeVariableObject {
 				}
 			}
 		}
-
 		return allCubes;
 	}
 
@@ -197,6 +205,7 @@ public class World extends TimeVariableObject {
 	 *         given algorithms in ConnectedToBorder
 	 * @effect if necessary make other cubes collapse
 	 * @effect update 3D-array terrainTypes for the given cube
+	 * @effect	update the GUI
 	 * @throws IllegalArgumentException
 	 *             the given cube is not within the boundaries of this world
 	 */
@@ -248,8 +257,7 @@ public class World extends TimeVariableObject {
 		double probability = RANDOM_GEN.nextDouble();
 		TerrainType oldType = this.getTerrainType(cube);
 		this.setTerrainType(cube, TerrainType.AIR);
-		//TODO
-		if (probability < 1) {
+		if (probability < 0.25) {
 			if (oldType == TerrainType.WOOD) {
 				this.addMaterial(new Log(), cube.getCenter());
 			} else if (oldType == TerrainType.ROCK) {
@@ -260,7 +268,15 @@ public class World extends TimeVariableObject {
 
 	// UNITS//
 
-	void removeUnit(Unit unit) {
+	/**
+	 * remove a given unit out of this world if possible
+	 * @param unit
+	 * 			the unit to remove
+	 * @post	if it is possible to set the world of the given unit to null, the unit is removed from this world
+	 * @throws	IllegalArgumentException
+	 * 			it is not possible to set the world of the given unit to null
+	 */
+	void removeUnit(Unit unit) throws IllegalArgumentException {
 		// if (!this.hasAsUnit(unit))
 		// throw new IllegalArgumentException();
 		// this.units.remove(unit);
@@ -276,6 +292,16 @@ public class World extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * add a given unit in the smallest (non-full) faction to this (non-full) world
+	 * 
+	 * @param unit
+	 * 			the unit to add
+	 * @post	nothing changes if the factions in this world or this world are already full
+	 * @throws IllegalArgumentException
+	 * 			the given unit can not be added to this world for every other 
+	 * 			reason than too much units or factions in this world (e.g. illegal position)
+	 */
 	public void addUnit(Unit unit) throws IllegalArgumentException {
 		if (!unit.getPosition().isValidForObjectIn(this))
 			throw new IllegalArgumentException();
@@ -308,6 +334,15 @@ public class World extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * check whether a given unit can be added to this world
+	 * 
+	 * @param unit
+	 * 			the unit to check
+	 * @return	false if the unit is dead
+	 * @return	false if the unit already belongs to a world
+	 * @return	false if this world already has reached the limit of units
+	 */
 	private boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead())
 			return false;
@@ -318,16 +353,30 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
+	/**
+	 * check whether this world contains a given unit
+	 * 
+	 * @param unit
+	 * 			the unit to check
+	 * @return	false if the given unit is null
+	 * @return	false if the given unit doesn't belong to the set of all units in this world
+	 */
 	boolean hasAsUnit(Unit unit) {
 		if (unit == null)
 			return false;
 		return this.units.contains(unit);
 	}
 
+	/**
+	 * return the number of units in this world
+	 */
 	int getNbUnits() {
 		return this.units.size();
 	}
 
+	/**
+	 * check whether this world has proper units
+	 */
 	boolean hasProperUnits() {
 		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getWorld() != this)
@@ -441,6 +490,11 @@ public class World extends TimeVariableObject {
 
 	// FACTIONS//
 
+	/**
+	 * add a given faction to this world
+	 * @param faction
+	 * 			the faction to add
+	 */
 	void addFaction(Faction faction) {
 		if (!canAddAsFaction(faction))
 			throw new IllegalArgumentException();
@@ -454,6 +508,11 @@ public class World extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * remove a given faction from this world
+	 * @param faction
+	 * 			the faction to remove
+	 */
 	void removeFaction(Faction faction) {
 		if (!this.hasAsFaction(faction))
 			throw new IllegalArgumentException();
@@ -467,6 +526,11 @@ public class World extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * check whether a given faction can be added to this world
+	 * @param faction
+	 * 			the faction to check
+	 */
 	boolean canAddAsFaction(Faction faction) {
 		if (faction.getWorld() != null)
 			return false;
@@ -475,16 +539,27 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
+	/**
+	 * return the number of active factions in this world
+	 */
 	int getNbActiveFactions() {
 		return this.getAllActiveFactions().size();
 	}
 
+	/**
+	 * check whether a given faction belongs to this world
+	 * @param faction
+	 * 			the faction to check
+	 */
 	boolean hasAsFaction(Faction faction) {
 		if (faction == null)
 			return false;
 		return this.factions.contains(faction);
 	}
 
+	/**
+	 * return the number of factions in this world (including non-active)
+	 */
 	int getNbFactions() {
 		return this.factions.size();
 	}
@@ -507,6 +582,9 @@ public class World extends TimeVariableObject {
 		return activeFactionsSoFar;
 	}
 
+	/**
+	 * check whether all factions in this world are proper
+	 */
 	boolean hasProperFactions() {
 		for (Faction faction : this.factions)
 			if (faction == null || faction.getWorld() != this)
@@ -514,6 +592,9 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
+	/**
+	 * a set with all the factions (including non-active) in this world
+	 */
 	private final Set<Faction> factions = new HashSet<Faction>();
 
 	// MATERIALS//
@@ -700,9 +781,7 @@ public class World extends TimeVariableObject {
 	 * @return True if and only if this world can have each of the materials
 	 *         attached to it as one of its materials, and if each of these
 	 *         materials references this world as the world to which they are
-	 *         attached. | for each material in Material: | if
-	 *         (hasAsMaterial(material)) | then canHaveAsMaterial(material) && |
-	 *         (material.getWorld() == this)
+	 *         attached.
 	 */
 	boolean hasProperMaterials() {
 		for (Material material : this.getAllMaterials()) {
@@ -717,8 +796,7 @@ public class World extends TimeVariableObject {
 	/**
 	 * Return the number of materials associated with this world.
 	 *
-	 * @return The total number of materials collected in this world. | result
-	 *         == | card({material:Material | hasAsMaterial({material)})
+	 * @return The total number of materials collected in this world.
 	 */
 	int getNbMaterials() {
 		return this.getAllMaterials().size();
@@ -727,15 +805,18 @@ public class World extends TimeVariableObject {
 	/**
 	 * Variable referencing a set collecting all the materials of this world.
 	 * 
-	 * @invar The referenced set is effective. | materials != null
+	 * @invar The referenced set is effective.
 	 * @invar Each material registered in the referenced list is effective and
-	 *        not yet terminated. | for each material in materials: | (
-	 *        (material != null) && | (! material.isTerminated()) )
+	 *        not yet terminated.
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
 
 	// OTHERS//
 
+	/**
+	 * advance time for this world
+	 * @effect	advance time for all objects (units, materials) in this world
+	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		// if (seconds < 0 || seconds >= 0.2)
 		// throw new IllegalArgumentException();
@@ -748,6 +829,5 @@ public class World extends TimeVariableObject {
 		// advanceTime voor elk material
 		for (Material material : this.getAllMaterials())
 			material.advanceTime(seconds);
-
 	}
 }
