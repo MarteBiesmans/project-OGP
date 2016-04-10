@@ -783,7 +783,7 @@ public class Unit extends TimeVariableObject {
 		else if (this.isResting())
 			resting(seconds);
 
-		if (this.isBeingUseless() && this.canStartDefaultBehaviour())
+		if (this.isBeingUseless() && this.defaultBehaviour)
 			beingUseless(seconds);
 
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
