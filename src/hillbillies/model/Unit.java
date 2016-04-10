@@ -510,7 +510,7 @@ public class Unit extends TimeVariableObject {
 	public int getToughness() {
 		return this.toughness;
 	}
-	
+
 	public int getTotalToughness() {
 		return (this.getToughness() + this.materials.size());
 	}
@@ -617,8 +617,6 @@ public class Unit extends TimeVariableObject {
 	public void setHitpoints(double hitpoints) {
 		assert this.canHaveAsHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
-		if (hitpoints == 0)
-			this.die();
 	}
 
 	/**
@@ -793,11 +791,18 @@ public class Unit extends TimeVariableObject {
 		if (this.isBeingUseless() && this.defaultBehaviour)
 			beingUseless(seconds);
 
-		if (this.shouldFall())
-			this.insertActivity(Activity.FALLING);
+		if (this.shouldFall()) {
+			if (this.isMoving())
+				this.insertActivity(Activity.FALLING);
+			else
+				this.setActivity(Activity.FALLING);
+		}
 
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
+		
+		if (this.getHitpoints() == 0)
+			this.die();
 	}
 
 	private void attacking(float seconds) {
@@ -807,10 +812,25 @@ public class Unit extends TimeVariableObject {
 
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				Math.max(this.getPosition().getRealZ() - 3.0 * seconds, 0.));
+				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
 			this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
-		this.setPosition(next);
+		try {
+			this.setPosition(next);
+		} catch (IllegalArgumentException e) {
+			if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
+				while (!next.getCube().equals(this.getMoveToAdjacent())) {
+					next = new Position(next.getRealX(),
+							next.getRealY(),
+							next.getRealZ() - (World.FALLING_VELOCITY* seconds / 10));
+					try {
+						this.setPosition(next);
+					} catch (IllegalArgumentException r) {
+						continue;
+					}
+				}
+			}
+		}
 	}
 
 	private void moving(float seconds) {
@@ -890,10 +910,7 @@ public class Unit extends TimeVariableObject {
 			if (this.getNbMaterials() > 0) {
 				Iterator<Material> iter = this.materials.iterator();
 				Material material = (Material) iter.next();
-				if (this.getWorkAtCube().getCenter().isValidForObjectIn(this.getWorld()))
-					this.removeMaterial(material, this.getWorkAtCube().getCenter());
-				else
-					this.removeMaterial(material, this.getCube().getCenter());
+				this.getWorld().addMaterial(material, this.getWorkAtCube().getCenter());
 
 			} else if (this.getWorld().getTerrainType(this.getWorkAtCube()) == TerrainType.WORKSHOP
 					&& this.getWorld().getBouldersIn(this.getWorkAtCube()).size() > 0
@@ -1395,34 +1412,16 @@ public class Unit extends TimeVariableObject {
 		return !cube.getCenter().isStableForUnitIn(this.getWorld());
 	}
 
-	// /**
-	// * Check whether this unit should fall.
-	// *
-	// * @return true if the cube of the position is not directly above a solid
-	// cube
-	// * @return false if the z-coordinate is 0
-	// * @return false if the material is carried by a unit, thus position
-	// equals null
-	// */
-	// public boolean shouldFall() {
-	// if (this.getPosition()==null)
-	// return false;
-	//
-	// if (this.getPosition().getCube().getZ() == 0)
-	// return false;
-	// Cube cubeBelow = new Cube(this.getPosition().getCube().getX(),
-	// this.getPosition().getCube().getY(),
-	// this.getPosition().getCube().getZ()-1);
-	// if ( this.getWorld().getTerrainType(cubeBelow).isPassable() )
-	// return true;
-	//
-	// return false;
-	// }
-
 	public boolean canStopFalling() {
-		return (this.isFalling() && (this.getPosition().getRealZ() == 0
-				|| (this.getCube().min(new Cube(0, 0, 1))).isPassableIn(this.getWorld())));
-
+		if (this.isFalling()) {
+			if (this.getCube().getZ() == 0) {
+				return true;
+			}
+			Cube cubeBelow = new Cube(this.getCube().getX(), this.getCube().getY(), this.getCube().getZ() - 1);
+			if (cubeBelow.isPassableIn(this.getWorld()))
+				return true;
+		}
+		return false;
 	}
 
 	private final List<Activity> activityQueue = new ArrayList<Activity>();
@@ -1617,7 +1616,7 @@ public class Unit extends TimeVariableObject {
 	 */
 	@Raw
 	public boolean canHaveAsMaterial(Material material) {
-		return (material != null) && (material.canHaveAsOwner(this));
+		return (material != null);
 	}
 
 	/**
@@ -1661,9 +1660,17 @@ public class Unit extends TimeVariableObject {
 	 *       new.hasAsMaterial(material)
 	 */
 	public void addMaterial(@Raw Material material) {
-		assert (material != null);
-		materials.add(material);
-		material.setOwner(this);
+		if (!canHaveAsMaterial(material)) {
+			throw new IllegalArgumentException();
+		}
+		this.materials.add(material);
+		try {
+			material.setOwner(this);
+			material.getWorld().removeMaterial(material);
+		} catch (IllegalArgumentException e) {
+			this.materials.remove(material);
+			throw e;
+		}
 	}
 
 	/**
@@ -1678,11 +1685,17 @@ public class Unit extends TimeVariableObject {
 	 *       | ! new.hasAsMaterial(material)
 	 */
 	@Raw
-	public void removeMaterial(Material material, Position position) {
-		assert this.hasAsMaterial(material) && (material.getOwner() == null);
-		materials.remove(material);
-		material.setPosition(position);
-		this.getWorld().addMaterial(material, this.getPosition());
+	public void removeMaterial(Material material) {
+		if (!this.hasAsMaterial(material))
+			throw new IllegalArgumentException();
+		this.materials.remove(material);
+
+		try {
+			material.setOwner(null);
+		} catch (IllegalArgumentException e) {
+			this.materials.add(material);
+			throw e;
+		}
 	}
 
 	/**
@@ -1708,7 +1721,6 @@ public class Unit extends TimeVariableObject {
 	public void die() {
 		for (Material material : this.materials) {
 			this.getWorld().addMaterial(material, this.getPosition());
-			this.removeMaterial(material, this.getPosition());
 		}
 		this.getWorld().removeUnit(this);
 		this.getFaction().removeUnit(this);

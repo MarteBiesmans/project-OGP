@@ -136,7 +136,14 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the owner doesn't own the material
 	 */
 	public boolean canHaveAsOwner(Unit owner) {
-		return (this.getOwner() == null && owner != null && owner.hasAsMaterial(this));
+		if (this.getOwner() != null) {
+			return false;
+		} else if (owner == null) {
+			return false;
+		} else if (!owner.hasAsMaterial(this)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -156,8 +163,6 @@ public abstract class Material extends TimeVariableObject {
 			if (!canHaveAsOwner(owner))
 				throw new IllegalArgumentException();
 		}
-		this.setPosition(null);
-		this.getWorld().removeMaterial(this);
 		this.owner = owner;
 	}
 
@@ -210,11 +215,8 @@ public abstract class Material extends TimeVariableObject {
 	@Raw
 	public void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
-			if (!this.canHaveAsWorld(world)) {
+			if (!canHaveAsWorld(world))
 				throw new IllegalArgumentException();
-			}
-		} else if ((this.getWorld() != null) && (this.getWorld().hasAsMaterial(this))) {
-			throw new IllegalArgumentException();
 		}
 		this.world = world;
 	}
@@ -239,47 +241,6 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	private final int weight;
 
-	// TODO: deze comments verwijderen indien niet meer nodig?
-	// /**
-	// * return the activity of this material
-	// */
-	// @Basic
-	// public Activity getActivity(){
-	// return activity;
-	// }
-	//
-	// /**
-	// * check if the given activity is valid for any material
-	// *
-	// * @return true if the activity is none or falling
-	// */
-	// public boolean isValidActivity(Activity activity){
-	// if ( (activity==Activity.NONE) && (activity==Activity.FALLING) )
-	// return true;
-	// return false;
-	// }
-	//
-	//
-	// /**
-	// * set the activity of this material to the given activity
-	// *
-	// * @param activity
-	// * the activity to set
-	// * @throws IllegalArgumentException
-	// * the given activity is not valid for materials
-	// */
-	// public void setActivity(Activity activity) throws
-	// IllegalArgumentException {
-	// if (!this.isValidActivity(activity))
-	// throw new IllegalArgumentException();
-	// this.activity = activity;
-	// }
-	//
-	// /**
-	// * variable registering the activity of this material
-	// */
-	// private Activity activity;
-
 	/**
 	 * update the position of this material, based on it's current properties
 	 * and a given duration 'seconds' in seconds of game time
@@ -299,16 +260,12 @@ public abstract class Material extends TimeVariableObject {
 	}
 
 	/**
-	 * TODO: moet hier ook een beschrijving bijstaan?
 	 * 
 	 * @param seconds
 	 */
 	private void falling(float seconds) {
-		// TODO: moeten we de valsnelheid niet als een constante in world
-		// vastleggen?
-		double zVelocity = -3.0;
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				this.getPosition().getRealZ() + zVelocity * seconds);
+				this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds);
 		this.setPosition(next);
 	}
 }

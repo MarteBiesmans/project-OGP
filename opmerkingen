@@ -49,3 +49,10 @@ TODO's die in unit bovenaan stonden:
  OMG IK HAD IN DE OPDRZCHT ERGENS OVER GELEZEN: oke dit is geen ramp, gewoon nog een beetje werk dat ik niet
  verwacht had, activity is nu een lijst (omdat een unit na vallen/vechten zijn vorige activiteit zou moeten kunnen
  verderzetten, en moet kunnen lopen naar een cube om er dan op te werken enzo
+ 
+ 	// TODO ik dacht om deze invariant te gebruiken en dus als een faction leeg
+	// is, die direct weg te halen
+	// uit de world (faction.world wordt dan null)
+	// @invar Each faction in a world should always be active, i.e. non-empty
+	// -> zie txt bestand opmerkingen, dat kan in principe, zou geheugen
+	// besparen, maar de rvaag is of dat ooit problemen met iets gaat geven

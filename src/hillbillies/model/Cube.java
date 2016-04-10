@@ -304,7 +304,7 @@ public class Cube {
 	}
 
 	public boolean isWorkableCubeInBy(World world, Unit unit) {
-		if (unit.getNbMaterials() > 0) {
+		if (unit.getNbMaterials() > 0 && this.getCenter().isValidForObjectIn(world)) {
 			return true;
 		} else if (world.getTerrainType(this) == TerrainType.WORKSHOP && world.getBouldersIn(this).size() > 0
 				&& world.getLogsIn(this).size() > 0) {

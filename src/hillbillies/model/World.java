@@ -240,14 +240,6 @@ public class World extends TimeVariableObject {
 	 *             the given cube equals null
 	 */
 	public void collapse(Cube cube) throws IllegalArgumentException {
-		// TODO checken of er units moeten vallen -> marte is dit aan het doen
-		// voor als er geworkt wordt op een cube, kijk daar af ;)
-		// oke marte is dit nog niet aan het doen, en het is inderdaad het beste
-		// als
-		// we hier checken of er units moeten vallen
-		// + uitleggen aan marte: hoe wordt deze functie precies opgeroepen?
-		// -> wordt nu in advancetime van unit telkens gecheckt:
-		// this;shouldFall() -> fall
 		if (cube == null)
 			throw new IllegalArgumentException();
 		if (cube.isPassableIn(this))
@@ -256,7 +248,7 @@ public class World extends TimeVariableObject {
 		double probability = RANDOM_GEN.nextDouble();
 		TerrainType oldType = this.getTerrainType(cube);
 		this.setTerrainType(cube, TerrainType.AIR);
-		;
+		//TODO
 		if (probability < 1) {
 			if (oldType == TerrainType.WOOD) {
 				this.addMaterial(new Log(), cube.getCenter());
@@ -483,12 +475,6 @@ public class World extends TimeVariableObject {
 		return true;
 	}
 
-	// TODO ik dacht om deze invariant te gebruiken en dus als een faction leeg
-	// is, die direct weg te halen
-	// uit de world (faction.world wordt dan null)
-	// @invar Each faction in a world should always be active, i.e. non-empty
-	// -> zie txt bestand opmerkingen, dat kan in principe, zou geheugen
-	// besparen, maar de rvaag is of dat ooit problemen met iets gaat geven
 	int getNbActiveFactions() {
 		return this.getAllActiveFactions().size();
 	}
@@ -550,6 +536,8 @@ public class World extends TimeVariableObject {
 		try {
 			material.setWorld(this);
 			material.setPosition(position);
+			if (material.getOwner() != null)
+				material.getOwner().removeMaterial(material);
 		} catch (IllegalArgumentException e) {
 			this.materials.remove(material);
 			throw e;

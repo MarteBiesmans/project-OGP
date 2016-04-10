@@ -1,6 +1,8 @@
 package hillbillies.model;
 
 public abstract class TimeVariableObject {
+	
+	public static double FALLING_VELOCITY = -3;
 
 	/**
 	 * update the properties of a TimeVariableObject, based on that Object's
