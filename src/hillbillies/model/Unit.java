@@ -1452,6 +1452,8 @@ public class Unit extends TimeVariableObject {
 		if (this.canHaveAsWorkAtCube(cube)) {
 			this.setWorkAtCube(cube);
 			this.setActivity(Activity.WORKING);
+			this.setOrientation(Math.atan2(cube.getCenter().getRealY() - this.getPosition().getRealY(),
+					cube.getCenter().getRealX() - this.getPosition().getRealX()));
 		}
 	}
 
