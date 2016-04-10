@@ -105,9 +105,10 @@ public class World extends TimeVariableObject {
 	 * these methods
 	 */
 	final ConnectedToBorder connectedUtil;
-	
+
 	/**
-	 * instance of the provided class TerrainChangeListener to be able to update the GUI
+	 * instance of the provided class TerrainChangeListener to be able to update
+	 * the GUI
 	 */
 	TerrainChangeListener modelListener;
 
@@ -241,32 +242,37 @@ public class World extends TimeVariableObject {
 	public void collapse(Cube cube) throws IllegalArgumentException {
 		// TODO checken of er units moeten vallen -> marte is dit aan het doen
 		// voor als er geworkt wordt op een cube, kijk daar af ;)
-		// oke marte is dit nog niet aan het doen, en het is inderdaad het beste als
+		// oke marte is dit nog niet aan het doen, en het is inderdaad het beste
+		// als
 		// we hier checken of er units moeten vallen
 		// + uitleggen aan marte: hoe wordt deze functie precies opgeroepen?
+		// -> wordt nu in advancetime van unit telkens gecheckt:
+		// this;shouldFall() -> fall
 		if (cube == null)
 			throw new IllegalArgumentException();
 		if (cube.isPassableIn(this))
 			return;
-		
+
 		double probability = RANDOM_GEN.nextDouble();
+		TerrainType oldType = this.getTerrainType(cube);
 		this.setTerrainType(cube, TerrainType.AIR);
-		if (probability < 0.25) {
-			System.out.println("material appears!");
-			if (this.getTerrainType(cube) == TerrainType.WOOD)
-				this.addMaterial(new Log(this, cube.getCenter()));
-			else if (this.getTerrainType(cube) == TerrainType.ROCK)
-				this.addMaterial(new Boulder(this, cube.getCenter()));
+		;
+		if (probability < 1) {
+			if (oldType == TerrainType.WOOD) {
+				this.addMaterial(new Log(), cube.getCenter());
+			} else if (oldType == TerrainType.ROCK) {
+				this.addMaterial(new Boulder(), cube.getCenter());
+			}
 		}
 	}
 
 	// UNITS//
 
 	void removeUnit(Unit unit) {
-//		if (!this.hasAsUnit(unit))
-//			throw new IllegalArgumentException();
-//		this.units.remove(unit);
-		
+		// if (!this.hasAsUnit(unit))
+		// throw new IllegalArgumentException();
+		// this.units.remove(unit);
+
 		if (this.hasAsUnit(unit))
 			this.units.remove(unit);
 
@@ -486,7 +492,7 @@ public class World extends TimeVariableObject {
 	int getNbActiveFactions() {
 		return this.getAllActiveFactions().size();
 	}
-	
+
 	boolean hasAsFaction(Faction faction) {
 		if (faction == null)
 			return false;
@@ -503,7 +509,7 @@ public class World extends TimeVariableObject {
 	Set<Faction> getAllFactions() {
 		return factions;
 	}
-	
+
 	/**
 	 * return all the active factions present in this world as a set
 	 */
@@ -536,13 +542,14 @@ public class World extends TimeVariableObject {
 	 * @post This world has the given material as one of its materials. |
 	 *       new.hasAsMaterial(material)
 	 */
-	void addMaterial(@Raw Material material) {
-		if (!canHaveAsMaterial(material))
+	void addMaterial(@Raw Material material, @Raw Position position) throws IllegalArgumentException {
+		if (!canHaveAsMaterialAt(material, position)) {
 			throw new IllegalArgumentException();
+		}
 		this.materials.add(material);
-
 		try {
 			material.setWorld(this);
+			material.setPosition(position);
 		} catch (IllegalArgumentException e) {
 			this.materials.remove(material);
 			throw e;
@@ -583,13 +590,16 @@ public class World extends TimeVariableObject {
 	 *         owner)
 	 * @return false if the position of the material is not a passable cube
 	 */
-	boolean canHaveAsMaterial(Material material) {
-		if (material == null)
+	boolean canHaveAsMaterialAt(Material material, Position position) {
+		if (material == null) {
 			return false;
-		if (material.getPosition() == null)
+		}
+		if (position == null) {
 			return false;
-		if (!material.getPosition().getCube().isPassableIn(this))
+		}
+		if (!position.isValidForObjectIn(this)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -605,18 +615,15 @@ public class World extends TimeVariableObject {
 	Set<Log> getLogsIn(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
-
 		Set<Log> result = new HashSet<Log>();
 
-		Iterator<Material> it = materials.iterator();
-		while (it.hasNext()) {
-			Material material = it.next();
-			if ((material.getPosition().getCube() == cube) && (Log.class.isInstance(material)))
+		for (Material material: this.materials) {
+			if (material.getPosition().getCube().equals(cube) && (Log.class.isInstance(material))) {
 				// cast mag gebruikt worden, want je hebt net gecontroleerd of
-				// het een log is
+				// het een boulder is
 				result.add((Log) material);
+			}
 		}
-
 		return result;
 	}
 
@@ -634,15 +641,13 @@ public class World extends TimeVariableObject {
 			throw new IllegalArgumentException();
 		Set<Boulder> result = new HashSet<Boulder>();
 
-		Iterator<Material> it = materials.iterator();
-		while (it.hasNext()) {
-			Material material = it.next();
-			if ((material.getPosition().getCube() == cube) && (Boulder.class.isInstance(material)))
+		for (Material material: this.materials) {
+			if (material.getPosition().getCube().equals(cube) && (Boulder.class.isInstance(material))) {
 				// cast mag gebruikt worden, want je hebt net gecontroleerd of
 				// het een boulder is
 				result.add((Boulder) material);
+			}
 		}
-
 		return result;
 	}
 
@@ -713,7 +718,7 @@ public class World extends TimeVariableObject {
 	 */
 	boolean hasProperMaterials() {
 		for (Material material : this.getAllMaterials()) {
-			if (!canHaveAsMaterial(material))
+			if (!canHaveAsMaterialAt(material, material.getPosition()))
 				return false;
 			if (material.getWorld() != this)
 				return false;

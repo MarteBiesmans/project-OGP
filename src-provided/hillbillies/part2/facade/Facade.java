@@ -28,32 +28,30 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		try{
+		try {
 			return world.getNbCubesY();
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
 
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		try{
+		try {
 			return world.getNbCubesZ();
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-//		try {
-			world.advanceTime((float) dt);
-//		}
-//		catch (Throwable e) {
-//			throw new ModelException();
-//		}
+		// try {
+		world.advanceTime((float) dt);
+		// }
+		// catch (Throwable e) {
+		// throw new ModelException();
+		// }
 
 	}
 
@@ -69,8 +67,8 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
-		Cube cube = new Cube(x,y,z);
-		
+		Cube cube = new Cube(x, y, z);
+
 		TerrainType type = TerrainType.AIR;
 		if (value == 1)
 			type = TerrainType.ROCK;
@@ -78,17 +76,16 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 			type = TerrainType.WOOD;
 		else if (value == 3)
 			type = TerrainType.WORKSHOP;
-		
+
 		world.setTerrainType(cube, type);
 	}
 
 	@Override
 	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
 		try {
-			Cube cube = new Cube(x,y,z);
+			Cube cube = new Cube(x, y, z);
 			return cube.isSolidConnectedToBorderIn(world);
-		}
-		catch (Throwable e){
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
@@ -100,12 +97,12 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-//		try {
-			world.addUnit(unit);
-//		}
-//		catch (Throwable e) {
-//			throw new ModelException();
-//		}
+		// try {
+		world.addUnit(unit);
+		// }
+		// catch (Throwable e) {
+		// throw new ModelException();
+		// }
 
 	}
 
@@ -113,8 +110,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	public Set<Unit> getUnits(World world) throws ModelException {
 		try {
 			return world.getAllUnits();
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
@@ -164,7 +160,6 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 		throw new NoSuchMethodError("This method no longer needs to be supported");
 	}
 
-	
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
 		return unit.getFaction();
@@ -183,13 +178,11 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public double[] getPosition(Boulder boulder) throws ModelException {
 		try {
-			if (boulder.getPosition()==null)
+			if (boulder.getPosition() == null)
 				return null;
-			return new double[]{boulder.getPosition().getRealX(), 
-			        			boulder.getPosition().getRealY(),
-			        			boulder.getPosition().getRealZ()};
-		}
-		catch (Throwable e) {
+			return new double[] { boulder.getPosition().getRealX(), boulder.getPosition().getRealY(),
+					boulder.getPosition().getRealZ() };
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}
@@ -202,13 +195,11 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public double[] getPosition(Log log) throws ModelException {
 		try {
-			if (log.getPosition()==null)
+			if (log.getPosition() == null)
 				return null;
-			return new double[]{log.getPosition().getRealX(), 
-			        			log.getPosition().getRealY(),
-			        			log.getPosition().getRealZ()};
-		}
-		catch (Throwable e) {
+			return new double[] { log.getPosition().getRealX(), log.getPosition().getRealY(),
+					log.getPosition().getRealZ() };
+		} catch (Throwable e) {
 			throw new ModelException();
 		}
 	}

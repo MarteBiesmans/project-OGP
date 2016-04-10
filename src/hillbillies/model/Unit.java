@@ -216,7 +216,6 @@ public class Unit extends TimeVariableObject {
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
 		}
-
 		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
 			this.nextActivity();
 		}
@@ -511,6 +510,10 @@ public class Unit extends TimeVariableObject {
 	public int getToughness() {
 		return this.toughness;
 	}
+	
+	public int getTotalToughness() {
+		return (this.getToughness() + this.materials.size());
+	}
 
 	/**
 	 * Check whether the given toughness is a valid toughness for any unit.
@@ -769,13 +772,16 @@ public class Unit extends TimeVariableObject {
 		// if (seconds < 0 || seconds >= 0.2)
 		// throw new IllegalArgumentException();
 
-		if (!(this.isMoving() || this.isBeingUseless()))
+		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
 			this.busyTimeMin(seconds);
 
 		if (this.isAttacking())
 			attacking(seconds);
 
-		if (this.isMoving() && (this.getMoveToAdjacent() != null || isFalling()))
+		if (this.isFalling())
+			falling(seconds);
+
+		if (this.isMoving() && this.getMoveToAdjacent() != null)
 			moving(seconds);
 
 		else if (this.isWorking())
@@ -787,6 +793,9 @@ public class Unit extends TimeVariableObject {
 		if (this.isBeingUseless() && this.defaultBehaviour)
 			beingUseless(seconds);
 
+		if (this.shouldFall())
+			this.insertActivity(Activity.FALLING);
+
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
 	}
@@ -796,79 +805,78 @@ public class Unit extends TimeVariableObject {
 			this.nextActivity();
 	}
 
-	private void moving(float seconds) {
-		if (this.isFalling()) {
-			Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-					Math.max(this.getPosition().getRealZ() - 3.0 * seconds, 0.));
-			if (!this.getCube().equals(next.getCube()))
-				this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
-			this.setPosition(next);
+	private void falling(float seconds) {
+		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
+				Math.max(this.getPosition().getRealZ() - 3.0 * seconds, 0.));
+		if (!this.getCube().equals(next.getCube()))
+			this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
+		this.setPosition(next);
+	}
 
-		} else {
-			if (this.isSprinting()) {
-				double stamina = this.getStaminaPoints() - seconds * 10;
-				if (stamina > 0)
-					this.setStaminaPoints(stamina);
-				else {
-					this.setStaminaPoints(0);
-					this.stopSprinting();
-				}
+	private void moving(float seconds) {
+		if (this.isSprinting()) {
+			double stamina = this.getStaminaPoints() - seconds * 10;
+			if (stamina > 0)
+				this.setStaminaPoints(stamina);
+			else {
+				this.setStaminaPoints(0);
+				this.stopSprinting();
+			}
+		}
+
+		double moveDiffX = this.getMoveToAdjacent().getCenter().getRealX() - this.getPosition().getRealX();
+		double moveDiffY = this.getMoveToAdjacent().getCenter().getRealY() - this.getPosition().getRealY();
+		double moveDiffZ = this.getMoveToAdjacent().getCenter().getRealZ() - this.getPosition().getRealZ();
+
+		double moveDistance = Math.sqrt(moveDiffX * moveDiffX + moveDiffY * moveDiffY + moveDiffZ * moveDiffZ);
+
+		double xVelocity = this.getMovementSpeed() * moveDiffX / moveDistance;
+		double yVelocity = this.getMovementSpeed() * moveDiffY / moveDistance;
+		double zVelocity = this.getMovementSpeed() * moveDiffZ / moveDistance;
+
+		Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
+				this.getPosition().getRealY() + yVelocity * seconds,
+				this.getPosition().getRealZ() + zVelocity * seconds);
+
+		this.setOrientation(Math.atan2(yVelocity, xVelocity));
+
+		double moveDiffNextX = this.getMoveToAdjacent().getCenter().getRealX() - next.getRealX();
+		double moveDiffNextY = this.getMoveToAdjacent().getCenter().getRealY() - next.getRealY();
+		double moveDiffNextZ = this.getMoveToAdjacent().getCenter().getRealZ() - next.getRealZ();
+
+		if ((moveDiffX == 0 || Math.signum(moveDiffX) != Math.signum(moveDiffNextX))
+				&& (moveDiffY == 0 || Math.signum(moveDiffY) != Math.signum(moveDiffNextY))
+				&& (moveDiffZ == 0 || Math.signum(moveDiffZ) != Math.signum(moveDiffNextZ))) {
+			this.setPosition(this.getMoveToAdjacent().getCenter());
+			this.setMoveToAdjacent(null);
+			this.setExperiencePoints(this.getExperiencePoints() + 1);
+
+			// Check whether the unit is moving to a cube far away (not
+			// an
+			// adjacent cube)
+			if (this.getMoveToCube() != null) {
+				findNextCubeInPath();
 			}
 
-			double moveDiffX = this.getMoveToAdjacent().getCenter().getRealX() - this.getPosition().getRealX();
-			double moveDiffY = this.getMoveToAdjacent().getCenter().getRealY() - this.getPosition().getRealY();
-			double moveDiffZ = this.getMoveToAdjacent().getCenter().getRealZ() - this.getPosition().getRealZ();
-
-			double moveDistance = Math.sqrt(moveDiffX * moveDiffX + moveDiffY * moveDiffY + moveDiffZ * moveDiffZ);
-
-			double xVelocity = this.getMovementSpeed() * moveDiffX / moveDistance;
-			double yVelocity = this.getMovementSpeed() * moveDiffY / moveDistance;
-			double zVelocity = this.getMovementSpeed() * moveDiffZ / moveDistance;
-
-			Position next = new Position(this.getPosition().getRealX() + xVelocity * seconds,
-					this.getPosition().getRealY() + yVelocity * seconds,
-					this.getPosition().getRealZ() + zVelocity * seconds);
-
-			this.setOrientation(Math.atan2(yVelocity, xVelocity));
-
-			double moveDiffNextX = this.getMoveToAdjacent().getCenter().getRealX() - next.getRealX();
-			double moveDiffNextY = this.getMoveToAdjacent().getCenter().getRealY() - next.getRealY();
-			double moveDiffNextZ = this.getMoveToAdjacent().getCenter().getRealZ() - next.getRealZ();
-
-			if ((moveDiffX == 0 || Math.signum(moveDiffX) != Math.signum(moveDiffNextX))
-					&& (moveDiffY == 0 || Math.signum(moveDiffY) != Math.signum(moveDiffNextY))
-					&& (moveDiffZ == 0 || Math.signum(moveDiffZ) != Math.signum(moveDiffNextZ))) {
-				this.setPosition(this.getMoveToAdjacent().getCenter());
-				this.setMoveToAdjacent(null);
-				this.setExperiencePoints(this.getExperiencePoints() + 1);
-
-				// Check whether the unit is moving to a cube far away (not
-				// an
-				// adjacent cube)
-				if (this.getMoveToCube() != null) {
-					findNextCubeInPath();
-				}
-
-				// Check whether the unit is not pathfinding. If this is
-				// true,
-				// it stops moving.
-				if (this.getMoveToCube() == null) {
-					this.nextActivity();
-				}
-			} else {
-				try {
-					this.setPosition(next);
-				} catch (IllegalArgumentException e) {
-					if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
-						while (!next.getCube().equals(this.getMoveToAdjacent())) {
-							next = new Position(next.getRealX() + (xVelocity * seconds / 10),
-									next.getRealY() + (yVelocity * seconds / 10),
-									next.getRealZ() + (zVelocity * seconds / 10));
-							try {
-								this.setPosition(next);
-							} catch (IllegalArgumentException r) {
-								continue;
-							}
+			// Check whether the unit is not pathfinding. If this is
+			// true,
+			// it stops moving.
+			if (this.getMoveToCube() == null) {
+				this.nextActivity();
+			}
+		} else {
+			try {
+				this.setPosition(next);
+			} catch (IllegalArgumentException e) {
+				if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
+					while (!next.getCube().equals(this.getMoveToAdjacent())) {
+						next = new Position(next.getRealX() + (xVelocity * seconds / 10),
+								next.getRealY() + (yVelocity * seconds / 10),
+								next.getRealZ() + (zVelocity * seconds / 10));
+						try {
+							this.setPosition(next);
+						} catch (IllegalArgumentException r) {
+							continue;
 						}
 					}
 				}
@@ -1278,7 +1286,7 @@ public class Unit extends TimeVariableObject {
 			} else {
 				if (this.isWorking())
 					this.setWorkAtCube(null);
-				if (this.isMoving() && !this.isFalling()) {
+				if (this.isMoving()) {
 					this.setMoveToCube(null);
 					this.setMoveToAdjacent(null);
 				}
@@ -1323,8 +1331,7 @@ public class Unit extends TimeVariableObject {
 	 * returns wheter this unit is moving or not.
 	 */
 	public boolean isMoving() {
-		return (this.getCurrentActivity() == Activity.WALKING)
-				|| (this.getCurrentActivity() == Activity.SPRINTING || (this.getCurrentActivity() == Activity.FALLING));
+		return (this.getCurrentActivity() == Activity.WALKING) || (this.getCurrentActivity() == Activity.SPRINTING);
 	}
 
 	public boolean isWalking() {
@@ -1675,7 +1682,7 @@ public class Unit extends TimeVariableObject {
 		assert this.hasAsMaterial(material) && (material.getOwner() == null);
 		materials.remove(material);
 		material.setPosition(position);
-		this.getWorld().addMaterial(material);
+		this.getWorld().addMaterial(material, this.getPosition());
 	}
 
 	/**
@@ -1699,8 +1706,10 @@ public class Unit extends TimeVariableObject {
 	 *       same position the unit has died. |
 	 */
 	public void die() {
-		for (Material material : this.materials)
+		for (Material material : this.materials) {
+			this.getWorld().addMaterial(material, this.getPosition());
 			this.removeMaterial(material, this.getPosition());
+		}
 		this.getWorld().removeUnit(this);
 		this.getFaction().removeUnit(this);
 		this.isDead = true;

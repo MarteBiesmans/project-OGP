@@ -209,7 +209,7 @@ public class Cube {
 
 		return (nbDiff == 1);
 	}
-	
+
 	public boolean isSameOrNeighbouringCube(Cube other) {
 		return (this.isSameOrAdjacentCube(other) && (this.getZ() == other.getZ()));
 	}
@@ -246,7 +246,7 @@ public class Cube {
 		}
 		return result;
 	}
-	
+
 	public Set<Cube> getAllNeighbouringCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
 		for (Cube cube : this.getAllAdjacentCubes(world)) {

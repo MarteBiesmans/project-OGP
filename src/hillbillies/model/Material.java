@@ -34,9 +34,9 @@ public abstract class Material extends TimeVariableObject {
 	 * @effect The weight of this new material is given a random value in the
 	 *         range [10, 50].
 	 */
-	public Material(World world, Position position) throws IllegalArgumentException {
-		this.world = world;
-		this.setPosition(position);
+	public Material() throws IllegalArgumentException {
+		this.world = null;
+		this.setPosition(null);
 		this.owner = null;
 
 		// create random weight between 10 and 50
@@ -59,10 +59,11 @@ public abstract class Material extends TimeVariableObject {
 	 * 
 	 * @param position
 	 *            The position to check.
-	 * @return false if the position is null or the cube of the position is not passable
+	 * @return false if the position is null or the cube of the position is not
+	 *         passable
 	 */
 	public boolean canHaveAsPosition(Position position) {
-		if (position == null || !this.getWorld().getTerrainType(position.getCube()).isPassable())
+		if (position == null || !position.isValidForObjectIn(this.getWorld()))
 			return false;
 		return true;
 	}
@@ -97,13 +98,15 @@ public abstract class Material extends TimeVariableObject {
 	 *            The new position for this material.
 	 * @post The position of this new material is equal to the given position.
 	 * @throws IllegalArgumentException
-	 *             The given position is not a valid position for this material, except for when the position is null.
+	 *             The given position is not a valid position for this material,
+	 *             except for when the position is null.
 	 */
 	@Raw
 	public void setPosition(Position position) throws IllegalArgumentException {
 		if (position != null) {
-			if (!canHaveAsPosition(position))
+			if (!canHaveAsPosition(position)) {
 				throw new IllegalArgumentException();
+			}
 		}
 		this.position = position;
 	}
@@ -183,7 +186,16 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the material already exists in another world
 	 */
 	public boolean canHaveAsWorld(World world) {
-		return (world != null && world.hasAsMaterial(this) && this.getWorld() == null);
+		if (world == null) {
+			return false;
+		} else if (!world.hasAsMaterial(this)) {
+			return false;
+		} else if (this.getWorld() != null) {
+			return false;
+		}
+		return true;
+		// return (world != null && world.hasAsMaterial(this) && this.getWorld()
+		// == null);
 	}
 
 	/**
@@ -191,17 +203,19 @@ public abstract class Material extends TimeVariableObject {
 	 * 
 	 * @param world
 	 *            The new world for this material.
-	 * @post The world of this new material is equal to the given world. 
+	 * @post The world of this new material is equal to the given world.
 	 * @throws IllegalArgumentException
 	 *             The given world is not a valid world for this material.
 	 */
 	@Raw
 	public void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
-			if (canHaveAsWorld(world))
+			if (!this.canHaveAsWorld(world)) {
 				throw new IllegalArgumentException();
-		} else if ((this.getWorld() != null) && (this.getWorld().hasAsMaterial(this)))
+			}
+		} else if ((this.getWorld() != null) && (this.getWorld().hasAsMaterial(this))) {
 			throw new IllegalArgumentException();
+		}
 		this.world = world;
 	}
 
@@ -225,7 +239,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	private final int weight;
 
-	//TODO: deze comments verwijderen indien niet meer nodig?
+	// TODO: deze comments verwijderen indien niet meer nodig?
 	// /**
 	// * return the activity of this material
 	// */
@@ -275,18 +289,18 @@ public abstract class Material extends TimeVariableObject {
 	 *             the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (seconds < 0 || seconds >= 0.2)
-			throw new IllegalArgumentException();
-		//TODO: deze staat nog altijd uitgecommentarieerd in de advancetime van unit..
+		// if (seconds < 0 || seconds >= 0.2)
+		// throw new IllegalArgumentException();
 
 		this.busyTimeMin(seconds);
 
 		if (this.shouldFall())
 			falling(seconds);
 	}
-	
+
 	/**
 	 * TODO: moet hier ook een beschrijving bijstaan?
+	 * 
 	 * @param seconds
 	 */
 	private void falling(float seconds) {
