@@ -9,15 +9,17 @@ import be.kuleuven.cs.som.annotate.*;
  * the class cube is similar to the class position, where position consists of
  * doubles, cube consists of integers.
  * 
- * @invar x, y and z are always positive integers
- * 
+ * @author Ellen & Marte
  * @Value
- * 
- * @author Marte & Ellen
- *
+ * @invar x, y and z are always positive integers
  */
 @Value
 public class Cube {
+
+	/**
+	 * constant registering the side length of one cube
+	 */
+	public static final double SIDE_LENGTH = 1;
 
 	/**
 	 * 
@@ -73,8 +75,11 @@ public class Cube {
 	 * Checks if the given coördinates are valid.
 	 * 
 	 * @param x
+	 *            The position to check on the x-axis
 	 * @param y
+	 *            The position to check on the y-axis
 	 * @param z
+	 *            The position to check on the z-axis
 	 * @return true if all coördinates are greater or equal than zero.
 	 */
 	private boolean isValidCubeCoordinate(int x, int y, int z) {
@@ -87,8 +92,11 @@ public class Cube {
 	 * Checks if the given coördinates are valid in the given world.
 	 * 
 	 * @param x
+	 *            The position to check on the x-axis
 	 * @param y
+	 *            The position to check on the y-axis
 	 * @param z
+	 *            The position to check on the z-axis
 	 * @param world
 	 * @return true if all coördinates fit in the given world.
 	 */
@@ -103,6 +111,7 @@ public class Cube {
 	 * Checks if this cube is valid in de given world.
 	 * 
 	 * @param world
+	 *            The world the cube has to fit in
 	 * @return true if the cube coördinates fit in the given world.
 	 */
 	public boolean isValidIn(World world) {
@@ -142,11 +151,6 @@ public class Cube {
 	private int x;
 	private int y;
 	private int z;
-
-	/**
-	 * constant registering the side length of one cube
-	 */
-	public static final double SIDE_LENGTH = 1;
 
 	/**
 	 * returns the center position of this cube.
@@ -210,6 +214,15 @@ public class Cube {
 		return (nbDiff == 1);
 	}
 
+	/**
+	 * checks if the other cube is the same or a neighbouring cube from this
+	 * cube
+	 * 
+	 * @param other
+	 *            The cube to compare to this cube
+	 * @return true if the other cube is the same cube
+	 * @return true if the other cube is a neighbouring cube
+	 */
 	public boolean isSameOrNeighbouringCube(Cube other) {
 		return (this.isSameOrAdjacentCube(other) && (this.getZ() == other.getZ()));
 	}
@@ -237,6 +250,10 @@ public class Cube {
 	/**
 	 * returns a set of all directly adjacent cubes that are valid in the given
 	 * world.
+	 * 
+	 * @param world
+	 *            The world the cubes must fit in
+	 * @return a set of all directly adjacent cubes
 	 */
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
@@ -247,6 +264,13 @@ public class Cube {
 		return result;
 	}
 
+	/**
+	 * returns a set of all neighbouring cubes that are valid in the given world
+	 * 
+	 * @param world
+	 *            The world the cubes must fit in
+	 * @return a set of all neighbouring cubes
+	 */
 	public Set<Cube> getAllNeighbouringCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
 		for (Cube cube : this.getAllAdjacentCubes(world)) {
@@ -256,10 +280,22 @@ public class Cube {
 		return result;
 	}
 
+	/**
+	 * check if this cube is sollid and connected to the border in the given
+	 * world.
+	 * 
+	 * @param world
+	 *            The world the cube is in
+	 * @return true if this cube is solid and connected to the border of the
+	 *         given world
+	 */
 	public boolean isSolidConnectedToBorderIn(World world) {
 		return world.connectedUtil.isSolidConnectedToBorder(this.getX(), this.getY(), this.getZ());
 	}
 
+	/**
+	 * create the string representation
+	 */
 	@Override
 	public String toString() {
 		return "(" + this.getX() + "," + this.getY() + "," + this.getZ() + ")";
@@ -303,6 +339,16 @@ public class Cube {
 		return true;
 	}
 
+	/**
+	 * check if this cube is workable in the given world by the given unit
+	 * 
+	 * @param world
+	 *            The world the cube is in
+	 * @param unit
+	 *            The unit that wants to work on this cube
+	 * @return true if there is a task that can be completed on this cube in the
+	 *         given world by this unit
+	 */
 	public boolean isWorkableCubeInBy(World world, Unit unit) {
 		if (unit.getNbMaterials() > 0 && this.getCenter().isValidForObjectIn(world)) {
 			return true;
@@ -319,6 +365,14 @@ public class Cube {
 		return false;
 	}
 
+	/**
+	 * return the 'weight' of the movement from this cube to the next cube
+	 * 
+	 * @param next
+	 *            The next cube
+	 * @return the weight of the movement from this cube to the next cube based
+	 *         on distance and z-level
+	 */
 	public double getDistanceWeightTo(Cube next) {
 		double weight = 1;
 		double distance = Math.sqrt((this.getX() - next.getX()) * (this.getX() - next.getX())

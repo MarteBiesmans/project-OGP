@@ -5,6 +5,8 @@ import java.util.Random;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * A class of materials belonging to a world or to a unit.
+ * 
  * @invar The position of each material must be a valid position for any
  *        material.
  * @invar Each Material can have its weight as weight.

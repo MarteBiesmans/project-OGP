@@ -155,6 +155,11 @@ public class Unit extends TimeVariableObject {
 
 	// ATTRIBUTES: getAlpha(), isValidAlpha(), canHaveAsAlpha(), setAlpha() ...
 
+	/**
+	 * checks if the unit is a valid unit. This means that all attributs have to
+	 * be valid and that the unit must belong to a faction and must exist in a
+	 * world
+	 */
 	public boolean isValidUnit() {
 		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
 				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
@@ -225,6 +230,9 @@ public class Unit extends TimeVariableObject {
 
 	private Position position;
 
+	/**
+	 * return the cube of the position of this unit
+	 */
 	public Cube getCube() {
 		return this.getPosition().getCube();
 	}
@@ -511,6 +519,9 @@ public class Unit extends TimeVariableObject {
 		return this.toughness;
 	}
 
+	/**
+	 * returns the thoughnes considering the materials that this units is carrying
+	 */
 	public int getTotalToughness() {
 		return (this.getToughness() + this.materials.size());
 	}
@@ -724,14 +735,26 @@ public class Unit extends TimeVariableObject {
 	 */
 	private double orientation;
 
+	/**
+	 * return the experience points of this unit
+	 */
 	public int getExperiencePoints() {
 		return this.experiencePoints;
 	}
 
+	/**
+	 * check whether the given experience points are valid for this unit
+	 * @param points
+	 * The points to check
+	 * @return true if the given points are greater or equal than zero
+	 */
 	public boolean isValidExperiencePoints(int points) {
 		return (points >= 0);
 	}
 
+	/**
+	 * set the experience points of this unit to the given points
+	 */
 	public void setExperiencePoints(int points) {
 		if (isValidExperiencePoints(points))
 			this.experiencePoints = points;
@@ -739,14 +762,24 @@ public class Unit extends TimeVariableObject {
 
 	private int experiencePoints;
 
+	/**
+	 * return the level of this unit
+	 */
 	private int getLevel() {
 		return this.level;
 	}
 
+	/**
+	 * check wheter the given level is a valid level for this unit
+	 * @return true if the level is greater or equal than zero
+	 */
 	private boolean isValidLevel(int level) {
 		return level >= 0;
 	}
 
+	/**
+	 * set the level of this unit to the given level
+	 */
 	private void setLevel(int level) {
 		if (isValidLevel(level))
 			this.level = level;
@@ -800,7 +833,7 @@ public class Unit extends TimeVariableObject {
 
 		while (this.getExperiencePoints() - (10 * this.getLevel()) > 10)
 			this.levelUp();
-		
+
 		if (this.getHitpoints() == 0)
 			this.die();
 	}
@@ -820,9 +853,8 @@ public class Unit extends TimeVariableObject {
 		} catch (IllegalArgumentException e) {
 			if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
 				while (!next.getCube().equals(this.getMoveToAdjacent())) {
-					next = new Position(next.getRealX(),
-							next.getRealY(),
-							next.getRealZ() - (World.FALLING_VELOCITY* seconds / 10));
+					next = new Position(next.getRealX(), next.getRealY(),
+							next.getRealZ() - (World.FALLING_VELOCITY * seconds / 10));
 					try {
 						this.setPosition(next);
 					} catch (IllegalArgumentException r) {

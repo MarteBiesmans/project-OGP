@@ -1,5 +1,10 @@
 package hillbillies.model;
 
+/**
+ * An abstract class of timevariable objects.
+ * @author Ellen & Marte
+ *
+ */
 public abstract class TimeVariableObject {
 	
 	public static double FALLING_VELOCITY = -3;

@@ -5,6 +5,8 @@ import java.util.Iterator;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * A value class describing a position. The position consists of a cube and a position in this cube.
+ * 
  * @Value
  * @author Marte & Ellen
  *
@@ -46,6 +48,9 @@ public class Position {
 		this.z = z;
 	}
 
+	/**
+	 * return the cube of this position
+	 */
 	public Cube getCube() {
 		return this.cube;
 	}
@@ -56,31 +61,55 @@ public class Position {
 	private double y;
 	private double z;
 
+	/**
+	 * returns a position substracted by the other position
+	 * @param other
+	 * the position to substract from this position
+	 * @return the result position
+	 */
 	public Position min(Position other) {
 		return new Position(this.getRealX() - other.getRealX(), this.getRealY() - other.getRealY(),
 				this.getRealZ() - other.getRealZ());
 	}
 
+	/**
+	 * return the x-value of this position
+	 */
 	public double getX() {
 		return this.x;
 	}
 
+	/**
+	 * return the real x-value of this position.
+	 */
 	public double getRealX() {
 		return this.cube.getX() * Cube.SIDE_LENGTH + this.getX();
 	}
 
+	/**
+	 * return the y-value of this position
+	 */
 	public double getY() {
 		return this.y;
 	}
-
+	
+	/**
+	 * return the real y-value of this position.
+	 */
 	public double getRealY() {
 		return this.cube.getY() * Cube.SIDE_LENGTH + this.getY();
 	}
 
+	/**
+	 * return the z-value of this position
+	 */
 	public double getZ() {
 		return this.z;
 	}
 
+	/**
+	 * return the real z-value of this position.
+	 */
 	public double getRealZ() {
 		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
 	}
@@ -167,6 +196,9 @@ public class Position {
 		return true;
 	}
 
+	/**
+	 * create the string representation
+	 */
 	@Override
 	public String toString() {
 		return "(" + this.getRealX() + "," + this.getRealY() + "," + this.getRealZ() + ")";
