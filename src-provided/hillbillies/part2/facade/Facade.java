@@ -11,7 +11,7 @@ public class Facade extends hillbillies.part1.facade.Facade implements IFacade {
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
 		try {
-			return new World(terrainTypes);
+			return new World(terrainTypes, modelListener);
 		} catch (Throwable e) {
 			throw new ModelException();
 		}

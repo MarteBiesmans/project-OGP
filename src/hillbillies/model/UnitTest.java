@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
+
 public class UnitTest {
 
 	public static final double EPSILON = 1e-6;
@@ -31,7 +33,7 @@ public class UnitTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionX() throws Exception {
 		Unit testUnit = new Unit(53.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		testWorld.addUnit(testUnit);
 	}
 
@@ -43,7 +45,7 @@ public class UnitTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionZ() throws Exception {
 		Unit testUnit = new Unit(3.1, 1.1, 105.9, "James O'Hara", 50, 50, 25, 55, true);
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		testWorld.addUnit(testUnit);
 	}
 

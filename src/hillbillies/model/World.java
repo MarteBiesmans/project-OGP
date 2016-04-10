@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -39,11 +41,12 @@ public class World extends TimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             terrainTypes is not valid for this world
 	 */
-	public World(int[][][] terrainTypes) throws IllegalArgumentException {
+	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws IllegalArgumentException {
 		if (!canHaveAsTerrainTypes(terrainTypes))
 			throw new IllegalArgumentException();
 
 		this.terrainTypes = terrainTypes;
+		this.modelListener = modelListener;
 
 		this.connectedUtil = new ConnectedToBorder(terrainTypes.length, terrainTypes[0].length,
 				terrainTypes[0][0].length);
@@ -102,6 +105,11 @@ public class World extends TimeVariableObject {
 	 * these methods
 	 */
 	final ConnectedToBorder connectedUtil;
+	
+	/**
+	 * instance of the provided class TerrainChangeListener to be able to update the GUI
+	 */
+	TerrainChangeListener modelListener;
 
 	/**
 	 * Return the number of cubes in the X direction of this world.
@@ -213,6 +221,7 @@ public class World extends TimeVariableObject {
 
 		// update terrainTypes
 		this.terrainTypes[cube.getX()][cube.getY()][cube.getZ()] = type.getAssociatedInt();
+		modelListener.notifyTerrainChanged(cube.getX(), cube.getY(), cube.getZ());
 
 		// make the caveIns collapse
 		for (int[] cubeCoordinate : caveIns)

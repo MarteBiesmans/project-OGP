@@ -7,32 +7,34 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
+
 public class CubeTest {
 	
 	@Test
 	public void isValidIn_IllegalCaseX() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(50,10,10);
 		assertEquals(testCube.isValidIn(testWorld), false);
 	}
 	
 	@Test
 	public void isValidIn_IllegalCaseY() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(10,50,10);
 		assertEquals(testCube.isValidIn(testWorld), false);
 	}
 	
 	@Test
 	public void isValidIn_IllegalCaseZ() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(10,10,50);
 		assertEquals(testCube.isValidIn(testWorld), false);
 	}
 	
 	@Test
 	public void getAllNeighbouringCubes_centre() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(25,25,25);
 		Set<Cube> calculatedNeighbouringCubes = testCube.getAllAdjacentCubes(testWorld);
 		Set<Cube> neighbouringCubes = new HashSet<Cube>();
@@ -81,7 +83,7 @@ public class CubeTest {
 	
 	@Test
 	public void getAllNeighbouringCubes_BottomCorner() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(0,0,0);
 		Set<Cube> calculatedNeighbouringCubes = testCube.getAllAdjacentCubes(testWorld);
 		Set<Cube> neighbouringCubes = new HashSet<Cube>();
@@ -103,7 +105,7 @@ public class CubeTest {
 	
 	@Test
 	public void getAllNeighbouringCubes_TopCorner() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(49,49,49);
 		Set<Cube> calculatedNeighbouringCubes = testCube.getAllAdjacentCubes(testWorld);
 		Set<Cube> neighbouringCubes = new HashSet<Cube>();
@@ -149,7 +151,7 @@ public class CubeTest {
 	
 	@Test
 	public void getAllAdjacentCubes_centre() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(25,25,25);
 		Set<Cube> calculatedAdjacentCubes = testCube.getAllDirectlyAdjacentCubes(testWorld);
 		Set<Cube> adjacentCubes = new HashSet<Cube>();
@@ -168,7 +170,7 @@ public class CubeTest {
 	
 	@Test
 	public void getAllAdjacentCubes_BottomBorder() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(0,0,0);
 		Set<Cube> calculatedAdjacentCubes = testCube.getAllDirectlyAdjacentCubes(testWorld);
 		Set<Cube> adjacentCubes = new HashSet<Cube>();
@@ -186,7 +188,7 @@ public class CubeTest {
 	
 	@Test
 	public void getAllAdjacentCubes_TopBorder() {
-		World testWorld = new World(new int[50][50][50]);
+		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
 		Cube testCube = new Cube(49,49,49);
 		Set<Cube> calculatedAdjacentCubes = testCube.getAllDirectlyAdjacentCubes(testWorld);
 		Set<Cube> adjacentCubes = new HashSet<Cube>();
