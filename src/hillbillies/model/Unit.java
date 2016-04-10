@@ -907,7 +907,7 @@ public class Unit extends TimeVariableObject {
 	private void working(float seconds) {
 		if (this.getBusyTime() == 0) {
 
-			if (this.getNbMaterials() > 0) {
+			if (this.getNbMaterials() > 0 && this.getWorkAtCube().getCenter().isValidForObjectIn(this.getWorld())) {
 				Iterator<Material> iter = this.materials.iterator();
 				Material material = (Material) iter.next();
 				this.getWorld().addMaterial(material, this.getWorkAtCube().getCenter());
