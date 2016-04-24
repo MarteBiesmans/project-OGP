@@ -2,7 +2,7 @@ package hillbillies.model;
 
 /**
  * every terrainType is associated with an integer The integer types are as
- * follows: 0: air 1: rock 2: wood 3: workshop
+ * follows: 0-air 1-rock 2-wood 3-workshop
  * 
  * @author Ellen
  *

@@ -156,7 +156,7 @@ public class Unit extends TimeVariableObject {
 	// ATTRIBUTES: getAlpha(), isValidAlpha(), canHaveAsAlpha(), setAlpha() ...
 
 	/**
-	 * checks if the unit is a valid unit. This means that all attributs have to
+	 * checks if the unit is a valid unit. This means that all attributes have to
 	 * be valid and that the unit must belong to a faction and must exist in a
 	 * world
 	 */
@@ -1769,7 +1769,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	/**
-	 * Variable registering whether this person is terminated.
+	 * Variable registering whether this unit is terminated.
 	 */
 	private boolean isDead = false;
 

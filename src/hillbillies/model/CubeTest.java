@@ -11,6 +11,11 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 public class CubeTest {
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void constructor_IllegalCase() {
+		new Cube(-3, 4, 5);
+	}
+	
 	@Test
 	public void isValidIn_IllegalCaseX() {
 		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());

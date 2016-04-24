@@ -22,8 +22,11 @@ import be.kuleuven.cs.som.annotate.*;
 public class World extends TimeVariableObject {
 
 	private static final Random RANDOM_GEN = new Random();
-	static final int MAX_FACTIONS = 5;
-	static final int MAX_UNITS = 100;
+	/**
+	 * @note	MAX_FACTIONS and MAX_UNITS cannot be 0.
+	 */
+	protected static final int MAX_FACTIONS = 5;
+	protected static final int MAX_UNITS = 100;
 
 	/**
 	 * create a new game world
@@ -80,7 +83,7 @@ public class World extends TimeVariableObject {
 	 *            The array to check.
 	 * @return false if the given array contains integers not in [0,3]
 	 */
-	boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
+	protected boolean canHaveAsTerrainTypes(int[][][] terrainTypes) {
 		// iterate over the array terrainTypes
 		for (int x = 0; x < terrainTypes.length; x++)
 			for (int y = 0; y < terrainTypes[x].length; y++)
@@ -96,7 +99,7 @@ public class World extends TimeVariableObject {
 	 * return the 3D-array terrainTypes of this world
 	 */
 	@Basic
-	int[][][] getTerrainTypesArray() {
+	protected int[][][] getTerrainTypesArray() {
 		return this.terrainTypes;
 	}
 
@@ -110,13 +113,13 @@ public class World extends TimeVariableObject {
 	 * instance of the provided class ConnectedToBorder to be able to access
 	 * these methods
 	 */
-	final ConnectedToBorder connectedUtil;
+	protected final ConnectedToBorder connectedUtil;
 
 	/**
 	 * instance of the provided class TerrainChangeListener to be able to update
 	 * the GUI
 	 */
-	TerrainChangeListener modelListener;
+	protected TerrainChangeListener modelListener;
 
 	/**
 	 * Return the number of cubes in the X direction of this world.
@@ -145,7 +148,7 @@ public class World extends TimeVariableObject {
 	/**
 	 * Return a set of all cubes in this world.
 	 */
-	Set<Cube> getAllCubes() {
+	protected Set<Cube> getAllCubes() {
 		Set<Cube> allCubes = new HashSet<Cube>();
 		for (int i = 0; i < this.getNbCubesX(); i++) {
 			for (int j = 0; j < this.getNbCubesY(); j++) {
@@ -179,7 +182,7 @@ public class World extends TimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             the given cube is not within the boundaries of this world
 	 */
-	TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
+	protected TerrainType getTerrainType(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 
@@ -265,6 +268,20 @@ public class World extends TimeVariableObject {
 			}
 		}
 	}
+	
+	protected Set<Cube> getAllWorkshops(){
+		Set<Cube> workshops = new HashSet<Cube>();
+		for (int i = 0; i < this.getNbCubesX(); i++) {
+			for (int j = 0; j < this.getNbCubesY(); j++) {
+				for (int k = 0; k < this.getNbCubesZ(); k++) {
+					if (this.getTerrainType(new Cube(i,j,k))==TerrainType.WORKSHOP)
+						workshops.add(new Cube(i, j, k));
+				}
+			}
+		}
+		return workshops;
+			
+	}
 
 	// UNITS//
 
@@ -276,7 +293,7 @@ public class World extends TimeVariableObject {
 	 * @throws	IllegalArgumentException
 	 * 			it is not possible to set the world of the given unit to null
 	 */
-	void removeUnit(Unit unit) throws IllegalArgumentException {
+	protected void removeUnit(Unit unit) throws IllegalArgumentException {
 		// if (!this.hasAsUnit(unit))
 		// throw new IllegalArgumentException();
 		// this.units.remove(unit);
@@ -369,7 +386,7 @@ public class World extends TimeVariableObject {
 	 * @return	false if the given unit is null
 	 * @return	false if the given unit doesn't belong to the set of all units in this world
 	 */
-	boolean hasAsUnit(Unit unit) {
+	protected boolean hasAsUnit(Unit unit) {
 		if (unit == null)
 			return false;
 		return this.units.contains(unit);
@@ -378,14 +395,14 @@ public class World extends TimeVariableObject {
 	/**
 	 * return the number of units in this world
 	 */
-	int getNbUnits() {
+	protected int getNbUnits() {
 		return this.units.size();
 	}
 
 	/**
 	 * check whether this world has proper units
 	 */
-	boolean hasProperUnits() {
+	protected boolean hasProperUnits() {
 		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getWorld() != this)
 				return false;
@@ -401,7 +418,7 @@ public class World extends TimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             the given cube is not within the boundaries of this world
 	 */
-	Set<Unit> getUnitsInCube(Cube cube) throws IllegalArgumentException {
+	protected Set<Unit> getUnitsInCube(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 
@@ -438,7 +455,7 @@ public class World extends TimeVariableObject {
 	 * @param faction
 	 *            the faction to which the returned units belong
 	 */
-	Set<Unit> getAllUnits(Faction faction) {
+	protected Set<Unit> getAllUnits(Faction faction) {
 		return faction.getAllUnits();
 	}
 
@@ -503,7 +520,7 @@ public class World extends TimeVariableObject {
 	 * @param faction
 	 * 			the faction to add
 	 */
-	void addFaction(Faction faction) {
+	protected void addFaction(Faction faction) {
 		if (!canAddAsFaction(faction))
 			throw new IllegalArgumentException();
 		this.factions.add(faction);
@@ -521,7 +538,7 @@ public class World extends TimeVariableObject {
 	 * @param faction
 	 * 			the faction to remove
 	 */
-	void removeFaction(Faction faction) {
+	protected void removeFaction(Faction faction) {
 		if (!this.hasAsFaction(faction))
 			throw new IllegalArgumentException();
 		this.factions.remove(faction);
@@ -539,7 +556,7 @@ public class World extends TimeVariableObject {
 	 * @param faction
 	 * 			the faction to check
 	 */
-	boolean canAddAsFaction(Faction faction) {
+	protected boolean canAddAsFaction(Faction faction) {
 		if (faction.getWorld() != null)
 			return false;
 		if (this.getNbActiveFactions() == MAX_FACTIONS && faction.getNbUnits() > 0)
@@ -550,7 +567,7 @@ public class World extends TimeVariableObject {
 	/**
 	 * return the number of active factions in this world
 	 */
-	int getNbActiveFactions() {
+	protected int getNbActiveFactions() {
 		return this.getAllActiveFactions().size();
 	}
 
@@ -559,7 +576,7 @@ public class World extends TimeVariableObject {
 	 * @param faction
 	 * 			the faction to check
 	 */
-	boolean hasAsFaction(Faction faction) {
+	protected boolean hasAsFaction(Faction faction) {
 		if (faction == null)
 			return false;
 		return this.factions.contains(faction);
@@ -568,14 +585,14 @@ public class World extends TimeVariableObject {
 	/**
 	 * return the number of factions in this world (including non-active)
 	 */
-	int getNbFactions() {
+	protected int getNbFactions() {
 		return this.factions.size();
 	}
 
 	/**
 	 * return all the factions present in this world as a set
 	 */
-	Set<Faction> getAllFactions() {
+	protected Set<Faction> getAllFactions() {
 		return factions;
 	}
 
@@ -593,7 +610,7 @@ public class World extends TimeVariableObject {
 	/**
 	 * check whether all factions in this world are proper
 	 */
-	boolean hasProperFactions() {
+	protected boolean hasProperFactions() {
 		for (Faction faction : this.factions)
 			if (faction == null || faction.getWorld() != this)
 				return false;
@@ -617,7 +634,7 @@ public class World extends TimeVariableObject {
 	 * @post This world has the given material as one of its materials. |
 	 *       new.hasAsMaterial(material)
 	 */
-	void addMaterial(@Raw Material material, @Raw Position position) throws IllegalArgumentException {
+	protected void addMaterial(@Raw Material material, @Raw Position position) throws IllegalArgumentException {
 		if (!canHaveAsMaterialAt(material, position)) {
 			throw new IllegalArgumentException();
 		}
@@ -645,7 +662,7 @@ public class World extends TimeVariableObject {
 	 *       materials. | ! new.hasAsMaterial(material)
 	 */
 	@Raw
-	void removeMaterial(Material material) {
+	protected void removeMaterial(Material material) {
 		if (!this.hasAsMaterial(material))
 			throw new IllegalArgumentException();
 		this.materials.remove(material);
@@ -667,7 +684,7 @@ public class World extends TimeVariableObject {
 	 *         owner)
 	 * @return false if the position of the material is not a passable cube
 	 */
-	boolean canHaveAsMaterialAt(Material material, Position position) {
+	protected boolean canHaveAsMaterialAt(Material material, Position position) {
 		if (material == null) {
 			return false;
 		}
@@ -689,7 +706,7 @@ public class World extends TimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             the given cube is not within the boundaries of this world
 	 */
-	Set<Log> getLogsIn(Cube cube) throws IllegalArgumentException {
+	protected Set<Log> getLogsIn(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		Set<Log> result = new HashSet<Log>();
@@ -713,7 +730,7 @@ public class World extends TimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             the given cube is not within the boundaries of this world
 	 */
-	Set<Boulder> getBouldersIn(Cube cube) throws IllegalArgumentException {
+	protected Set<Boulder> getBouldersIn(Cube cube) throws IllegalArgumentException {
 		if (!cube.isValidIn(this))
 			throw new IllegalArgumentException();
 		Set<Boulder> result = new HashSet<Boulder>();
@@ -779,7 +796,7 @@ public class World extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	boolean hasAsMaterial(@Raw Material material) {
+	protected boolean hasAsMaterial(@Raw Material material) {
 		return this.getAllMaterials().contains(material);
 	}
 
@@ -791,7 +808,7 @@ public class World extends TimeVariableObject {
 	 *         materials references this world as the world to which they are
 	 *         attached.
 	 */
-	boolean hasProperMaterials() {
+	protected boolean hasProperMaterials() {
 		for (Material material : this.getAllMaterials()) {
 			if (!canHaveAsMaterialAt(material, material.getPosition()))
 				return false;
@@ -806,7 +823,7 @@ public class World extends TimeVariableObject {
 	 *
 	 * @return The total number of materials collected in this world.
 	 */
-	int getNbMaterials() {
+	protected int getNbMaterials() {
 		return this.getAllMaterials().size();
 	}
 

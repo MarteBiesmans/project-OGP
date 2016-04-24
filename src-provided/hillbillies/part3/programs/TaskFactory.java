@@ -4,6 +4,8 @@ import java.util.List;
 
 import hillbillies.model.*;
 import hillbillies.model.programs.statements.*;
+import hillbillies.model.programs.expressions.*;
+
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	/* TASKS */
@@ -108,7 +110,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param statements
 	 *            The statements that must be executed in the given order.
 	 */
-	public Statement createSequence(List<S> statements, SourceLocation sourceLocation){
+	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
