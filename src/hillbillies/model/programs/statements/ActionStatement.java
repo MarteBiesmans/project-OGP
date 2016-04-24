@@ -1,9 +1,32 @@
 package hillbillies.model.programs.statements;
 
-public abstract class ActionStatement {
+import hillbillies.part3.programs.ITaskFactory;
 
-	public ActionStatement() {
-		// TODO Auto-generated constructor stub
+public abstract class ActionStatement extends Statement {
+
+	protected ActionStatement(ITaskFactory factory, boolean hasBeenFullyExecuted) {
+		super(hasBeenFullyExecuted);
+		TaskFactory = factory;
+	}
+
+	public ActionStatement(ITaskFactory factory) {
+		this(factory, false);
+	}
+
+	public ITaskFactory getTaskFactory() {
+		return TaskFactory;
+	}
+
+	private final ITaskFactory TaskFactory;
+
+	@Override
+	public boolean isWellFormed() {
+		return true;
+	}
+
+	@Override
+	public boolean containsActionStatement() {
+		return true;
 	}
 
 }

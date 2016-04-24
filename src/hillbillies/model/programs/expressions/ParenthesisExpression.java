@@ -1,9 +1,17 @@
 package hillbillies.model.programs.expressions;
 
-public class ParenthesisExpression extends UnairyExpression {
+import hillbillies.model.Unit;
+
+public class ParenthesisExpression extends UnaryExpression {
 
 	public ParenthesisExpression() {
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public Boolean evaluate(BooleanExpression object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

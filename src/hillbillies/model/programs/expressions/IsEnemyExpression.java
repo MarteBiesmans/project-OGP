@@ -1,9 +1,17 @@
 package hillbillies.model.programs.expressions;
 
-public class IsEnemyExpression extends BinairyExpression {
+import hillbillies.model.Unit;
+
+public class IsEnemyExpression extends BinaryExpression {
 
 	public IsEnemyExpression() {
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public Object evaluate(Unit unit) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -2,8 +2,15 @@ package hillbillies.model.programs.expressions;
 
 public class VariableExpression extends Expression {
 
-	public VariableExpression() {
-		// TODO Auto-generated constructor stub
+	protected VariableExpression(Object o) {
+		object = o;
 	}
+	
+	@Override
+	public Boolean evaluate() {
+		return false;
+	}
+	
+	private final Object object;
 
 }

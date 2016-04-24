@@ -5,7 +5,8 @@ import java.util.Iterator;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A value class describing a position. The position consists of a cube and a position in this cube.
+ * A value class describing a position. The position consists of a cube and a
+ * position in this cube.
  * 
  * @Value
  * @author Marte & Ellen
@@ -63,8 +64,9 @@ public class Position {
 
 	/**
 	 * returns a position substracted by the other position
+	 * 
 	 * @param other
-	 * the position to substract from this position
+	 *            the position to substract from this position
 	 * @return the result position
 	 */
 	public Position min(Position other) {
@@ -92,7 +94,7 @@ public class Position {
 	public double getY() {
 		return this.y;
 	}
-	
+
 	/**
 	 * return the real y-value of this position.
 	 */
@@ -250,5 +252,11 @@ public class Position {
 		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
 			return false;
 		return true;
+	}
+
+	public double getDistanceSquare(Position other) {
+		return ((this.getRealX() - other.getRealX()) * (this.getRealX() - other.getRealX()))
+				+ ((this.getRealY() - other.getRealY()) * (this.getRealY() - other.getRealY()))
+				+ ((this.getRealZ() - other.getRealZ()) * (this.getRealZ() - other.getRealZ()));
 	}
 }

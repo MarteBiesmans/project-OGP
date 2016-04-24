@@ -1,9 +1,16 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
+
 public class XYZExpression extends CubePositionExpression {
 
-	public XYZExpression() {
-		// TODO Auto-generated constructor stub
+	public XYZExpression(int x, int y, int z) {
+		super(new Cube(x, y, z));
+	}
+
+	@Override
+	public Cube evaluate() {
+		return (Cube) getObject();
 	}
 
 }
