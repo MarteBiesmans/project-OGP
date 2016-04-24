@@ -145,7 +145,7 @@ public class World extends TimeVariableObject {
 	/**
 	 * Return a set of all cubes in this world.
 	 */
-	public Set<Cube> getAllCubes() {
+	Set<Cube> getAllCubes() {
 		Set<Cube> allCubes = new HashSet<Cube>();
 		for (int i = 0; i < this.getNbCubesX(); i++) {
 			for (int j = 0; j < this.getNbCubesY(); j++) {
@@ -216,11 +216,11 @@ public class World extends TimeVariableObject {
 		// update connectedUtil and collect caveIns
 		Set<int[]> caveIns = new HashSet<int[]>();
 
-		// solid to passable
+			// solid to passable
 		if (!cube.isPassableIn(this) && type.isPassable())
 			caveIns.addAll(connectedUtil.changeSolidToPassable(cube.getX(), cube.getY(), cube.getZ()));
 
-		// passable to solid
+			// passable to solid
 		if (cube.isPassableIn(this) && !type.isPassable()) {
 			connectedUtil.changePassableToSolid(cube.getX(), cube.getY(), cube.getZ());
 			if (!connectedUtil.isSolidConnectedToBorder(cube.getX(), cube.getY(), cube.getZ())) {
@@ -297,14 +297,19 @@ public class World extends TimeVariableObject {
 	 * 
 	 * @param unit
 	 * 			the unit to add
-	 * @post	nothing changes if the factions in this world or this world are already full
+	 * @post	nothing changes if this world is already full
 	 * @throws IllegalArgumentException
 	 * 			the given unit can not be added to this world for every other 
 	 * 			reason than too much units or factions in this world (e.g. illegal position)
+	 * @effect	TODO
 	 */
 	public void addUnit(Unit unit) throws IllegalArgumentException {
-		if (!unit.getPosition().isValidForObjectIn(this))
-			throw new IllegalArgumentException();
+		if (!this.canAddAsUnit(unit))
+			//TODO als factions vol zijn (kan met de huidige constanten niet gebeuren, maar adaptibility)
+			if (this.units.size() == MAX_UNITS)
+				return;
+			else
+				throw new IllegalArgumentException();
 		if (canAddAsUnit(unit)) {
 			Faction unitsFaction = null;
 			// if the max number of factions in this world is not reached, make
@@ -342,6 +347,7 @@ public class World extends TimeVariableObject {
 	 * @return	false if the unit is dead
 	 * @return	false if the unit already belongs to a world
 	 * @return	false if this world already has reached the limit of units
+	 * @return	false if the position of the given unit is not valid for a unit in this world
 	 */
 	private boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead())
@@ -349,6 +355,8 @@ public class World extends TimeVariableObject {
 		if (unit.getWorld() != null)
 			return false;
 		if (this.units.size() == MAX_UNITS)
+			return false;
+		if (!unit.getPosition().isStableForUnitIn(this))
 			return false;
 		return true;
 	}

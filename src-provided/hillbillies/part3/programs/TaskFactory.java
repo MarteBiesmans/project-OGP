@@ -2,6 +2,9 @@ package hillbillies.part3.programs;
 
 import java.util.List;
 
+import hillbillies.model.*;
+import hillbillies.model.programs.statements.*;
+
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	/* TASKS */
 
@@ -23,7 +26,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *         the 'selected' expression does not occur in the activity, a list
 	 *         with exactly one Task instance should be returned.
 	 */
-	public List<T> createTasks(String name, int priority, S activity, List<int[]> selectedCubes) {
+	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		//TODO
 		return null;
 	}
@@ -38,7 +41,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param value
 	 *            An expression that evaluates to the assigned value
 	 */
-	public S createAssignment(String variableName, E value, SourceLocation sourceLocation) {
+	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
 		//TODO
 		return null;
 	}
@@ -52,7 +55,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The body of the loop (most likely this is a sequence
 	 *            statement).
 	 */
-	public S createWhile(E condition, S body, SourceLocation sourceLocation) {
+	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
 		//TODO
 		return null;
 	}
@@ -70,7 +73,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            condition evaluates to false. Can be null if no else clause is
 	 *            specified.
 	 */
-	public S createIf(E condition, S ifBody, S elseBody, SourceLocation sourceLocation) {
+	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody, SourceLocation sourceLocation) {
 		//TODO
 		return null;
 	}
@@ -82,7 +85,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * 
 	 * @note Students working alone may return null.
 	 */
-	public S createBreak(SourceLocation sourceLocation) {
+	public Statement createBreak(SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -94,7 +97,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param value
 	 *            The expression to evaluate and print
 	 */
-	public S createPrint(E value, SourceLocation sourceLocation){
+	public Statement createPrint(Expression value, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -105,7 +108,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param statements
 	 *            The statements that must be executed in the given order.
 	 */
-	public S createSequence(List<S> statements, SourceLocation sourceLocation){
+	public Statement createSequence(List<S> statements, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -116,7 +119,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param position
 	 *            The position to which to move
 	 */
-	public S createMoveTo(E position, SourceLocation sourceLocation){
+	public Statement createMoveTo(Expression position, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -127,7 +130,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param position
 	 *            The position on which to work
 	 */
-	public S createWork(E position, SourceLocation sourceLocation){
+	public Statement createWork(Expression position, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -138,7 +141,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit to follow
 	 */
-	public S createFollow(E unit, SourceLocation sourceLocation){
+	public Statement createFollow(Expression unit, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -149,7 +152,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit to attack
 	 */
-	public S createAttack(E unit, SourceLocation sourceLocation){
+	public Statement createAttack(Expression unit, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -163,7 +166,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param variableName
 	 *            The name of the variable to read.
 	 */
-	public E createReadVariable(String variableName, SourceLocation sourceLocation){
+	public Expression createReadVariable(String variableName, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -175,7 +178,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param position
 	 *            The position expression
 	 */
-	public E createIsSolid(E position, SourceLocation sourceLocation){
+	public Expression createIsSolid(Expression position, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -187,7 +190,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param position
 	 *            The position expression
 	 */
-	public E createIsPassable(E position, SourceLocation sourceLocation){
+	public Expression createIsPassable(Expression position, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -199,7 +202,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit expression
 	 */
-	public E createIsFriend(E unit, SourceLocation sourceLocation){
+	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation){
 		//TODO
 		return null;
 	}
@@ -211,7 +214,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit expression
 	 */
-	public E createIsEnemy(E unit, SourceLocation sourceLocation);
+	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to true when the given unit evaluates
@@ -220,7 +226,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit expression
 	 */
-	public E createIsAlive(E unit, SourceLocation sourceLocation);
+	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to true when the given unit evaluates
@@ -229,7 +238,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 *            The unit expression
 	 */
-	public E createCarriesItem(E unit, SourceLocation sourceLocation);
+	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to true when the given expression
@@ -237,7 +249,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * 
 	 * @param expression
 	 */
-	public E createNot(E expression, SourceLocation sourceLocation);
+	public Expression createNot(Expression expression, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to true when both the left and right
@@ -246,7 +261,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @note short-circuit: the right expression does not need to be evaluated
 	 *       when the left expression evaluates to false.
 	 */
-	public E createAnd(E left, E right, SourceLocation sourceLocation);
+	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to false only when the left and right
@@ -255,13 +273,19 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @note short-circuit: the right expression does not need to be evaluated
 	 *       when the left expression evaluates to true.
 	 */
-	public E createOr(E left, E right, SourceLocation sourceLocation);
+	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the current position of the unit
 	 * that is executing the task.
 	 */
-	public E createHerePosition(SourceLocation sourceLocation);
+	public Expression createHerePosition(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the position of a log.
@@ -269,7 +293,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @note for groups of two students, this needs to be the log closest to the
 	 *       unit that is executing the task.
 	 */
-	public E createLogPosition(SourceLocation sourceLocation);
+	public Expression createLogPosition(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the position of a boulder.
@@ -277,7 +304,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @note for groups of two students, this needs to be the boulder closest to
 	 *       the unit that is executing the task.
 	 */
-	public E createBoulderPosition(SourceLocation sourceLocation);
+	public Expression createBoulderPosition(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the position of a workshop.
@@ -285,7 +315,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @note for groups of two students, this needs to be the workshop closest
 	 *       to the unit that is executing the task.
 	 */
-	public E createWorkshopPosition(SourceLocation sourceLocation);
+	public Expression createWorkshopPosition(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the position selected by the user
@@ -293,7 +326,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * 
 	 * @note Students working alone may return null.
 	 */
-	public E createSelectedPosition(SourceLocation sourceLocation);
+	public Expression createSelectedPosition(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to a position next to the given
@@ -302,7 +338,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param position
 	 * 
 	 */
-	public E createNextToPosition(E position, SourceLocation sourceLocation);
+	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to a static position with a given
@@ -312,38 +351,59 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param y
 	 * @param z
 	 */
-	public E createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation);
+	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to the unit that is currently
 	 * executing the task.
 	 */
-	public E createThis(SourceLocation sourceLocation);
+	public Expression createThis(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to a unit that is part of the same
 	 * faction as the unit currently executing the task.
 	 */
-	public E createFriend(SourceLocation sourceLocation);
+	public Expression createFriend(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to a unit that is not part of the
 	 * same faction as the unit currently executing the task.
 	 */
-	public E createEnemy(SourceLocation sourceLocation);
+	public Expression createEnemy(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to any unit (other than this).
 	 */
-	public E createAny(SourceLocation sourceLocation);
+	public Expression createAny(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to true.
 	 */
-	public E createTrue(SourceLocation sourceLocation);
+	public Expression createTrue(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 
 	/**
 	 * Create an expression that evaluates to false.
 	 */
-	public E createFalse(SourceLocation sourceLocation);
+	public Expression createFalse(SourceLocation sourceLocation){
+		//TODO
+		return null;
+	}
 }
