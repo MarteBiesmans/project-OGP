@@ -56,3 +56,8 @@ TODO's die in unit bovenaan stonden:
 	// @invar Each faction in a world should always be active, i.e. non-empty
 	// -> zie txt bestand opmerkingen, dat kan in principe, zou geheugen
 	// besparen, maar de rvaag is of dat ooit problemen met iets gaat geven
+	
+ik heb eens getest op de workshop: geen errors, de units verhogen weight
+(niets bij toughness, maar dat wisten we al zeker)
+probleem is nog dat ze de boulder en log ook terug vastnemen
+
