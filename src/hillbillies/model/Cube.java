@@ -100,7 +100,7 @@ public class Cube {
 	 * @param world
 	 * @return true if all coördinates fit in the given world.
 	 */
-	private boolean isValidCubeCoordinate(int x, int y, int z, World world) {
+	protected boolean isValidCubeCoordinate(int x, int y, int z, World world) {
 		if ((x < 0) || (x >= world.getNbCubesX()) || (y < 0) || (y >= world.getNbCubesY()) || (z < 0)
 				|| (z >= world.getNbCubesZ()))
 			return false;
