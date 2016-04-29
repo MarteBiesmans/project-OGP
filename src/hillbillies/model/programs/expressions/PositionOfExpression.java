@@ -5,18 +5,18 @@ import hillbillies.model.Unit;
 
 public class PositionOfExpression extends UnaryCubeExpression {
 
-	public PositionOfExpression(BooleanExpression e) {
+	public PositionOfExpression(UnitExpression e) {
 		super(e);
 	}
 	
 	@Override
 	public Cube evaluate(Unit unit) {
-		return null;
+		return ((Unit) getExpressionEvaluate(unit)).getCube();
 	}
 	
 	@Override
 	public String toString(){
-		return "";
+		return "positionOf" + getExpression().toString();
 	}
 
 }

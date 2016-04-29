@@ -5,18 +5,22 @@ import hillbillies.model.Unit;
 
 public class NextToExpression extends UnaryCubeExpression {
 
-	public NextToExpression(BooleanExpression e) {
+	public NextToExpression(CubePositionExpression e) {
 		super(e);
 	}
 	
 	@Override
 	public Cube evaluate(Unit unit) {
-		return null;
+		for (Cube cube: ((Cube) getExpressionEvaluate(unit)).getAllNeighbouringCubes(unit.getWorld())) {
+			if (cube.isPassableIn(unit.getWorld()))
+				return cube;
+		}
+		return unit.getCube();
 	}
 	
 	@Override
 	public String toString(){
-		return "";
+		return "nextTo" + getExpression().toString();
 	}
 
 }
