@@ -5,13 +5,27 @@ import hillbillies.model.Unit;
 public class EnemyExpression extends UnitExpression {
 
 	public EnemyExpression() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	@Override
-	public Object evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Unit evaluate(Unit unit) {
+		Unit nearestEnemySoFar = null;
+		for (Unit other : unit.getWorld().getAllUnits()) {
+			if (other != unit && unit.getFaction() != other.getFaction()) {
+				if (nearestEnemySoFar == null)
+					nearestEnemySoFar = other;
+				else if (unit.getPosition().getDistanceSquare(other.getPosition()) < unit.getPosition()
+						.getDistanceSquare(nearestEnemySoFar.getPosition()))
+					nearestEnemySoFar = other;
+			}
+		}
+		return nearestEnemySoFar;
+	}
+
+	@Override
+	public String toString() {
+		return "enemy";
 	}
 
 }

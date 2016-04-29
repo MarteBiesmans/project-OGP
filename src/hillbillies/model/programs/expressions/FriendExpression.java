@@ -5,13 +5,27 @@ import hillbillies.model.Unit;
 public class FriendExpression extends UnitExpression {
 
 	public FriendExpression() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	@Override
-	public Object evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Unit evaluate(Unit unit) {
+		Unit nearestFriendSoFar = null;
+		for (Unit other : unit.getWorld().getAllUnits()) {
+			if (other != unit && unit.getFaction() == other.getFaction()) {
+				if (nearestFriendSoFar == null)
+					nearestFriendSoFar = other;
+				else if (unit.getPosition().getDistanceSquare(other.getPosition()) < unit.getPosition()
+						.getDistanceSquare(nearestFriendSoFar.getPosition()))
+					nearestFriendSoFar = other;
+			}
+		}
+		return nearestFriendSoFar;
+	}
+
+	@Override
+	public String toString() {
+		return "friend";
 	}
 
 }

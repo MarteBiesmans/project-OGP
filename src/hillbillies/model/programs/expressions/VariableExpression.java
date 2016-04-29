@@ -1,14 +1,16 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public class VariableExpression extends Expression {
 
-	protected VariableExpression(Object o) {
+	public VariableExpression(Object o) {
 		object = o;
 	}
 	
 	@Override
-	public Boolean evaluate() {
-		return false;
+	public Object evaluate(Unit unit) {
+		return object;
 	}
 	
 	private final Object object;

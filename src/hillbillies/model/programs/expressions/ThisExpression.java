@@ -5,13 +5,17 @@ import hillbillies.model.Unit;
 public class ThisExpression extends UnitExpression {
 
 	public ThisExpression() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
-
+	
 	@Override
-	public Object evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Unit evaluate(Unit unit) {
+		return unit;
+	}
+	
+	@Override
+	public String toString(){
+		return "this";
 	}
 
 }
