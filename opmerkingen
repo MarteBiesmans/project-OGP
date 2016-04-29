@@ -63,3 +63,5 @@ probleem is nog dat ze de boulder en log ook terug vastnemen
 
 voorlopig kunnen we materials aanmaken, zonder dat die log of boulder zijn, dat zou niet mogen
 
+bij getDistanceWeight -> alles in kwadraat berekenen, op het einde sqrt nemen (want sqrt is traag!!)
+
