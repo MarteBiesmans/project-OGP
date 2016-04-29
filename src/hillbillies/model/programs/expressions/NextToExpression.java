@@ -1,24 +1,22 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
-import hillbillies.model.World;
+import hillbillies.model.Unit;
 
-public class NextToExpression extends CubePositionExpression {
+public class NextToExpression extends UnaryCubeExpression {
 
-	public NextToExpression(Cube c, World w) {
-		super(c);
-		this.world = w;
-	}
-
-	@Override
-	public Cube evaluate() {
-		for (Cube cube: ((Cube) getObject()).getAllNeighbouringCubes(world)) {
-			if (cube.isPassableIn(world))
-				return cube;
-		}
-		return (Cube) getObject();
+	public NextToExpression(BooleanExpression e) {
+		super(e);
 	}
 	
-	private World world;
+	@Override
+	public Cube evaluate(Unit unit) {
+		return null;
+	}
+	
+	@Override
+	public String toString(){
+		return "";
+	}
 
 }

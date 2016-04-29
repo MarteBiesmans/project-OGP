@@ -3,15 +3,20 @@ package hillbillies.model.programs.expressions;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class HereExpression extends CubePositionExpression {
+public class HereExpression extends NullaryCubeExpression {
 
-	public HereExpression(Unit unit) {
-		super(unit);
+	public HereExpression() {
+		super();
 	}
-
+	
 	@Override
-	public Cube evaluate() {
-		return ((Unit) getObject()).getCube();
+	public Cube evaluate(Unit unit) {
+		return unit.getCube();
+	}
+	
+	@Override
+	public String toString(){
+		return "here";
 	}
 
 }

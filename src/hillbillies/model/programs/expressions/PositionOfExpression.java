@@ -3,15 +3,20 @@ package hillbillies.model.programs.expressions;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class PositionOfExpression extends CubePositionExpression {
+public class PositionOfExpression extends UnaryCubeExpression {
 
-	public PositionOfExpression(Unit unit) {
-		super(unit);
+	public PositionOfExpression(BooleanExpression e) {
+		super(e);
 	}
-
+	
 	@Override
-	public Cube evaluate() {
-		return ((Unit) getObject()).getCube();
+	public Cube evaluate(Unit unit) {
+		return null;
+	}
+	
+	@Override
+	public String toString(){
+		return "";
 	}
 
 }

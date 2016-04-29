@@ -1,16 +1,24 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
+import hillbillies.model.Unit;
 
 public class XYZExpression extends CubePositionExpression {
 
 	public XYZExpression(int x, int y, int z) {
-		super(new Cube(x, y, z));
+		cube = new Cube(x, y, z);
 	}
-
+	
+	private Cube cube;
+	
 	@Override
-	public Cube evaluate() {
-		return (Cube) getObject();
+	public Cube evaluate(Unit unit) {
+		return cube;
+	}
+	
+	@Override
+	public String toString(){
+		return cube.toString();
 	}
 
 }

@@ -268,8 +268,8 @@ public class World extends TimeVariableObject {
 			}
 		}
 	}
-	
-	protected Set<Cube> getAllWorkshops(){
+	//TODO: testen (naar public gezet voor expressions)
+	public Set<Cube> getAllWorkshops(){
 		Set<Cube> workshops = new HashSet<Cube>();
 		for (int i = 0; i < this.getNbCubesX(); i++) {
 			for (int j = 0; j < this.getNbCubesY(); j++) {

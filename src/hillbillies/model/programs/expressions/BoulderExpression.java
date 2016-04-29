@@ -4,26 +4,30 @@ import hillbillies.model.Boulder;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class BoulderExpression extends CubePositionExpression {
+public class BoulderExpression extends NullaryCubeExpression {
 
-	public BoulderExpression(Unit unit) {
-		super(unit);
+	public BoulderExpression() {
+		super();
 	}
 
 	@Override
-	public Cube evaluate() {
-		Unit unit = (Unit) getObject();
-		Boulder nearestBoulderSoFar = null;
-		for (Boulder log: unit.getWorld().getAllBoulders()) {
-			if (nearestBoulderSoFar == null)
-				nearestBoulderSoFar = log;
-			else if (unit.getPosition().getDistanceSquare(log.getPosition()) < unit.getPosition().getDistanceSquare(nearestBoulderSoFar.getPosition()))
-					nearestBoulderSoFar = log;
-		}
-		if (nearestBoulderSoFar != null)
-			return nearestBoulderSoFar.getPosition().getCube();
-		else
+	public Cube evaluate(Unit unit) {
+		if (unit.getWorld().getAllBoulders().size() == 0)
 			return unit.getCube();
+		Boulder nearestBoulderSoFar = null;
+		for (Boulder boulder : unit.getWorld().getAllBoulders()) {
+			if (nearestBoulderSoFar == null)
+				nearestBoulderSoFar = boulder;
+			else if (unit.getPosition().getDistanceSquare(boulder.getPosition()) < unit.getPosition()
+					.getDistanceSquare(nearestBoulderSoFar.getPosition()))
+				nearestBoulderSoFar = boulder;
+		}
+		return nearestBoulderSoFar.getPosition().getCube();
+	}
+
+	@Override
+	public String toString() {
+		return "boulder";
 	}
 
 }

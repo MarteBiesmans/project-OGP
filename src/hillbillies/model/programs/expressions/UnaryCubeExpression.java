@@ -1,10 +1,9 @@
 package hillbillies.model.programs.expressions;
-
 import hillbillies.model.Unit;
 
-public abstract class UnaryExpression extends BooleanExpression {
+public abstract class UnaryCubeExpression extends CubePositionExpression {
 
-	protected UnaryExpression(Expression e) {
+	protected UnaryCubeExpression(Expression e) {
 		expression = e;
 	}
 	

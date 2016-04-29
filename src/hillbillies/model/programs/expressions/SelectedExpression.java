@@ -1,17 +1,22 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
+import hillbillies.model.Unit;
 
-public class SelectedExpression extends CubePositionExpression {
+public class SelectedExpression extends NullaryCubeExpression {
 
-	public SelectedExpression(Object o) {
-		super(o);
+	public SelectedExpression() {
+		super();
 	}
-
+	
 	@Override
-	public Cube evaluate() {
-		// TODO Auto-generated method stub
+	public Cube evaluate(Unit unit) {
 		return null;
+	}
+	
+	@Override
+	public String toString(){
+		return "";
 	}
 
 }

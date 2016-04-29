@@ -1,9 +1,10 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public abstract class UnitExpression extends Expression {
 
-	public UnitExpression(Expression e) {
-		// TODO Auto-generated constructor stub
-	}
+	@Override
+	public abstract Unit evaluate(Unit unit);
 
 }
