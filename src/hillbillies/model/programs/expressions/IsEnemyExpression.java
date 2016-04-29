@@ -2,7 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class IsEnemyExpression extends BinaryExpression {
+public class IsEnemyExpression extends BinaryBooleanExpression {
 
 	public IsEnemyExpression(UnitExpression e1, UnitExpression e2) {
 		super(e1,e2);

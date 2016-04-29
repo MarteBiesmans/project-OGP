@@ -2,9 +2,9 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public abstract class BinaryExpression extends BooleanExpression {
+public abstract class BinaryBooleanExpression extends BooleanExpression {
 
-	public BinaryExpression(Expression e1, Expression e2) {
+	public BinaryBooleanExpression(Expression e1, Expression e2) {
 		expression1 = e1;
 		expression2 = e2;
 	}

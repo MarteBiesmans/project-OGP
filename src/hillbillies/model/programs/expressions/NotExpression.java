@@ -2,7 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class NotExpression extends UnaryExpression {
+public class NotExpression extends UnaryBooleanExpression {
 
 	public NotExpression(BooleanExpression e) {
 		super(e);

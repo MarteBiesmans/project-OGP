@@ -3,7 +3,7 @@ package hillbillies.model.programs.expressions;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class XYZExpression extends CubePositionExpression {
+public class XYZExpression extends CubeExpression {
 
 	public XYZExpression(int x, int y, int z) {
 		cube = new Cube(x, y, z);

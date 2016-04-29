@@ -5,7 +5,7 @@ import hillbillies.model.Unit;
 
 public class NextToExpression extends UnaryCubeExpression {
 
-	public NextToExpression(CubePositionExpression e) {
+	public NextToExpression(CubeExpression e) {
 		super(e);
 	}
 	

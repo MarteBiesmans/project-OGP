@@ -2,7 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class AndExpression extends BinaryExpression {
+public class AndExpression extends BinaryBooleanExpression {
 
 	public AndExpression(BooleanExpression e1, BooleanExpression e2) {
 		super(e1,e2);

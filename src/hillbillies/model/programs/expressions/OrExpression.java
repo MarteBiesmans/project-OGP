@@ -2,7 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class OrExpression extends BinaryExpression {
+public class OrExpression extends BinaryBooleanExpression {
 
 	public OrExpression(BooleanExpression e1, BooleanExpression e2) {
 		super(e1,e2);

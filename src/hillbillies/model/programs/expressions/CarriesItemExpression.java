@@ -2,7 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class CarriesItemExpression extends UnaryExpression {
+public class CarriesItemExpression extends UnaryBooleanExpression {
 
 	public CarriesItemExpression(UnitExpression e) {
 		super(e);
