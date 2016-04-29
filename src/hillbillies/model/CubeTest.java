@@ -9,6 +9,11 @@ import org.junit.Test;
 
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
+/**
+ * an incomplete test suite for the class Cube
+ * @author Ellen
+ *
+ */
 public class CubeTest {
 	
 	@Test(expected = IllegalArgumentException.class)

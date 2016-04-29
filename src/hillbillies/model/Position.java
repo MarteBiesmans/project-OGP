@@ -1,3 +1,4 @@
+//TODO comments checken
 package hillbillies.model;
 
 import java.util.Iterator;

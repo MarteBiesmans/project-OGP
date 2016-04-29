@@ -22,6 +22,7 @@ public class Cube {
 	public static final double SIDE_LENGTH = 1;
 
 	/**
+	 * create a new cube
 	 * 
 	 * @param x
 	 *            the position of this new cube on the x-axis
@@ -34,7 +35,7 @@ public class Cube {
 	 *       the given x, y and z
 	 * 
 	 * @throws IllegalArgumentException
-	 *             given x, y or z are not legal
+	 *             given x, y or z are not legal for any world
 	 */
 	@Raw
 	public Cube(int x, int y, int z) throws IllegalArgumentException {
@@ -46,6 +47,7 @@ public class Cube {
 	}
 
 	/**
+	 * create a new cube
 	 * 
 	 * @param x
 	 *            the position of this new cube on the x-axis
@@ -60,7 +62,7 @@ public class Cube {
 	 *       the given x, y and z
 	 * 
 	 * @throws IllegalArgumentException
-	 *             given x, y or z are not legal
+	 *             given x, y or z are not legal in the given world
 	 */
 	@Raw
 	public Cube(int x, int y, int z, World world) throws IllegalArgumentException {
@@ -72,7 +74,7 @@ public class Cube {
 	}
 
 	/**
-	 * Checks if the given coördinates are valid.
+	 * Check whether the given coördinates are valid in any world.
 	 * 
 	 * @param x
 	 *            The position to check on the x-axis
@@ -98,7 +100,7 @@ public class Cube {
 	 * @param z
 	 *            The position to check on the z-axis
 	 * @param world
-	 * @return true if all coördinates fit in the given world.
+	 * @return true if all coördinates fit in the boundaries of the given world.
 	 */
 	protected boolean isValidCubeCoordinate(int x, int y, int z, World world) {
 		if ((x < 0) || (x >= world.getNbCubesX()) || (y < 0) || (y >= world.getNbCubesY()) || (z < 0)
@@ -108,7 +110,7 @@ public class Cube {
 	}
 
 	/**
-	 * Checks if this cube is valid in de given world.
+	 * Checks if this cube is valid in the given world.
 	 * 
 	 * @param world
 	 *            The world the cube has to fit in
@@ -177,7 +179,13 @@ public class Cube {
 	}
 
 	/**
-	 * returns whether the other cube is the same or an adjacent cube.
+	 * returns whether the given cube is the same or an adjacent cube to this.
+	 * @note	note the subtle difference with directly adjacent cubes and neighbouring cubes
+	 * @param other
+	 *            The cube to compare to this cube
+	 * @return true if the other cube is the same cube
+	 * @return true if the other cube is an adjacent cube,
+	 * 			i.e. one of the 26 cubes touching this cube with at least one corner point
 	 */
 	public boolean isSameOrAdjacentCube(Cube other) {
 		int diffX = this.getX() - other.getX();
@@ -189,7 +197,13 @@ public class Cube {
 	}
 
 	/**
-	 * returns whether the other cube is the same or an directly adjacent cube.
+	 * returns whether the given cube is the same or a directly adjacent cube to this.
+	 * @note	note the subtle difference with adjacent cubes and neighbouring cubes
+	 * @param other
+	 *            The cube to compare to this cube
+	 * @return true if the other cube is the same cube
+	 * @return true if the other cube is a directly adjacent cube, 
+	 * 			i.e. one of the 6 cubes touching this cube with at least one side plane
 	 */
 	public boolean isSameOrDirectlyAdjacentCube(Cube other) {
 		if (this.equals(other))
@@ -215,13 +229,14 @@ public class Cube {
 	}
 
 	/**
-	 * checks if the other cube is the same or a neighbouring cube from this
-	 * cube
+	 * checks if the given cube is the same or a neighbouring cube from this cube.
+	 * @note	note the subtle difference with adjacent and directly adjacent cubes.
 	 * 
 	 * @param other
 	 *            The cube to compare to this cube
 	 * @return true if the other cube is the same cube
-	 * @return true if the other cube is a neighbouring cube
+	 * @return true if the other cube is a neighbouring cube,
+	 * 			i.e. one of the 8 cubes in the same z-level touching this cube with at least one side rib
 	 */
 	public boolean isSameOrNeighbouringCube(Cube other) {
 		return (this.isSameOrAdjacentCube(other) && (this.getZ() == other.getZ()));
@@ -229,6 +244,11 @@ public class Cube {
 
 	/**
 	 * returns a set of all adjacent cubes that are valid in the given world.
+	 * @note	note the subtle difference with directly adjacent cubes and neighbouring cubes
+	 * @param world
+	 *            The world the cubes must fit in
+	 * @return a set of all adjacent cubes valid in the given world,
+	 * 			i.e. at most 26 cubes touching this cube with at least one corner point
 	 */
 	public Set<Cube> getAllAdjacentCubes(World world) {
 
@@ -250,10 +270,12 @@ public class Cube {
 	/**
 	 * returns a set of all directly adjacent cubes that are valid in the given
 	 * world.
+	 * @note	note the subtle difference with adjacent cubes and neighbouring cubes
 	 * 
 	 * @param world
 	 *            The world the cubes must fit in
-	 * @return a set of all directly adjacent cubes
+	 * @return a set of all directly adjacent cubes valid in the given world,
+	 * 			i.e. at most 6 cubes touching this cube with at least one side plane
 	 */
 	public Set<Cube> getAllDirectlyAdjacentCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
@@ -266,10 +288,12 @@ public class Cube {
 
 	/**
 	 * returns a set of all neighbouring cubes that are valid in the given world
+	 * @note	note the subtle difference with adjacent and directly adjacent cubes.
 	 * 
 	 * @param world
 	 *            The world the cubes must fit in
-	 * @return a set of all neighbouring cubes
+	 * @return a set of all neighbouring cubes,
+	 * 			i.e. at most 8 cubes in the same z-level touching this cube with at least one side rib
 	 */
 	public Set<Cube> getAllNeighbouringCubes(World world) {
 		Set<Cube> result = new HashSet<Cube>();
@@ -281,11 +305,11 @@ public class Cube {
 	}
 
 	/**
-	 * check if this cube is sollid and connected to the border in the given
+	 * check whether this cube is solid and connected to the border in the given
 	 * world.
 	 * 
 	 * @param world
-	 *            The world the cube is in
+	 *            The world the cube is located in
 	 * @return true if this cube is solid and connected to the border of the
 	 *         given world
 	 */
@@ -294,17 +318,15 @@ public class Cube {
 	}
 
 	/**
-	 * create the string representation
+	 * create a string representation
 	 */
 	@Override
 	public String toString() {
 		return "(" + this.getX() + "," + this.getY() + "," + this.getZ() + ")";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * calculate the hashcode of this cube
 	 */
 	@Override
 	public int hashCode() {
@@ -316,10 +338,10 @@ public class Cube {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * check whether this cube has equal values to the given object
+	 * @param	obj
+	 * 			the object to compare this cube to
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -340,7 +362,7 @@ public class Cube {
 	}
 
 	/**
-	 * check if this cube is workable in the given world by the given unit
+	 * check whether this cube is workable in the given world by the given unit
 	 * 
 	 * @param world
 	 *            The world the cube is in
@@ -367,7 +389,7 @@ public class Cube {
 
 	/**
 	 * return the 'weight' of the movement from this cube to the next cube
-	 * 
+	 * @note	necessary for the pathfinding algorithm
 	 * @param next
 	 *            The next cube
 	 * @return the weight of the movement from this cube to the next cube based

@@ -1,6 +1,8 @@
+//TODO comments checken
 package hillbillies.model;
 
 import java.util.Random;
+import ogp.framework.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -23,20 +25,14 @@ public abstract class Material extends TimeVariableObject {
 	private static final Random RANDOM_GEN = new Random();
 
 	/**
-	 * Initialize this new material with given position in the given world.
+	 * create a new Material.
 	 *
-	 * @param position
-	 *            The position for this new material.
-	 * @param world
-	 *            The world where this material is located.
-	 * @effect The position of this new material is set to the given position.
-	 * @effect The world where this new material is located is set to the given
-	 *         world.
-	 * @effect The owner of this new material is set to null.
-	 * @effect The weight of this new material is given a random value in the
-	 *         range [10, 50].
+	 * @post	The position of this new material equals null.
+	 * @post	The world of this new material equals null.
+	 * @post	The owner of this new material equals null.
+	 * @post	The weight of this new material equals a random value in [10, 50].
 	 */
-	public Material() throws IllegalArgumentException {
+	protected Material() {
 		this.world = null;
 		this.setPosition(null);
 		this.owner = null;
@@ -52,6 +48,8 @@ public abstract class Material extends TimeVariableObject {
 	@Basic
 	@Raw
 	public Position getPosition() {
+		if (this.getOwner() != null)
+			return this.getOwner().getPosition();
 		return this.position;
 	}
 
@@ -64,7 +62,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the position is null or the cube of the position is not
 	 *         passable
 	 */
-	public boolean canHaveAsPosition(Position position) {
+	protected boolean canHaveAsPosition(Position position) {
 		if (position == null || !position.isValidForObjectIn(this.getWorld()))
 			return false;
 		return true;
@@ -76,13 +74,14 @@ public abstract class Material extends TimeVariableObject {
 	 * @return true if the cube of the position is not directly above a solid
 	 *         cube
 	 * @return false if the z-coordinate is 0
-	 * @return false if the material is carried by a unit, thus position equals
-	 *         null
+	 * @return false if the material is carried by a unit
+	 * @return	false if the position of the material equals null
 	 */
-	public boolean shouldFall() {
+	protected boolean shouldFall() {
+		if (this.getOwner() != null)
+			return false;
 		if (this.getPosition() == null)
 			return false;
-
 		if (this.getPosition().getCube().getZ() == 0)
 			return false;
 		Cube cubeBelow = new Cube(this.getPosition().getCube().getX(), this.getPosition().getCube().getY(),
@@ -104,7 +103,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             except for when the position is null.
 	 */
 	@Raw
-	public void setPosition(Position position) throws IllegalArgumentException {
+	protected void setPosition(Position position) throws IllegalArgumentException {
 		if (position != null) {
 			if (!canHaveAsPosition(position)) {
 				throw new IllegalArgumentException();
@@ -124,7 +123,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	public Unit getOwner() {
+	protected Unit getOwner() {
 		return this.owner;
 	}
 
@@ -137,7 +136,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the material already has a owner
 	 * @return false if the owner doesn't own the material
 	 */
-	public boolean canHaveAsOwner(Unit owner) {
+	protected boolean canHaveAsOwner(Unit owner) {
 		if (this.getOwner() != null) {
 			return false;
 		} else if (owner == null) {
@@ -160,7 +159,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             The given owner is not a valid owner for this material.
 	 */
 	@Raw
-	public void setOwner(Unit owner) throws IllegalArgumentException {
+	protected void setOwner(Unit owner) throws IllegalArgumentException {
 		if (owner != null) {
 			if (!canHaveAsOwner(owner))
 				throw new IllegalArgumentException();
@@ -179,7 +178,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	public World getWorld() {
+	protected World getWorld() {
 		return this.world;
 	}
 
@@ -192,7 +191,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the world doesn't has this material as material
 	 * @return false if the material already exists in another world
 	 */
-	public boolean canHaveAsWorld(World world) {
+	protected boolean canHaveAsWorld(World world) {
 		if (world == null) {
 			return false;
 		} else if (!world.hasAsMaterial(this)) {
@@ -215,7 +214,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             The given world is not a valid world for this material.
 	 */
 	@Raw
-	public void setWorld(World world) throws IllegalArgumentException {
+	protected void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
 			if (!canHaveAsWorld(world))
 				throw new IllegalArgumentException();
@@ -234,7 +233,7 @@ public abstract class Material extends TimeVariableObject {
 	@Basic
 	@Raw
 	@Immutable
-	public int getWeight() {
+	protected int getWeight() {
 		return this.weight;
 	}
 
@@ -252,11 +251,8 @@ public abstract class Material extends TimeVariableObject {
 	 *             the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		// if (seconds < 0 || seconds >= 0.2)
-		// throw new IllegalArgumentException();
-
-		this.busyTimeMin(seconds);
-
+		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
+			 throw new IllegalArgumentException();
 		if (this.shouldFall())
 			falling(seconds);
 	}
@@ -265,9 +261,9 @@ public abstract class Material extends TimeVariableObject {
 	 * 
 	 * @param seconds
 	 */
-	private void falling(float seconds) {
+	protected void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds);
+				this.getPosition().getRealZ() + FALLING_VELOCITY * seconds);
 		this.setPosition(next);
 	}
 }

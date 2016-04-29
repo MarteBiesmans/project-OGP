@@ -1,3 +1,4 @@
+//TODO comments checken (formal!)
 package hillbillies.model;
 
 import java.util.Random;
@@ -12,7 +13,9 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import ogp.framework.util.Util;
 
+//TODO in txt-file zetten
 /**
  * repository
  * https://github.com/MarteBiesmans/project-OGP.git
@@ -26,8 +29,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 
 /**
- * 
- * A class of units involving a position, name, sttrength, agility, toughness
+ * A class of units involving a position, name, strength, agility, toughness
  * and default behaviour.
  * 
  * @invar The name of each unit must be a valid name for any unit. |
@@ -800,8 +802,8 @@ public class Unit extends TimeVariableObject {
 	 *             the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		// if (seconds < 0 || seconds >= 0.2)
-		// throw new IllegalArgumentException();
+		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
+			 throw new IllegalArgumentException();
 
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
 			this.busyTimeMin(seconds);

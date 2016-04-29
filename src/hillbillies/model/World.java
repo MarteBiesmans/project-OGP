@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
-
+import ogp.framework.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -843,9 +843,8 @@ public class World extends TimeVariableObject {
 	 * @effect	advance time for all objects (units, materials) in this world
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		// if (seconds < 0 || seconds >= 0.2)
-		// throw new IllegalArgumentException();
-		// this.busyTimeMin(seconds);
+		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
+			 throw new IllegalArgumentException();
 
 		// advanceTime voor elke unit
 		for (Unit unit : this.getAllUnits())

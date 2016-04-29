@@ -3,6 +3,13 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.som.annotate.Basic;
+
+/**
+ * a class describing a faction, i.e. a group of units working together
+ * 
+ * @author Ellen & Marte
+ */
 public class Faction {
 
 	/**
@@ -11,6 +18,8 @@ public class Faction {
 	final static int MAX_UNITS = 50;
 
 	/**
+	 * create a new empty faction
+	 * 
 	 * @post this faction doesn't have any units
 	 */
 	public Faction() {
@@ -24,8 +33,10 @@ public class Faction {
 	 *            The unit to add to this faction
 	 * @post if the unit can have this faction as a faction the unit is added to
 	 *       the faction
+	 * @throws	IllegalArgumentException
+	 * 			the given unit cannot be added to this faction
 	 */
-	public void addUnit(Unit unit) {
+	public void addUnit(Unit unit) throws IllegalArgumentException {
 		if (!canAddAsUnit(unit)) {
 			throw new IllegalArgumentException();
 		}
@@ -40,14 +51,16 @@ public class Faction {
 	}
 
 	/**
-	 * remove the given unit to this faciton
+	 * remove the given unit from this faction
 	 * 
 	 * @param unit
 	 *            The unit to remove from this faction
 	 * @post if the unit belongs to this faction the unit is removed from this
 	 *       faction
+	 * @throws	IllegalArgumentException
+	 * 			this faction doesn't contain the given unit
 	 */
-	public void removeUnit(Unit unit) {
+	public void removeUnit(Unit unit) throws IllegalArgumentException {
 		if (!this.hasAsUnit(unit))
 			throw new IllegalArgumentException();
 		this.units.remove(unit);
@@ -61,34 +74,33 @@ public class Faction {
 	}
 
 	/**
-	 * check whether the given unit can be added to this faction
+	 * check whether the given unit can be added to this faction, considering the
+	 *         units condition and the number of units in this faction and in
+	 *         the world
 	 * 
 	 * @param unit
 	 *            The unit to check if it can be added to this faction
-	 * @return true if the unit can be added to this faction, considering the
-	 *         units condition and the number of units in this faction and in
-	 *         the world
+	 * @return	false if the given unit is dead
+	 * @return	false if the given unit already belongs to a faction
+	 * @return	false if this faction has reached it's maximum number of units
+	 * @return	false if the faction belongs to a world that has reached it's maximum number of factions
+	 * @return	false if the faction belongs to a world that has reached it's maximum number of units
 	 */
 	public boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead()) {
-			System.out.println("isDead");
 			return false;
 		}
 		if (unit.getFaction() != null) {
-			System.out.println("unit.getFaction != null");
 			return false;
 		}
 		if (this.units.size() == MAX_UNITS) {
-			System.out.println("faction.MAX_UNITS");
 			return false;
 		}
 		if (this.getWorld() != null) {
 			if (this.getNbUnits() == 0 && this.getWorld().getNbActiveFactions() == World.MAX_FACTIONS) {
-				System.out.println("world != null, world.MAX_FACTIONS");
 				return false;
 			}
 			if (this.getWorld().getNbUnits() == World.MAX_UNITS) {
-				System.out.println("world != null, world.MAX_UNITS");
 				return false;
 			}
 		}
@@ -109,8 +121,9 @@ public class Faction {
 	}
 
 	/**
-	 * Return all the units in this faction.
+	 * Return a set of all the units in this faction.
 	 */
+	@Basic
 	public Set<Unit> getAllUnits() {
 		return units;
 	}
@@ -123,9 +136,10 @@ public class Faction {
 	}
 
 	/**
-	 * check whether this faciton has proper units
+	 * check whether this faction has proper units
 	 * 
-	 * @return true if this faction has proper units
+	 * @return true if this faction has proper units,
+	 * 			i.e. not null, alive and belonging to this faction
 	 */
 	public boolean hasProperUnits() {
 		for (Unit unit : this.units)
@@ -139,12 +153,21 @@ public class Faction {
 	 */
 	private final Set<Unit> units;
 
+	/**
+	 * return the world where this faction belongs to
+	 */
+	@Basic
 	public World getWorld() {
 		return this.world;
 	}
 
 	/**
-	 * check wheter this faction can be in the given world
+	 * check whether this faction can be in the given world
+	 * 
+	 * @param	world
+	 * 			the world to check
+	 * @return	true if the world is not null and the world contains this faction
+	 * 			and the world of this faction is null
 	 */
 	public boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsFaction(this) && this.getWorld() == null);
@@ -152,8 +175,13 @@ public class Faction {
 
 	/**
 	 * set the world of this faction to the given world
+	 * @param	world
+	 * 			the world to set to
+	 * @throws	IllegalArgumentException
+	 * 			the given world is not null and this faction can not have the given world as world
+	 * 			
 	 */
-	public void setWorld(World world) {
+	public void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
 			if (!this.canHaveAsWorld(world))
 				throw new IllegalArgumentException();
@@ -162,6 +190,9 @@ public class Faction {
 		this.world = world;
 	}
 
+	/**
+	 * a variable registering the world this faction belongs to
+	 */
 	private World world;
 
 }

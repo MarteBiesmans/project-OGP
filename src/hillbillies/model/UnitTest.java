@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
+/**
+ * a test suite for the class Unit
+ * 
+ * @author Ellen & Marte
+ */
 public class UnitTest {
 
 	public static final double EPSILON = 1e-6;

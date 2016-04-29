@@ -408,4 +408,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		//TODO
 		return null;
 	}
+
+	@Override
+	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

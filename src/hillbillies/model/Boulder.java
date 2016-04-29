@@ -1,13 +1,18 @@
 package hillbillies.model;
 
 /**
- * A subclass of Material associated with the TerrainType.ROCK
+ * A subclass of Material associated with TerrainType.ROCK
  * 
  * @author Ellen & Marte
  */
 public class Boulder extends Material {
 
-	public Boulder() throws IllegalArgumentException {
+	/**
+	 * create a new Boulder
+	 * 
+	 * @effect	create a new material
+	 */
+	public Boulder() {
 		super();
 	}
 

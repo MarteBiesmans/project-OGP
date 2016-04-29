@@ -65,3 +65,6 @@ voorlopig kunnen we materials aanmaken, zonder dat die log of boulder zijn, dat 
 
 bij getDistanceWeight -> alles in kwadraat berekenen, op het einde sqrt nemen (want sqrt is traag!!)
 
+TimeVariableObject: mss een interface van maken (busyTime moet dan wel terug naar unit verhuizen), dan
+kunnen we een default methode aanmaken voor advanceTime.
+

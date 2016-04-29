@@ -272,40 +272,40 @@ public class WorldTest {
 			assertEquals(faction.getNbUnits(), 2);
 	}
 	
-//	@Test
-//	public void getAllUnits_LegalCase(){
-//		//TODO
-//	}
-//	
-//	@Test
-//	public void getAllUnits_LegalCaseEmpty(){
-//		//TODO
-//	}
-//	
-//	@Test
-//	public void getAllActiveFactions(){
-//		//TODO
-//		//empty
-//		//including non-active factions
-//	}
-//	
-//	@Test
-//	public void getAllMaterials(){
-//		//TODO
-//	}
-//	
-//	@Test
-//	public void getAllLogs(){
-//		//TODO
-//	}
-//	
-//	@Test
-//	public void getAllBoulders(){
-//		//TODO
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void advanceTime_IllegalSeconds(){
-//		//TODO
-//	}
+	@Test
+	public void getAllUnits_LegalCase(){
+		//TODO
+	}
+	
+	@Test
+	public void getAllUnits_LegalCaseEmpty(){
+		//TODO
+	}
+	
+	@Test
+	public void getAllActiveFactions(){
+		//TODO
+		//empty
+		//including non-active factions
+	}
+	
+	@Test
+	public void getAllMaterials(){
+		//TODO
+	}
+	
+	@Test
+	public void getAllLogs(){
+		//TODO
+	}
+	
+	@Test
+	public void getAllBoulders(){
+		//TODO
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void advanceTime_IllegalSeconds(){
+		//TODO
+	}
 }
