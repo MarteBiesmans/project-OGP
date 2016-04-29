@@ -4,14 +4,19 @@ import hillbillies.model.Unit;
 
 public class IsEnemyExpression extends BinaryExpression {
 
-	public IsEnemyExpression() {
-		// TODO Auto-generated constructor stub
+	public IsEnemyExpression(UnitExpression e1, UnitExpression e2) {
+		super(e1,e2);
 	}
 
 	@Override
-	public Object evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean evaluate(Unit unit) {
+		return ((Unit) getFirstExpressionEvaluate(unit)).getFaction() != 
+				((Unit) getSecondExpressionEvaluate(unit)).getFaction();
+	}
+
+	@Override
+	public String toString(){
+		return getFirstExpression().toString() + "isEnemieOf" + getSecondExpression().toString();
 	}
 
 }

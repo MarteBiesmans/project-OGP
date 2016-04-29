@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public abstract class BinaryExpression extends BooleanExpression {
 
 	public BinaryExpression(Expression e1, Expression e2) {
@@ -15,15 +17,19 @@ public abstract class BinaryExpression extends BooleanExpression {
 		return expression2;
 	}
 	
-	public Boolean getSecondExpressionEvaluate() {
-		return (Boolean) expression2.evaluate();
+	public Object getSecondExpressionEvaluate(Unit unit) {
+		return expression2.evaluate(unit);
 	}
 	
-	public Boolean getFirstExpressionEvaluate() {
-		return (Boolean) expression1.evaluate();
+	public Object getFirstExpressionEvaluate(Unit unit) {
+		return expression1.evaluate(unit);
 	}
 	
 	private final Expression expression1;
 	private final Expression expression2;
+	
+	
+	@Override
+	public abstract Boolean evaluate(Unit unit);
 
 }

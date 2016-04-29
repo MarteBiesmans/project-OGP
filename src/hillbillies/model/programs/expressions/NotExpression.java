@@ -1,14 +1,16 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public class NotExpression extends UnaryExpression {
 
-	public NotExpression(BooleanExpression e1) {
-		super(e1);
+	public NotExpression(BooleanExpression e) {
+		super(e);
 	}
 	
 	@Override
-	public Boolean evaluate() {
-		return ! getExpressionEvaluate();
+	public Boolean evaluate(Unit unit) {
+		return (! ((Boolean) getExpressionEvaluate(unit)));
 	}
 	
 	@Override

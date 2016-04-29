@@ -4,14 +4,18 @@ import hillbillies.model.Unit;
 
 public class IsAliveExpression extends UnaryExpression {
 
-	public IsAliveExpression() {
-		// TODO Auto-generated constructor stub
+	public IsAliveExpression(UnitExpression e) {
+		super(e);
 	}
-
+	
 	@Override
 	public Boolean evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+		return (!((Unit) getExpressionEvaluate(unit)).isDead());
+	}
+	
+	@Override
+	public String toString(){
+		return getExpression().toString()+"isAlive";
 	}
 
 }

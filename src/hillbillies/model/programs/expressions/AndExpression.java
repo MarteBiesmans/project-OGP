@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public class AndExpression extends BinaryExpression {
 
 	public AndExpression(BooleanExpression e1, BooleanExpression e2) {
@@ -7,8 +9,9 @@ public class AndExpression extends BinaryExpression {
 	}
 
 	@Override
-	public Boolean evaluate() {
-		return getFirstExpressionEvaluate() && getSecondExpressionEvaluate();
+	public Boolean evaluate(Unit unit) {
+		return (Boolean) getFirstExpressionEvaluate(unit) && 
+				(Boolean) getSecondExpressionEvaluate(unit);
 	}
 
 	@Override

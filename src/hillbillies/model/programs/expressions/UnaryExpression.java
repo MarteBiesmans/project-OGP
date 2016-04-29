@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Unit;
+
 public abstract class UnaryExpression extends BooleanExpression {
 
 	protected UnaryExpression(Expression e) {
@@ -10,8 +12,8 @@ public abstract class UnaryExpression extends BooleanExpression {
 		return expression;
 	}
 	
-	public Boolean getExpressionEvaluate() {
-		return (Boolean) getExpression().evaluate();
+	public Object getExpressionEvaluate(Unit unit) {
+		return (Boolean) getExpression().evaluate(unit);
 	}
 	
 	private final Expression expression;
