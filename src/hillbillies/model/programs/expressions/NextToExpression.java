@@ -15,7 +15,7 @@ public class NextToExpression extends UnaryCubeExpression {
 			if (cube.isPassableIn(unit.getWorld()))
 				return cube;
 		}
-		return unit.getCube();
+		return null;
 	}
 	
 	@Override

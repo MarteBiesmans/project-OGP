@@ -12,16 +12,16 @@ public class LogExpression extends NullaryCubeExpression {
 
 	@Override
 	public Cube evaluate(Unit unit) {
-		if (unit.getWorld().getAllLogs().size() == 0)
-			return unit.getCube();
 		Log nearestLogSoFar = null;
 		for (Log log : unit.getWorld().getAllLogs()) {
-			if (nearestLogSoFar == null)
-				nearestLogSoFar = log;
-			else if (unit.getPosition().getDistanceSquare(log.getPosition()) < unit.getPosition()
-					.getDistanceSquare(nearestLogSoFar.getPosition()))
-				nearestLogSoFar = log;
+				if (nearestLogSoFar == null)
+					nearestLogSoFar = log;
+				else if (unit.getPosition().getDistanceSquare(log.getPosition()) < unit.getPosition()
+						.getDistanceSquare(nearestLogSoFar.getPosition()))
+					nearestLogSoFar = log;
 		}
+		if (nearestLogSoFar == null)
+			return null;
 		return nearestLogSoFar.getPosition().getCube();
 	}
 

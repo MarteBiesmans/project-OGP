@@ -12,16 +12,16 @@ public class BoulderExpression extends NullaryCubeExpression {
 
 	@Override
 	public Cube evaluate(Unit unit) {
-		if (unit.getWorld().getAllBoulders().size() == 0)
-			return unit.getCube();
 		Boulder nearestBoulderSoFar = null;
 		for (Boulder boulder : unit.getWorld().getAllBoulders()) {
-			if (nearestBoulderSoFar == null)
-				nearestBoulderSoFar = boulder;
-			else if (unit.getPosition().getDistanceSquare(boulder.getPosition()) < unit.getPosition()
-					.getDistanceSquare(nearestBoulderSoFar.getPosition()))
-				nearestBoulderSoFar = boulder;
+				if (nearestBoulderSoFar == null)
+					nearestBoulderSoFar = boulder;
+				else if (unit.getPosition().getDistanceSquare(boulder.getPosition()) < unit.getPosition()
+						.getDistanceSquare(nearestBoulderSoFar.getPosition()))
+					nearestBoulderSoFar = boulder;
 		}
+		if (nearestBoulderSoFar == null)
+			return null;
 		return nearestBoulderSoFar.getPosition().getCube();
 	}
 

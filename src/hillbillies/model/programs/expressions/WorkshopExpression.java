@@ -13,16 +13,13 @@ public class WorkshopExpression extends NullaryCubeExpression {
 	public Cube evaluate(Unit unit) {
 		Cube nearestWorkshopSoFar = null;
 		for (Cube workshop : unit.getWorld().getAllWorkshops()) {
-			if (nearestWorkshopSoFar == null)
-				nearestWorkshopSoFar = workshop;
-			else if (unit.getPosition().getDistanceSquare(workshop.getCenter()) < unit.getPosition()
-					.getDistanceSquare(nearestWorkshopSoFar.getCenter()))
-				nearestWorkshopSoFar = new Cube(workshop.getX(), workshop.getY(), workshop.getZ());
+				if (nearestWorkshopSoFar == null)
+					nearestWorkshopSoFar = workshop;
+				else if (unit.getPosition().getDistanceSquare(workshop.getCenter()) < unit.getPosition()
+						.getDistanceSquare(nearestWorkshopSoFar.getCenter()))
+					nearestWorkshopSoFar = workshop;
 		}
-		if (nearestWorkshopSoFar != null)
-			return nearestWorkshopSoFar;
-		else
-			return unit.getCube();
+		return nearestWorkshopSoFar;
 	}
 
 	@Override
