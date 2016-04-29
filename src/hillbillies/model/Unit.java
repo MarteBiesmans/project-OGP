@@ -162,7 +162,7 @@ public class Unit extends TimeVariableObject {
 	 * be valid and that the unit must belong to a faction and must exist in a
 	 * world
 	 */
-	public boolean isValidUnit() {
+	protected boolean isValidUnit() {
 		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
 				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
 				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
@@ -189,7 +189,7 @@ public class Unit extends TimeVariableObject {
 	 * @return true if this unit doesn't have a world (position cannot be
 	 *         invalid)
 	 */
-	public boolean canHaveAsPosition(Position position) {
+	protected boolean canHaveAsPosition(Position position) {
 		if (position == null)
 			return false;
 		if (world != null)
@@ -217,7 +217,7 @@ public class Unit extends TimeVariableObject {
 	 *             boundaries of the game world. | (! isValidPosition(x,y,z))
 	 */
 	@Raw
-	public void setPosition(Position position) throws IllegalArgumentException {
+	protected void setPosition(Position position) throws IllegalArgumentException {
 		if (!canHaveAsPosition(position))
 			throw new IllegalArgumentException();
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
@@ -261,7 +261,7 @@ public class Unit extends TimeVariableObject {
 	 *         (length(name) < 2) | result == false |if
 	 *         (!isUpperCase(name.charAt(0))) | return == false |
 	 */
-	public static boolean isValidName(String name) {
+	protected static boolean isValidName(String name) {
 		if (name == null)
 			return false;
 		if (name.length() < 2)
@@ -327,7 +327,7 @@ public class Unit extends TimeVariableObject {
 	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <=
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	public static boolean isValidStrength(int strength) {
+	protected static boolean isValidStrength(int strength) {
 		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -381,7 +381,7 @@ public class Unit extends TimeVariableObject {
 	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= |
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	public static boolean isValidAgility(int agility) {
+	protected static boolean isValidAgility(int agility) {
 		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -425,7 +425,7 @@ public class Unit extends TimeVariableObject {
 		return this.weight;
 	}
 
-	public int getTotalWeight() {
+	protected int getTotalWeight() {
 		int weightSoFar = this.getWeight();
 		for (Material material : this.materials)
 			weightSoFar += material.getWeight();
@@ -435,27 +435,23 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the minimum value for the primary attribute weight.
 	 * 
-	 * @return the minimum of (strength + agility) / 2 and the minimum value for
+	 * @return the minimum of (strength + agility) / 2 and the minimum value for any
 	 *         primary attribute
 	 */
-	public int getMinimumWeight() {
+	private int getMinimumWeight() {
 		int minimumWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
-		if (minimumWeight < MIN_VAL_PRIMARY_ATTRIBUTE)
-			return MIN_VAL_PRIMARY_ATTRIBUTE;
-		return minimumWeight;
+		return Math.min(minimumWeight, MIN_VAL_PRIMARY_ATTRIBUTE);
 	}
 
 	/**
 	 * Return the minimum initial value for the primary attribute weight.
 	 * 
 	 * @return the minimum of (strength + agility) / 2 and the minimum initial
-	 *         value for primary attributes
+	 *         value for any primary attribute
 	 */
-	public int getMinimumInitValWeight() {
+	private int getMinimumInitValWeight() {
 		int minimumInitValWeight = getMinimumWeight();
-		if (minimumInitValWeight < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
-			return MIN_INIT_VAL_PRIMARY_ATTRIBUTE;
-		return minimumInitValWeight;
+		return Math.min(minimumInitValWeight, MIN_INIT_VAL_PRIMARY_ATTRIBUTE);
 	}
 
 	/**
@@ -468,7 +464,7 @@ public class Unit extends TimeVariableObject {
 	 *         this.getMinimumWeight()) && (weight <= |
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	public boolean canHaveAsWeight(int weight) {
+	protected boolean canHaveAsWeight(int weight) {
 		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -522,9 +518,9 @@ public class Unit extends TimeVariableObject {
 	}
 
 	/**
-	 * returns the thoughnes considering the materials that this units is carrying
+	 * returns the thoughness considering the materials that this units is carrying
 	 */
-	public int getTotalToughness() {
+	protected int getTotalToughness() {
 		return (this.getToughness() + this.materials.size());
 	}
 
@@ -538,7 +534,7 @@ public class Unit extends TimeVariableObject {
 	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <=
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	public static boolean isValidToughness(int toughness) {
+	protected static boolean isValidToughness(int toughness) {
 		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -584,6 +580,9 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int toughness;
 
+	
+	//TODO vanaf hier public/protected checken
+	
 	/**
 	 * Return the hitpoints of this unit.
 	 */

@@ -175,20 +175,31 @@ public class WorldTest {
 	}
 	
 	@Test
-	public void spawnUnit(){
+	public void getAllWorkshops_Full() {
 		int[][][] terrainTypes = new int[5][5][5];
-		terrainTypes[2][2][0] = 2;
-		terrainTypes[2][2][1] = 2;
-		terrainTypes[2][2][2] = 2;
-		terrainTypes[0][0][0] = 1;
+		terrainTypes[1][1][0] = 3;
+		terrainTypes[1][1][1] = 3;
+		terrainTypes[2][1][1] = 3;
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
 		
-		for (int x = 0; x < 100; x++) {
-			World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
-			Unit testUnit = testWorld.spawnUnit(true);
-			assertTrue(testUnit.isValidUnit());
-		}
+		Set<Cube> workshops = new HashSet<Cube>();
+		workshops.add(new Cube(1,1,0));
+		workshops.add(new Cube(1,1,1));
+		workshops.add(new Cube(2,1,1));
+		
+		assertEquals(testWorld.getAllWorkshops(), workshops);
 	}
-
+	
+	@Test
+	public void getAllWorkshops_Empty() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Set<Cube> workshops = new HashSet<Cube>();
+		
+		assertEquals(testWorld.getAllWorkshops(), workshops);
+	}
+	
 	@Test
 	public void addUnit_FullWorld(){
 		int[][][] terrainTypes = new int[5][5][5];
@@ -283,6 +294,21 @@ public class WorldTest {
 	}
 	
 	@Test
+	public void spawnUnit(){
+		int[][][] terrainTypes = new int[5][5][5];
+		terrainTypes[2][2][0] = 2;
+		terrainTypes[2][2][1] = 2;
+		terrainTypes[2][2][2] = 2;
+		terrainTypes[0][0][0] = 1;
+		
+		for (int x = 0; x < 100; x++) {
+			World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+			Unit testUnit = testWorld.spawnUnit(true);
+			assertTrue(testUnit.isValidUnit());
+		}
+	}
+
+	@Test
 	public void getAllActiveFactions(){
 		//TODO
 		//empty
@@ -307,5 +333,6 @@ public class WorldTest {
 	@Test (expected = IllegalArgumentException.class)
 	public void advanceTime_IllegalSeconds(){
 		//TODO
+		throw new IllegalArgumentException();
 	}
 }

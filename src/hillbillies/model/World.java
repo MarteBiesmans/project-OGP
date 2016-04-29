@@ -1,3 +1,4 @@
+//TODO comments checken
 package hillbillies.model;
 
 import java.util.*;
@@ -268,7 +269,10 @@ public class World extends TimeVariableObject {
 			}
 		}
 	}
-	//TODO: testen (naar public gezet voor expressions)
+	
+	/**
+	 * return a set of all cubes where workshops are located in this world.
+	 */
 	public Set<Cube> getAllWorkshops(){
 		Set<Cube> workshops = new HashSet<Cube>();
 		for (int i = 0; i < this.getNbCubesX(); i++) {

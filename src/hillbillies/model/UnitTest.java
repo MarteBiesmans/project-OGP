@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import ogp.framework.util.Util;
 
 /**
  * a test suite for the class Unit
@@ -18,9 +19,9 @@ public class UnitTest {
 	@Test
 	public void constructorUnit_LegalCase() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		assertEquals(3.2, testUnit.getPosition().getRealX(), EPSILON);
-		assertEquals(1.3, testUnit.getPosition().getRealY(), EPSILON);
-		assertEquals(5.9, testUnit.getPosition().getRealZ(), EPSILON);
+		assertTrue(Util.fuzzyEquals(3.2, testUnit.getPosition().getRealX()));
+		assertTrue(Util.fuzzyEquals(1.3, testUnit.getPosition().getRealY()));
+		assertTrue(Util.fuzzyEquals(5.9, testUnit.getPosition().getRealZ()));
 
 		assertEquals("James O'Hara", testUnit.getName());
 		assertEquals(50, testUnit.getStrength());
@@ -28,17 +29,17 @@ public class UnitTest {
 		assertEquals(25, testUnit.getToughness());
 		assertEquals(55, testUnit.getWeight());
 
-		assertEquals(Math.PI / 2.0, testUnit.getOrientation(), EPSILON);
+		assertTrue(Util.fuzzyEquals(Math.PI / 2.0, testUnit.getOrientation()));
 		assertFalse(testUnit.canStartDefaultBehaviour());
 
-		assertEquals(28, testUnit.getHitpoints(), EPSILON);
-		assertEquals(28, testUnit.getStaminaPoints(), EPSILON);
+		assertTrue(Util.fuzzyEquals(28, testUnit.getHitpoints()));
+		assertTrue(Util.fuzzyEquals(28, testUnit.getStaminaPoints()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionX() throws Exception {
-		Unit testUnit = new Unit(53.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
+		Unit testUnit = new Unit(6.1, 1.1, 4.9, "James O'Hara", 50, 50, 25, 55, true);
+		World testWorld = new World(new int[5][5][5], new DefaultTerrainChangeListener());
 		testWorld.addUnit(testUnit);
 	}
 
@@ -50,7 +51,7 @@ public class UnitTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void Constructor_IllegalPositionZ() throws Exception {
 		Unit testUnit = new Unit(3.1, 1.1, 105.9, "James O'Hara", 50, 50, 25, 55, true);
-		World testWorld = new World(new int[50][50][50], new DefaultTerrainChangeListener());
+		World testWorld = new World(new int[5][5][5], new DefaultTerrainChangeListener());
 		testWorld.addUnit(testUnit);
 	}
 
@@ -180,11 +181,7 @@ public class UnitTest {
 	@Test
 	public void setWeight_IllegalHitpoints() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		// strength, agility, toughness, weight
-		/**
-		 * hitpoints = 28 setWeight(50) hitpoints 28 is nu illegal, hitpoints
-		 * moet 25 worden
-		 */
+		//na setWeight(50) is hitpoints = 28 illegal, hitpoints moet 25 worden
 		testUnit.setWeight(50);
 		assertEquals((int) testUnit.getHitpoints(), 25);
 	}
@@ -199,10 +196,7 @@ public class UnitTest {
 	@Test
 	public void setToughness_IllegalHitpoints() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		/**
-		 * staminaPoints = 28 setToughness(10) hitpoints 28 is nu illegal,
-		 * hitpoints moet 11 worden
-		 */
+		//na setToughness(10) is staminaPoints = 28 illegal, hitpoints moet 11 worden
 		testUnit.setToughness(10);
 		assertEquals((int) testUnit.getHitpoints(), 11);
 	}
