@@ -2,21 +2,20 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 
-public class IsFriendExpression extends BinaryBooleanExpression {
+public class IsFriendExpression extends UnaryBooleanExpression {
 
-	public IsFriendExpression(UnitExpression e1, UnitExpression e2) {
-		super(e1,e2);
+	public IsFriendExpression(UnitExpression e) {
+		super(e);
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit) {
-		return ((Unit) getFirstExpressionEvaluate(unit)).getFaction() == 
-				((Unit) getSecondExpressionEvaluate(unit)).getFaction();
+		return ((Unit) getExpressionEvaluate(unit)).getFaction() == unit.getFaction();
 	}
 
 	@Override
 	public String toString(){
-		return getFirstExpression().toString() + "isFriendOf" + getSecondExpression().toString();
+		return getExpression().toString() + "isFriend";
 	}
 
 }
