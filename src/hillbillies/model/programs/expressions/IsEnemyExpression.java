@@ -10,7 +10,7 @@ public class IsEnemyExpression extends BooleanExpression {
 		expression = e;
 	}
 	
-	public Expression<BooleanType> getExpression() {
+	public UnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -18,16 +18,15 @@ public class IsEnemyExpression extends BooleanExpression {
 		return getExpression().evaluate(unit);
 	}
 	
-	private final Expression<BooleanType> expression;
+	private final UnitExpression expression;
 
 	@Override
-	public Boolean evaluate(Unit unit) {
-		return ((Unit) getExpressionEvaluate(unit)).getFaction() != unit.getFaction();
+	public BooleanType evaluate(Unit unit) {
+		return new BooleanType(((Unit) getExpressionEvaluate(unit).getValue()).getFaction() != unit.getFaction());
 	}
 
 	@Override
 	public String toString(){
 		return getExpression().toString() + "isEnemy";
 	}
-
 }

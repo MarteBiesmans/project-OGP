@@ -10,7 +10,7 @@ public class IsFriendExpression extends BooleanExpression {
 		expression = e;
 	}
 	
-	public Expression<BooleanType> getExpression() {
+	public UnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -18,11 +18,11 @@ public class IsFriendExpression extends BooleanExpression {
 		return getExpression().evaluate(unit);
 	}
 	
-	private final Expression<BooleanType> expression;
+	private final UnitExpression expression;
 
 	@Override
-	public Boolean evaluate(Unit unit) {
-		return ((Unit) getExpressionEvaluate(unit)).getFaction() == unit.getFaction();
+	public BooleanType evaluate(Unit unit) {
+		return new BooleanType(((Unit) getExpressionEvaluate(unit).getValue()).getFaction() == unit.getFaction());
 	}
 
 	@Override

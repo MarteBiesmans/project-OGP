@@ -5,12 +5,12 @@ import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.Type;
 
 public class CarriesItemExpression extends BooleanExpression {
-
+	
 	public CarriesItemExpression(UnitExpression e) {
 		expression = e;
 	}
 	
-	public Expression<BooleanType> getExpression() {
+	public UnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -18,11 +18,11 @@ public class CarriesItemExpression extends BooleanExpression {
 		return getExpression().evaluate(unit);
 	}
 	
-	private final Expression<BooleanType> expression;
+	private final UnitExpression expression;
 	
 	@Override
 	public BooleanType evaluate(Unit unit) {
-		return new BooleanType(((Unit) getExpressionEvaluate(unit)).getNbMaterials() != 0);
+		return new BooleanType(((Unit) getExpressionEvaluate(unit).getValue()).getNbMaterials() != 0);
 	}
 	
 	@Override
