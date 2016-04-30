@@ -1645,8 +1645,9 @@ public class Unit extends TimeVariableObject {
 	}
 
 	// RELATIONS with world, faction and material
-
-	protected World getWorld() {
+	
+	//TODO: testen (voor expressions moest dit public staan)
+	public World getWorld() {
 		return this.world;
 	}
 
@@ -1754,7 +1755,8 @@ public class Unit extends TimeVariableObject {
 	 * @return The total number of materials collected in this unit. | result ==
 	 *         | card({material:Material | hasAsMaterial({material)})
 	 */
-	protected int getNbMaterials() {
+	//TODO: testen schrijven (voor expressions moest dit public zijn)
+	public int getNbMaterials() {
 		return materials.size();
 	}
 
