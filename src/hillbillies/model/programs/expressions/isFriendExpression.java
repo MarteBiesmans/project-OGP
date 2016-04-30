@@ -1,12 +1,24 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.BooleanType;
+import hillbillies.model.programs.type.Type;
 
-public class IsFriendExpression extends UnaryBooleanExpression {
+public class IsFriendExpression extends BooleanExpression {
 
 	public IsFriendExpression(UnitExpression e) {
-		super(e);
+		expression = e;
 	}
+	
+	public Expression<BooleanType> getExpression() {
+		return expression;
+	}
+	
+	public Type getExpressionEvaluate(Unit unit) {
+		return getExpression().evaluate(unit);
+	}
+	
+	private final Expression<BooleanType> expression;
 
 	@Override
 	public Boolean evaluate(Unit unit) {

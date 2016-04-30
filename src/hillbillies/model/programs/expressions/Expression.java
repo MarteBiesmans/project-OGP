@@ -1,9 +1,10 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.Type;
 
-public abstract class Expression {
+public abstract class Expression<T extends Type> {
 
-	public abstract Object evaluate(Unit unit);
+	public abstract T evaluate(Unit unit);
 
 }

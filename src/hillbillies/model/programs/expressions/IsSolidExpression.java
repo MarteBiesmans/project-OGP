@@ -1,17 +1,29 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.BooleanType;
+import hillbillies.model.programs.type.CubeType;
 import hillbillies.model.Cube;
 
-public class IsSolidExpression extends UnaryBooleanExpression {
+public class IsSolidExpression extends BooleanExpression {
 
 	public IsSolidExpression(CubeExpression e) {
-		super(e);
+		expression = e;
 	}
 	
+	public CubeExpression getExpression() {
+		return expression;
+	}
+	
+	public CubeType getExpressionEvaluate(Unit unit) {
+		return getExpression().evaluate(unit);
+	}
+	
+	private final CubeExpression expression;
+	
 	@Override
-	public Boolean evaluate(Unit unit) {
-		return (!((Cube) getExpressionEvaluate(unit)).isPassableIn(unit.getWorld()));
+	public BooleanType evaluate(Unit unit) {
+		return new BooleanType(!((Cube) getExpressionEvaluate(unit).getValue()).isPassableIn(unit.getWorld()));
 	}
 	
 	@Override

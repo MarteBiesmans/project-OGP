@@ -4,7 +4,7 @@ import hillbillies.model.Cube;
 import hillbillies.model.Log;
 import hillbillies.model.Unit;
 
-public class LogExpression extends NullaryCubeExpression {
+public class LogExpression extends CubeExpression {
 
 	public LogExpression() {
 		super();

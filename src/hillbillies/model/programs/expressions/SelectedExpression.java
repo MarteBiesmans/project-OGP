@@ -3,10 +3,9 @@ package hillbillies.model.programs.expressions;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class SelectedExpression extends NullaryCubeExpression {
+public class SelectedExpression extends CubeExpression {
 
 	public SelectedExpression() {
-		super();
 	}
 	
 	@Override

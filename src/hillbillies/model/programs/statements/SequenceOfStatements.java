@@ -3,6 +3,7 @@ package hillbillies.model.programs.statements;
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.Counter;
 import hillbillies.model.Unit;
 
 public class SequenceOfStatements extends Statement {

@@ -6,8 +6,18 @@ import hillbillies.model.Unit;
 public class NextToExpression extends UnaryCubeExpression {
 
 	public NextToExpression(CubeExpression e) {
-		super(e);
+		expression = e;
 	}
+	
+	public Expression getExpression() {
+		return expression;
+	}
+	
+	public Object getExpressionEvaluate(Unit unit) {
+		return getExpression().evaluate(unit);
+	}
+	
+	private final Expression expression;
 	
 	@Override
 	public Cube evaluate(Unit unit) {

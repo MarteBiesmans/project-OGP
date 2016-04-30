@@ -1,11 +1,12 @@
 package hillbillies.model.programs.statements;
 
+import hillbillies.model.Counter;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.Expression;
 import hillbillies.part3.programs.ITaskFactory;
 
 public class PrintStatement extends Statement {
-
+	
 	private PrintStatement(Expression expression, ITaskFactory factory, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.expression = expression;
@@ -58,6 +59,4 @@ public class PrintStatement extends Statement {
 	public PrintStatement clone() {
 		return new PrintStatement(getExpression(), getTaskFactory(), hasBeenFullyExecuted());
 	}
-
-
 }

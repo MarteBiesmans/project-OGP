@@ -1,16 +1,17 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.BooleanType;
 
-public class FalseExpression extends NullaryBooleanExpression {
+public class FalseExpression extends BooleanExpression {
 
 	public FalseExpression() {
 		super();
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit) {
-		return false;
+	public BooleanType evaluate(Unit unit) {
+		return new BooleanType(false);
 	}
 	
 	@Override

@@ -1,18 +1,19 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.Type;
 
-public class VariableExpression extends Expression {
+public class VariableExpression extends Expression<Type> {
 
-	public VariableExpression(Object o) {
+	public VariableExpression(Type o) {
 		object = o;
 	}
 	
 	@Override
-	public Object evaluate(Unit unit) {
+	public Type evaluate(Unit unit) {
 		return object;
 	}
 	
-	private final Object object;
+	private final Type object;
 
 }

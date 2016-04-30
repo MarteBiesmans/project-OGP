@@ -4,10 +4,9 @@ import hillbillies.model.Boulder;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
-public class BoulderExpression extends NullaryCubeExpression {
+public class BoulderExpression extends CubeExpression {
 
 	public BoulderExpression() {
-		super();
 	}
 
 	@Override

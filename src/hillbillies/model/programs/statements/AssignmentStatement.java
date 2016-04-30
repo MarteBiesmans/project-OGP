@@ -3,12 +3,9 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.Expression;
-import worms.model.Worm;
-import worms.model.programs.statements.AssignmentStatement;
-import worms.model.programs.type.Type;
 
 public class AssignmentStatement extends Statement {
-
+	
 	private AssignmentStatement(String variableName, Expression rhs, boolean hasFullyExecuted) {
 		super(hasFullyExecuted);
 		this.variableName = variableName;

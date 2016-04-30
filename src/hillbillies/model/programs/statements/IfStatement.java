@@ -1,10 +1,11 @@
 package hillbillies.model.programs.statements;
 
+import hillbillies.model.Counter;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.Expression;
 
 public class IfStatement extends Statement {
-
+	
 	private final Expression condition;
 	private final Statement then;
 	private final Statement otherwise;
@@ -13,9 +14,9 @@ public class IfStatement extends Statement {
 	
 	private IfStatement(Expression condition, Statement then, Statement otherwise, boolean hasNotBeenExecutedOnce, boolean hasFullyExecuted, boolean solvedCondition) {
 		super(hasFullyExecuted);
-		this.condition=condition;
-		this.then=then;
-		this.otherwise=otherwise;
+		this.condition = condition;
+		this.then = then;
+		this.otherwise = otherwise;
 		this.hasNotBeenExecutedOnce = hasNotBeenExecutedOnce;
 		this.solvedCondition = solvedCondition;
 	}
@@ -81,5 +82,4 @@ public class IfStatement extends Statement {
 	public IfStatement clone() {
 		return new IfStatement(condition, then.clone(), otherwise.clone(), hasNotBeenExecutedOnce, hasBeenFullyExecuted(), solvedCondition);
 	}
-
 }
