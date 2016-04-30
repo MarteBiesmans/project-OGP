@@ -2,7 +2,6 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
-import hillbillies.model.programs.type.Type;
 
 public class OrExpression extends BooleanExpression {
 
@@ -11,33 +10,34 @@ public class OrExpression extends BooleanExpression {
 		expression2 = e2;
 	}
 	
-	public Expression<Type> getFirstExpression() {
+	public BooleanExpression getFirstExpression() {
 		return expression1;
 	}
 	
-	public Expression<Type> getSecondExpression() {
+	public BooleanExpression getSecondExpression() {
 		return expression2;
 	}
 	
-	public Object getSecondExpressionEvaluate(Unit unit) {
-		return expression2.evaluate(unit);
+	public BooleanType getSecondExpressionEvaluate(Unit unit) {
+		return getSecondExpression().evaluate(unit);
 	}
 	
-	public Object getFirstExpressionEvaluate(Unit unit) {
-		return expression1.evaluate(unit);
+	public BooleanType getFirstExpressionEvaluate(Unit unit) {
+		return getFirstExpression().evaluate(unit);
 	}
 	
-	private final Expression<Type> expression1;
-	private final Expression<Type> expression2;
+	private final BooleanExpression expression1;
+	private final BooleanExpression expression2;
 
 	@Override
 	public BooleanType evaluate(Unit unit) {
-		return new BooleanType((boolean) getFirstExpressionEvaluate(unit) || 
-				(boolean) getSecondExpressionEvaluate(unit));
+		return new BooleanType((boolean) getFirstExpressionEvaluate(unit).getValue() || 
+				(boolean) getSecondExpressionEvaluate(unit).getValue());
 	}
-	@Overrides
+
+	@Override
 	public String toString(){
-		return getFirstExpression().toString()+"OR"+getSecondExpression().toString();
+		return getFirstExpression().toString() + "AND" + getSecondExpression().toString();
 	}
 
 }
