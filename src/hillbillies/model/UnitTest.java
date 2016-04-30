@@ -163,12 +163,42 @@ public class UnitTest {
 		testUnit.setToughness(250);
 		assertEquals(testUnit.getToughness(), 200);
 	}
+	
+	@Test
+	public void getPosition_() {
+		//TODO
+	}
+	
+	@Test
+	public void getCube_() {
+		//TODO
+	}
+	
+	@Test
+	public void getName_() {
+		//TODO
+	}
+	
+	@Test
+	public void setName_() {
+		//TODO
+	}
+	
+	@Test
+	public void getStrength_() {
+		//TODO
+	}
 
 	@Test
 	public void setStrength_IllegalWeight() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		testUnit.setStrength(100);
 		assertEquals(testUnit.getWeight(), 75);
+	}
+	
+	@Test
+	public void getAgility_() {
+		//TODO
 	}
 
 	@Test
@@ -178,6 +208,11 @@ public class UnitTest {
 		assertEquals(testUnit.getWeight(), 75);
 	}
 
+	@Test
+	public void getWeight_() {
+		//TODO
+	}
+	
 	@Test
 	public void setWeight_IllegalHitpoints() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
@@ -191,6 +226,11 @@ public class UnitTest {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		testUnit.setWeight(50);
 		assertEquals((int) testUnit.getStaminaPoints(), 25);
+	}
+	
+	@Test
+	public void getToughness_() {
+		//TODO
 	}
 
 	@Test
@@ -209,8 +249,167 @@ public class UnitTest {
 	}
 
 	@Test
+	public void getHitpoints_() {
+		//TODO
+	}
+	
+	@Test
 	public void getMaxHitpoints_Test() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals(testUnit.getMaxHitpoints(), 28);
+	}
+	
+	@Test
+	public void getStaminaPoints_() {
+		//TODO
+	}
+	
+	@Test
+	public void getMaxStaminaPoints_() {
+		//TODO
+	}
+	
+	@Test
+	public void getOrientation_() {
+		//TODO
+	}
+	
+	@Test
+	public void setOrientation_() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setOrientation(-Math.PI);
+		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), Math.PI));
+		testUnit.setOrientation(4*Math.PI);
+		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), 0.0));
+	}
+	
+	@Test
+	public void getExperiencePoints_() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_() {
+		//TODO
+	}
+	
+	@Test
+	public void moveToAdjacent_() {
+		//TODO
+	}
+	
+	@Test
+	public void getMovementSpeed_() {
+		//TODO
+	}
+	
+	@Test
+	public void moveTo_() {
+		//TODO
+	}
+	
+	@Test
+	public void isAttacking_() {
+		//TODO
+	}
+	
+	@Test
+	public void isMoving_() {
+		//TODO
+	}
+	
+	@Test
+	public void isWalking_() {
+		//TODO
+	}
+	
+	@Test
+	public void isSprinting_() {
+		//TODO
+	}
+	
+	@Test
+	public void startSprinting_() {
+		//TODO
+	}
+	
+	@Test
+	public void stopSprinting_() {
+		//TODO
+	}
+	
+	@Test
+	public void isWorking_() {
+		//TODO
+	}
+	
+	@Test
+	public void isResting() {
+		//TODO
+	}
+	
+	@Test
+	public void isFalling() {
+		//TODO
+	}
+	
+	@Test
+	public void startDefaultBehaviour_() {
+		//TODO
+	}
+	
+	@Test
+	public void stopDefaultBehaviour_() {
+		//TODO
+	}
+	
+	@Test
+	public void canStartDefaultBehaviour_() {
+		//TODO
+	}
+	
+	@Test
+	public void workAt_() {
+		//TODO
+	}
+	
+	@Test
+	public void work_() {
+		//TODO
+	}
+	
+	@Test
+	public void rest_() {
+		//TODO
+	}
+	
+	@Test
+	public void attack_() {
+		//TODO
+	}
+	
+	@Test
+	public void defend_() {
+		//TODO
+	}
+	
+	@Test
+	public void getFaction_() {
+		//TODO
+	}
+	
+	@Test
+	public void hasLog_() {
+		//TODO
+	}
+	
+	@Test
+	public void hasBoulder_() {
+		//TODO
+	}
+	
+	@Test
+	public void isDead_() {
+		//TODO
 	}
 }

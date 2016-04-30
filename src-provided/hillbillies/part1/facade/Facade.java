@@ -1,3 +1,4 @@
+//TODO overal try-catch gebruiken
 package hillbillies.part1.facade;
 
 import hillbillies.model.Cube;
