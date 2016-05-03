@@ -223,7 +223,7 @@ public class Unit extends TimeVariableObject {
 	 *			|&& isValidOrientation(this.getOrientation())
 	 *			|&& this.getFaction() != null && this.getWorld() != null
 	 */
-	protected boolean isValidUnit() {
+	boolean isValidUnit() {
 		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
 				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
 				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
@@ -254,7 +254,7 @@ public class Unit extends TimeVariableObject {
 	 * 			|if (world == null)
 	 * 			|	then result == true
 	 */
-	protected boolean canHaveAsPosition(Position position) {
+	private boolean canHaveAsPosition(Position position) {
 		if (position == null)
 			return false;
 		if (world != null)
@@ -282,7 +282,7 @@ public class Unit extends TimeVariableObject {
 	 *          |(!this.canHaveAsPosition(new Position(x,y,z)))
 	 */
 	@Raw
-	protected void setPosition(Position position) throws IllegalArgumentException {
+	private void setPosition(Position position) throws IllegalArgumentException {
 		if (! this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
@@ -338,7 +338,7 @@ public class Unit extends TimeVariableObject {
 	 *			|	&& (!(name.charAt(i) == '\'')) && (!(name.charAt(i) == ' '))
 	 *			|	then result == false
 	 */
-	protected static boolean isValidName(String name) {
+	private static boolean isValidName(String name) {
 		if (name == null)
 			return false;
 		if (name.length() < 2)
@@ -400,7 +400,7 @@ public class Unit extends TimeVariableObject {
 	 * @return	true if and only if strength lies between the minimum and maximum value for primary attributes.
 	 * 			|result == ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	protected static boolean isValidStrength(int strength) {
+	private static boolean isValidStrength(int strength) {
 		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -457,7 +457,7 @@ public class Unit extends TimeVariableObject {
 	 *         	value for primary attributes.
 	 *         	|result == ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	protected static boolean isValidAgility(int agility) {
+	private static boolean isValidAgility(int agility) {
 		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -513,7 +513,7 @@ public class Unit extends TimeVariableObject {
 	 * 			|	weightSoFar += material.getWeight()
 	 * 			|result == weightSoFar
 	 */
-	protected int getTotalWeight() {
+	private int getTotalWeight() {
 		int weightSoFar = this.getWeight();
 		for (Material material : this.materials)
 			weightSoFar += material.getWeight();
@@ -555,7 +555,7 @@ public class Unit extends TimeVariableObject {
 	 *         	value for primary attributes.
 	 *         	|result == ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	protected boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -610,15 +610,6 @@ public class Unit extends TimeVariableObject {
 		return this.toughness;
 	}
 
-	/**
-	 * TODO dit lijkt mij een gekke redenering, controleren in opgave
-	 * returns the thoughness considering the materials that this units is carrying
-	 * @returns	TODO
-	 * 			|result == this.getToughness() + this.materials.size()
-	 */
-	protected int getTotalToughness() {
-		return (this.getToughness() + this.materials.size());
-	}
 
 	/**
 	 * Check whether the given toughness is a valid toughness for any unit.
@@ -629,7 +620,7 @@ public class Unit extends TimeVariableObject {
 	 *         	maximum value for primary attributes.
 	 *         	|result == ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
-	protected static boolean isValidToughness(int toughness) {
+	private static boolean isValidToughness(int toughness) {
 		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
@@ -704,7 +695,7 @@ public class Unit extends TimeVariableObject {
 	 * @return	true if and only if hitpoints lie between zero and the maximum value
 	 * 			| result == ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) )
 	 */
-	protected boolean canHaveAsHitpoints(double hitpoints) {
+	private boolean canHaveAsHitpoints(double hitpoints) {
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()));
 	}
 
@@ -719,7 +710,7 @@ public class Unit extends TimeVariableObject {
 	 *       	|new.getHitpoints() == hitpoints
 	 */
 	@Raw
-	protected void setHitpoints(double hitpoints) {
+	private void setHitpoints(double hitpoints) {
 		assert this.canHaveAsHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
 	}
@@ -756,7 +747,7 @@ public class Unit extends TimeVariableObject {
 	 * @return	true if and only if stamina points lie between zero and the maximum value
 	 * 			|result == ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxHitpoints()) )
 	 */
-	protected boolean canHaveAsStaminaPoints(double staminaPoints) {
+	private boolean canHaveAsStaminaPoints(double staminaPoints) {
 		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
 	}
 
@@ -771,7 +762,7 @@ public class Unit extends TimeVariableObject {
 	 * 			|new.getStaminaPoints() == staminaPoints
 	 */
 	@Raw
-	protected void setStaminaPoints(double staminaPoints) {
+	private void setStaminaPoints(double staminaPoints) {
 		assert this.canHaveAsStaminaPoints(staminaPoints);
 		this.staminaPoints = staminaPoints;
 	}
@@ -798,7 +789,7 @@ public class Unit extends TimeVariableObject {
 	 * @return	true if and only if theta lies in the interval [0, 2*PI[
 	 * 			|result == (theta>=0 && theta<(2*Math.PI))
 	 */
-	protected static boolean isValidOrientation(double theta) {
+	private static boolean isValidOrientation(double theta) {
 		return (theta >= 0.0 && theta < (2.0 * Math.PI));
 	}
 
@@ -815,7 +806,7 @@ public class Unit extends TimeVariableObject {
 	 *       	|result == Math.abs(theta % (2.0 * Math.PI))
 	 */
 	@Raw
-	protected void setOrientation(double theta) {
+	void setOrientation(double theta) {
 		this.orientation = Math.abs(theta % (2.0 * Math.PI));
 	}
 
@@ -838,7 +829,7 @@ public class Unit extends TimeVariableObject {
 	 * @return 	true if the given points are greater or equal than zero
 	 * 			|result == (points >= 0)
 	 */
-	protected boolean isValidExperiencePoints(int points) {
+	private boolean isValidExperiencePoints(int points) {
 		return (points >= 0);
 	}
 
@@ -851,7 +842,7 @@ public class Unit extends TimeVariableObject {
 	 * 			|if (isValidExperiencePoints(points))
 	 * 			|	then new.getExperiencePoints() == points
 	 */
-	protected void setExperiencePoints(int points) {
+	private void setExperiencePoints(int points) {
 		if (isValidExperiencePoints(points))
 			this.experiencePoints = points;
 	}
@@ -1223,11 +1214,11 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
-	protected Cube getMoveToAdjacent() {
+	private Cube getMoveToAdjacent() {
 		return this.moveToAdjacent;
 	}
 
-	protected void setMoveToAdjacent(Cube cube) {
+	private void setMoveToAdjacent(Cube cube) {
 		if (cube == null || cube.isValidIn(this.getWorld()))
 			this.moveToAdjacent = cube;
 	}
@@ -1343,16 +1334,16 @@ public class Unit extends TimeVariableObject {
 		private final Double distance;
 		private final Cube cube;
 
-		public CubeDistPair(Cube cube, Double distance) {
+		private CubeDistPair(Cube cube, Double distance) {
 			this.cube = cube;
 			this.distance = distance;
 		}
 
-		public Double getDistance() {
+		private Double getDistance() {
 			return distance;
 		}
 
-		public Cube getCube() {
+		private Cube getCube() {
 			return cube;
 		}
 
@@ -1368,11 +1359,11 @@ public class Unit extends TimeVariableObject {
 	 * 
 	 * @return
 	 */
-	protected Cube getMoveToCube() {
+	private Cube getMoveToCube() {
 		return this.moveToCube;
 	}
 
-	protected void setMoveToCube(Cube cube) {
+	private void setMoveToCube(Cube cube) {
 		if (cube == null || cube.getCenter().isStableForUnitIn(this.getWorld())) {
 			this.moveToCube = cube;
 		}
@@ -1385,11 +1376,11 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * returns the current activity of this unit.
 	 */
-	protected List<Activity> getActivityQueue() {
+	private List<Activity> getActivityQueue() {
 		return this.activityQueue;
 	}
 
-	protected Activity getCurrentActivity() {
+	private Activity getCurrentActivity() {
 		if (!this.getActivityQueue().isEmpty())
 			return this.activityQueue.get(0);
 		else
@@ -1402,7 +1393,7 @@ public class Unit extends TimeVariableObject {
 	 * @param activity
 	 * @return
 	 */
-	protected void setActivity(Activity activity) {
+	private void setActivity(Activity activity) {
 		if (this.getWorld() == null && activity == Activity.NONE)
 			this.activityQueue.add(0, activity);
 		if (this.isResting() && !this.canStopResting)
@@ -1417,7 +1408,7 @@ public class Unit extends TimeVariableObject {
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
-	protected void insertActivity(Activity activity) {
+	private void insertActivity(Activity activity) {
 		if (this.isResting() && !this.canStopResting)
 			return;
 		else if (this.isAttacking() && this.getBusyTime() > 0)
@@ -1428,7 +1419,7 @@ public class Unit extends TimeVariableObject {
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
-	protected void nextActivity() {
+	private void nextActivity() {
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);
@@ -1454,7 +1445,7 @@ public class Unit extends TimeVariableObject {
 
 	}
 
-	protected double getBusyTimeFor(Activity activity) {
+	private double getBusyTimeFor(Activity activity) {
 		if (activity == Activity.WORKING)
 			return (500 / this.getStrength());
 		else if (activity == Activity.RESTING)
@@ -1527,11 +1518,11 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * returns if this unit is doing anything at all.
 	 */
-	protected boolean isBeingUseless() {
+	private boolean isBeingUseless() {
 		return (this.getCurrentActivity() == Activity.NONE);
 	}
 
-	public boolean isFalling() {
+	private boolean isFalling() {
 		return (this.getCurrentActivity() == Activity.FALLING);
 	}
 
@@ -1594,16 +1585,16 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
-	protected Cube getWorkAtCube() {
+	private Cube getWorkAtCube() {
 		return this.workAtCube;
 	}
 
-	protected boolean canHaveAsWorkAtCube(Cube cube) {
+	private boolean canHaveAsWorkAtCube(Cube cube) {
 		return (cube != null && this.getCube().isSameOrNeighbouringCube(cube)
 				&& cube.isWorkableCubeInBy(this.getWorld(), this));
 	}
 
-	protected void setWorkAtCube(Cube cube) {
+	private void setWorkAtCube(Cube cube) {
 		if (cube != null) {
 			if (!this.canHaveAsWorkAtCube(cube))
 				return;
@@ -1673,11 +1664,11 @@ public class Unit extends TimeVariableObject {
 		return this.world;
 	}
 
-	protected boolean canHaveAsWorld(World world) {
+	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
 	}
 
-	protected void setWorld(World world) {
+	void setWorld(World world) {
 		if (world != null) {
 			if (!canHaveAsWorld(world))
 				throw new IllegalArgumentException();
@@ -1692,11 +1683,11 @@ public class Unit extends TimeVariableObject {
 		return this.faction;
 	}
 
-	protected boolean canHaveAsFaction(Faction faction) {
+	private boolean canHaveAsFaction(Faction faction) {
 		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
 	}
 
-	protected void setFaction(Faction faction) throws IllegalArgumentException {
+	void setFaction(Faction faction) throws IllegalArgumentException {
 		if (faction != null)
 			if (!canHaveAsFaction(faction))
 				throw new IllegalArgumentException();
@@ -1716,7 +1707,7 @@ public class Unit extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	protected boolean hasAsMaterial(@Raw Material material) {
+	boolean hasAsMaterial(@Raw Material material) {
 		return materials.contains(material);
 	}
 
@@ -1747,7 +1738,7 @@ public class Unit extends TimeVariableObject {
 	 *         != null) && | Material.isValidUnit(this)
 	 */
 	@Raw
-	protected boolean canHaveAsMaterial(Material material) {
+	private boolean canHaveAsMaterial(Material material) {
 		return (material != null);
 	}
 
@@ -1761,7 +1752,8 @@ public class Unit extends TimeVariableObject {
 	 *         (hasAsMaterial(material)) | then canHaveAsMaterial(material) && |
 	 *         (material.getUnit() == this)
 	 */
-	protected boolean hasProperMaterials() {
+	@SuppressWarnings("unused")
+	private boolean hasProperMaterials() {
 		for (Material material : materials) {
 			if (!canHaveAsMaterial(material))
 				return false;
@@ -1792,7 +1784,7 @@ public class Unit extends TimeVariableObject {
 	 * @post This unit has the given material as one of its materials. |
 	 *       new.hasAsMaterial(material)
 	 */
-	protected void addMaterial(@Raw Material material) {
+	void addMaterial(@Raw Material material) {
 		if (!canHaveAsMaterial(material)) {
 			throw new IllegalArgumentException();
 		}
@@ -1818,7 +1810,7 @@ public class Unit extends TimeVariableObject {
 	 *       | ! new.hasAsMaterial(material)
 	 */
 	@Raw
-	protected void removeMaterial(Material material) {
+	void removeMaterial(Material material) {
 		if (!this.hasAsMaterial(material))
 			throw new IllegalArgumentException();
 		this.materials.remove(material);
@@ -1851,7 +1843,7 @@ public class Unit extends TimeVariableObject {
 	 * @post The materials the unit was carrying are left behind at the exact
 	 *       same position the unit has died. |
 	 */
-	protected void die() {
+	void die() {
 		for (Material material : this.materials) {
 			this.getWorld().addMaterial(material, this.getPosition());
 		}

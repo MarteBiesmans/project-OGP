@@ -16,7 +16,7 @@ public enum TerrainType {
 	 * check whether this TerrainType is a passable type
 	 * @return	true if this TerrainType equals air or workshop
 	 */
-	public boolean isPassable() {
+	boolean isPassable() {
 		return ((this == TerrainType.AIR) || (this == TerrainType.WORKSHOP));
 	}
 
@@ -25,7 +25,7 @@ public enum TerrainType {
 	 * get the associated integer for this TerrainType
 	 * @return	1 for ROCK, 2 for WOOD, 3 for WORKSHOP, 0 for everything else (thus AIR)
 	 */
-	public int getAssociatedInt() {
+	int getAssociatedInt() {
 		if (this == TerrainType.ROCK)
 			return 1;
 		else if (this == TerrainType.WOOD)

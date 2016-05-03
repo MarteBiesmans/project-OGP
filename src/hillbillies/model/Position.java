@@ -1,4 +1,5 @@
 //TODO comments checken
+//TODO accessrights checken
 package hillbillies.model;
 
 import java.util.Iterator;

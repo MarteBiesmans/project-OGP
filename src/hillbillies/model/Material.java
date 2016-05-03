@@ -62,7 +62,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the position is null or the cube of the position is not
 	 *         passable
 	 */
-	protected boolean canHaveAsPosition(Position position) {
+	private boolean canHaveAsPosition(Position position) {
 		if (position == null || !position.isValidForObjectIn(this.getWorld()))
 			return false;
 		return true;
@@ -77,7 +77,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the material is carried by a unit
 	 * @return	false if the position of the material equals null
 	 */
-	protected boolean shouldFall() {
+	private boolean shouldFall() {
 		if (this.getOwner() != null)
 			return false;
 		if (this.getPosition() == null)
@@ -103,7 +103,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             except for when the position is null.
 	 */
 	@Raw
-	protected void setPosition(Position position) throws IllegalArgumentException {
+	void setPosition(Position position) throws IllegalArgumentException {
 		if (position != null) {
 			if (!canHaveAsPosition(position)) {
 				throw new IllegalArgumentException();
@@ -123,7 +123,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	protected Unit getOwner() {
+	Unit getOwner() {
 		return this.owner;
 	}
 
@@ -136,7 +136,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the material already has a owner
 	 * @return false if the owner doesn't own the material
 	 */
-	protected boolean canHaveAsOwner(Unit owner) {
+	private boolean canHaveAsOwner(Unit owner) {
 		if (this.getOwner() != null) {
 			return false;
 		} else if (owner == null) {
@@ -159,7 +159,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             The given owner is not a valid owner for this material.
 	 */
 	@Raw
-	protected void setOwner(Unit owner) throws IllegalArgumentException {
+	void setOwner(Unit owner) throws IllegalArgumentException {
 		if (owner != null) {
 			if (!canHaveAsOwner(owner))
 				throw new IllegalArgumentException();
@@ -178,7 +178,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	@Basic
 	@Raw
-	protected World getWorld() {
+	World getWorld() {
 		return this.world;
 	}
 
@@ -191,7 +191,7 @@ public abstract class Material extends TimeVariableObject {
 	 * @return false if the world doesn't has this material as material
 	 * @return false if the material already exists in another world
 	 */
-	protected boolean canHaveAsWorld(World world) {
+	private boolean canHaveAsWorld(World world) {
 		if (world == null) {
 			return false;
 		} else if (!world.hasAsMaterial(this)) {
@@ -214,7 +214,7 @@ public abstract class Material extends TimeVariableObject {
 	 *             The given world is not a valid world for this material.
 	 */
 	@Raw
-	protected void setWorld(World world) throws IllegalArgumentException {
+	void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
 			if (!canHaveAsWorld(world))
 				throw new IllegalArgumentException();
@@ -233,7 +233,7 @@ public abstract class Material extends TimeVariableObject {
 	@Basic
 	@Raw
 	@Immutable
-	protected int getWeight() {
+	int getWeight() {
 		return this.weight;
 	}
 
@@ -261,7 +261,7 @@ public abstract class Material extends TimeVariableObject {
 	 * 
 	 * @param seconds
 	 */
-	protected void falling(float seconds) {
+	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
 				this.getPosition().getRealZ() + FALLING_VELOCITY * seconds);
 		this.setPosition(next);

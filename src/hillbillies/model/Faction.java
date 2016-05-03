@@ -1,3 +1,4 @@
+//TODO accessrights checken
 package hillbillies.model;
 
 import java.util.HashSet;

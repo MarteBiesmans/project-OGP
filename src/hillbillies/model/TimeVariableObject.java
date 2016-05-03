@@ -26,14 +26,14 @@ public abstract class TimeVariableObject {
 	 *       if it is a positive value, else busyTime will equal 0
 	 * @param busyTime
 	 */
-	public void setBusyTime(double busyTime) {
+	protected void setBusyTime(double busyTime) {
 		this.busyTime = Math.max(busyTime, 0);
 	}
 
 	/**
 	 * returns the busytime of this time variable object
 	 */
-	public double getBusyTime() {
+	protected double getBusyTime() {
 		return this.busyTime;
 	}
 
@@ -43,7 +43,7 @@ public abstract class TimeVariableObject {
 	 * 
 	 * @param seconds
 	 */
-	public void busyTimeMin(double seconds) {
+	protected void busyTimeMin(double seconds) {
 		this.setBusyTime(this.getBusyTime() - seconds);
 	}
 
