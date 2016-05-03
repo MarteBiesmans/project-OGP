@@ -676,8 +676,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int toughness;
 
-
-	//TODO vanaf hier comments checken
 	
 	/**
 	 * Return the hitpoints of this unit.
@@ -691,8 +689,8 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the maximum number of hitpoints of this unit.
 	 * 
-	 * @return the maximum hitpoints based on the weight and thoughness of this
-	 *         unit
+	 * @return	the maximum hitpoints based on the weight and thoughness of this unit
+	 * 			|result == (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0)
 	 */
 	public int getMaxHitpoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -701,11 +699,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given hitpoints are valid hitpoints for this unit.
 	 * 
-	 * @param hitpoints
-	 *            The hitpoints to check.
-	 * @return true if and only if hitpoints lie between zero and the maximum
-	 *         value | result == ( (hitpoints >= 0) && (hitpoints <=
-	 *         this.getMaxHitpoints()) )
+	 * @param	hitpoints
+	 *          The hitpoints to check.
+	 * @return	true if and only if hitpoints lie between zero and the maximum value
+	 * 			| result == ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) )
 	 */
 	protected boolean canHaveAsHitpoints(double hitpoints) {
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()));
@@ -714,12 +711,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the hitpoints of this unit to the given hitpoints.
 	 * 
-	 * @param hitpoints
-	 *            The new hitpoints for this unit.
-	 * @pre The given hitpoints must be valid hitpoints for this unit. |
-	 *      this.canHaveAsHitpoints(hitpoints)
-	 * @post The hitpoints of this unit is equal to the given hitpoints. |
-	 *       new.getHitpoints() == hitpoints
+	 * @param	hitpoints
+	 * 			The new hitpoints for this unit.
+	 * @pre		The given hitpoints must be valid hitpoints for this unit.
+	 * 			|this.canHaveAsHitpoints(hitpoints)
+	 * @post	The hitpoints of this unit is equal to the given hitpoints.
+	 *       	|new.getHitpoints() == hitpoints
 	 */
 	@Raw
 	protected void setHitpoints(double hitpoints) {
@@ -744,8 +741,8 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the maximum number of stamina points of this unit.
 	 * 
-	 * @return the maximum stamina points based on the weight and thoughness of
-	 *         this unit
+	 * @return	the maximum stamina points based on the weight and thoughness of this unit
+	 * 			|result == (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0)
 	 */
 	public int getMaxStaminaPoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -754,11 +751,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given stamina points are a valid value for this unit.
 	 * 
-	 * @param staminaPoints
-	 *            The staminaPoints to check.
-	 * @return true if and only if stamina points lie between zero and the
-	 *         maximum value | result == ( (staminaPoints >= 0) &&
-	 *         (staminaPoints <= this.getMaxHitpoints()) )
+	 * @param	staminaPoints
+	 *          The staminaPoints to check.
+	 * @return	true if and only if stamina points lie between zero and the maximum value
+	 * 			|result == ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxHitpoints()) )
 	 */
 	protected boolean canHaveAsStaminaPoints(double staminaPoints) {
 		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
@@ -767,12 +763,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the stamina points of this unit to the given stamina points.
 	 * 
-	 * @param staminaPoints
-	 *            The new stamina points for this unit.
-	 * @pre The given stamina points must be valid stamina points for this unit.
-	 *      | this.canHaveAsStaminaPoints(staminaPoints)
-	 * @post The stamina points of this unit are equal to the given stamina
-	 *       points. | new.getStaminaPoints() == staminaPoints
+	 * @param	staminaPoints
+	 *          The new stamina points for this unit.
+	 * @pre		The given stamina points must be valid stamina points for this unit.
+	 *      	|this.canHaveAsStaminaPoints(staminaPoints)
+	 * @post	The stamina points of this unit are equal to the given stamina points.
+	 * 			|new.getStaminaPoints() == staminaPoints
 	 */
 	@Raw
 	protected void setStaminaPoints(double staminaPoints) {
@@ -797,10 +793,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given orientation is a valid orientation for any unit.
 	 * 
-	 * @param theta
-	 *            The orientation to check.
-	 * @return true if and only if theta lies between 0 and 2*PI | result ==
-	 *         (theta>=0 && theta<(2*Math.PI))
+	 * @param	theta
+	 *          The orientation to check.
+	 * @return	true if and only if theta lies in the interval [0, 2*PI[
+	 * 			|result == (theta>=0 && theta<(2*Math.PI))
 	 */
 	protected static boolean isValidOrientation(double theta) {
 		return (theta >= 0.0 && theta < (2.0 * Math.PI));
@@ -809,14 +805,14 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
-	 * @param theta
-	 *            The new orientation for this unit.
-	 * @post If the given orientation theta is a valid orientation, the new
-	 *       orientation of this unit is equal to the given orientation theta. |
-	 *       if (isValidOrientation(theta)) | then new.getOrientation() == theta
-	 * @post If the given orientation theta lies outside the interval [0, 2*PI[,
-	 *       the new orientation of this unit is equal to the equivalent angle
-	 *       in this interval with the same sinus and cosinus.
+	 * @param	theta
+	 *          The new orientation for this unit.
+	 * @post	If the given orientation theta is valid orientation, the new
+	 *       	orientation equals this value.
+	 * 			If the given orientation theta lies outside the interval [0, 2*PI[,
+	 *       	the new orientation of this unit is equal to the equivalent angle
+	 *       	in this interval with the same sinus and cosinus.
+	 *       	|result == Math.abs(theta % (2.0 * Math.PI))
 	 */
 	@Raw
 	protected void setOrientation(double theta) {
@@ -837,9 +833,10 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether the given experience points are valid for this unit
-	 * @param points
-	 * The points to check
-	 * @return true if the given points are greater or equal than zero
+	 * @param	points
+	 * 			The points to check
+	 * @return 	true if the given points are greater or equal than zero
+	 * 			|result == (points >= 0)
 	 */
 	protected boolean isValidExperiencePoints(int points) {
 		return (points >= 0);
@@ -847,12 +844,21 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * set the experience points of this unit to the given points
+	 * 
+	 * @param	points
+	 * 			the number of experience points to set
+	 * @post	if points is valid, the experience points if this unit equal points
+	 * 			|if (isValidExperiencePoints(points))
+	 * 			|	then new.getExperiencePoints() == points
 	 */
 	protected void setExperiencePoints(int points) {
 		if (isValidExperiencePoints(points))
 			this.experiencePoints = points;
 	}
 
+	/**
+	 * a variable registering the experience points of a unit
+	 */
 	private int experiencePoints;
 
 	/**
@@ -864,7 +870,11 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check wheter the given level is a valid level for this unit
-	 * @return true if the level is greater or equal than zero
+	 * 
+	 * @param	level
+	 * 			the level to check
+	 * @return	true if the level is greater or equal than zero
+	 * 			|result == level >= 0
 	 */
 	private boolean isValidLevel(int level) {
 		return level >= 0;
@@ -872,18 +882,30 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * set the level of this unit to the given level
+	 * 
+	 * @param	level
+	 * 			the level to set to
+	 * @post	if the given level is valid, the level of this unit equals this value
+	 * 			|if (isValidLevel(level))
+	 * 			|	then new.getLevel() == level
 	 */
 	private void setLevel(int level) {
 		if (isValidLevel(level))
 			this.level = level;
 	}
 
+	/**
+	 * a variable to register the level of this unit
+	 */
 	private int level;
 
+	
+	//TODO vanaf hier comments checken
+	
+	
 	// ADVANCE TIME en help methods
 
 	/**
-	 * 
 	 * update the position, activity status, hitpoints and stamina points of a
 	 * Unit, based on that Unit's current position, attributes and a given
 	 * duration 'seconds' in seconds of game time

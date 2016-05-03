@@ -14,8 +14,6 @@ import ogp.framework.util.Util;
  */
 public class UnitTest {
 
-	public static final double EPSILON = 1e-6;
-
 	@Test
 	public void constructorUnit_LegalCase() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);

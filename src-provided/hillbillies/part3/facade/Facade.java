@@ -8,7 +8,7 @@ import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
-import hillbillies.part2.facade.IFacade;
+import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.TaskParser;
 import hillbillies.tests.facade.Part3TestPartial;
