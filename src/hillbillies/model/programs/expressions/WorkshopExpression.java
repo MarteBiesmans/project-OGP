@@ -2,6 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
 public class WorkshopExpression extends CubeExpression {
 
@@ -9,7 +10,7 @@ public class WorkshopExpression extends CubeExpression {
 	}
 
 	@Override
-	public Cube evaluate(Unit unit) {
+	public CubeType evaluate(Unit unit) {
 		Cube nearestWorkshopSoFar = null;
 		for (Cube workshop : unit.getWorld().getAllWorkshops()) {
 				if (nearestWorkshopSoFar == null)
@@ -18,12 +19,12 @@ public class WorkshopExpression extends CubeExpression {
 						.getDistanceSquare(nearestWorkshopSoFar.getCenter()))
 					nearestWorkshopSoFar = workshop;
 		}
-		return nearestWorkshopSoFar;
+		return new CubeType(nearestWorkshopSoFar);
 	}
 
 	@Override
 	public String toString() {
-		return "";
+		return "workshop";
 	}
 
 }

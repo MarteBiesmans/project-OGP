@@ -2,23 +2,24 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
 public class XYZExpression extends CubeExpression {
 
 	public XYZExpression(int x, int y, int z) {
-		cube = new Cube(x, y, z);
+		expression = new VariableExpression(new CubeType(new Cube(x, y, z)));
 	}
 	
-	private Cube cube;
+	private VariableExpression expression;
 	
 	@Override
-	public Cube evaluate(Unit unit) {
-		return cube;
+	public CubeType evaluate(Unit unit) {
+		return new CubeType((Cube) expression.evaluate(unit).getValue());
 	}
 	
 	@Override
 	public String toString(){
-		return cube.toString();
+		return expression.toString();
 	}
 
 }

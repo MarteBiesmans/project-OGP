@@ -1,7 +1,7 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
 public class HereExpression extends CubeExpression {
 
@@ -9,8 +9,8 @@ public class HereExpression extends CubeExpression {
 	}
 	
 	@Override
-	public Cube evaluate(Unit unit) {
-		return unit.getCube();
+	public CubeType evaluate(Unit unit) {
+		return new CubeType(unit.getCube());
 	}
 	
 	@Override

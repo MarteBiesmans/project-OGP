@@ -1,15 +1,15 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.UnitType;
 
 public class FriendExpression extends UnitExpression {
 
 	public FriendExpression() {
-		super();
 	}
 
 	@Override
-	public Unit evaluate(Unit unit) {
+	public UnitType evaluate(Unit unit) {
 		Unit nearestFriendSoFar = null;
 		for (Unit other : unit.getWorld().getAllUnits()) {
 			if (other != unit && unit.getFaction() == other.getFaction()) {
@@ -20,7 +20,7 @@ public class FriendExpression extends UnitExpression {
 					nearestFriendSoFar = other;
 			}
 		}
-		return nearestFriendSoFar;
+		return new UnitType(nearestFriendSoFar);
 	}
 
 	@Override

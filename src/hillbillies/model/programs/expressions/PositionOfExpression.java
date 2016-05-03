@@ -1,15 +1,15 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
-public class PositionOfExpression extends UnaryCubeExpression {
+public class PositionOfExpression extends CubeExpression {
 
 	public PositionOfExpression(UnitExpression e) {
 		expression = e;
 	}
 	
-	public Expression getExpression() {
+	public UnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -17,11 +17,11 @@ public class PositionOfExpression extends UnaryCubeExpression {
 		return getExpression().evaluate(unit);
 	}
 	
-	private final Expression expression;
+	private final UnitExpression expression;
 	
 	@Override
-	public Cube evaluate(Unit unit) {
-		return ((Unit) getExpressionEvaluate(unit)).getCube();
+	public CubeType evaluate(Unit unit) {
+		return new CubeType(((Unit) getExpressionEvaluate(unit)).getCube());
 	}
 	
 	@Override

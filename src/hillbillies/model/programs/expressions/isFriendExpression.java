@@ -29,5 +29,4 @@ public class IsFriendExpression extends BooleanExpression {
 	public String toString(){
 		return getExpression().toString() + "isFriend";
 	}
-
 }

@@ -6,7 +6,6 @@ import hillbillies.model.programs.type.BooleanType;
 public class FalseExpression extends BooleanExpression {
 
 	public FalseExpression() {
-		super();
 	}
 
 	@Override

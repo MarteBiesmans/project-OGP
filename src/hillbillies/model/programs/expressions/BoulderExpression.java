@@ -1,8 +1,8 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Boulder;
-import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
 public class BoulderExpression extends CubeExpression {
 
@@ -10,7 +10,7 @@ public class BoulderExpression extends CubeExpression {
 	}
 
 	@Override
-	public Cube evaluate(Unit unit) {
+	public CubeType evaluate(Unit unit) {
 		Boulder nearestBoulderSoFar = null;
 		for (Boulder boulder : unit.getWorld().getAllBoulders()) {
 				if (nearestBoulderSoFar == null)
@@ -21,7 +21,7 @@ public class BoulderExpression extends CubeExpression {
 		}
 		if (nearestBoulderSoFar == null)
 			return null;
-		return nearestBoulderSoFar.getPosition().getCube();
+		return new CubeType(nearestBoulderSoFar.getPosition().getCube());
 	}
 
 	@Override

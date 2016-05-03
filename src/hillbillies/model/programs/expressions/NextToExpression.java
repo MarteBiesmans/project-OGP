@@ -2,30 +2,31 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
+import hillbillies.model.programs.type.CubeType;
 
-public class NextToExpression extends UnaryCubeExpression {
+public class NextToExpression extends CubeExpression {
 
 	public NextToExpression(CubeExpression e) {
 		expression = e;
 	}
 	
-	public Expression getExpression() {
+	public CubeExpression getExpression() {
 		return expression;
 	}
 	
-	public Object getExpressionEvaluate(Unit unit) {
+	public CubeType getExpressionEvaluate(Unit unit) {
 		return getExpression().evaluate(unit);
 	}
 	
-	private final Expression expression;
+	private final CubeExpression expression;
 	
 	@Override
-	public Cube evaluate(Unit unit) {
-		for (Cube cube: ((Cube) getExpressionEvaluate(unit)).getAllNeighbouringCubes(unit.getWorld())) {
+	public CubeType evaluate(Unit unit) {
+		for (Cube cube: ((Cube) getExpressionEvaluate(unit).getValue()).getAllNeighbouringCubes(unit.getWorld())) {
 			if (cube.isPassableIn(unit.getWorld()))
-				return cube;
+				return new CubeType(cube);
 		}
-		return null;
+		return new CubeType(null);
 	}
 	
 	@Override
