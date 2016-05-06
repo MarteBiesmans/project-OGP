@@ -18,7 +18,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> result = new ArrayList<>();
-		for (int[] element: selectedCubes) {
+		for (int[] element : selectedCubes) {
 			result.add(new Task(name, priority, activity, new Cube(element[0], element[1], element[2])));
 		}
 		return result;

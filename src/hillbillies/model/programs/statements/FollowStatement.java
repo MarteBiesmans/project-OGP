@@ -11,7 +11,7 @@ public class FollowStatement extends ActionStatement {
 	public FollowStatement(UnitExpression expression) {
 		this.unit = expression;
 	}
-	
+
 	private UnitExpression unit;
 	
 	@Override

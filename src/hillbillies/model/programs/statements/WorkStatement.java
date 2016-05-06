@@ -6,17 +6,17 @@ import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.CubeExpression;
 
 public class WorkStatement extends ActionStatement {
-	
+
 	public WorkStatement(CubeExpression expression) {
 		this.cube = expression;
 	}
-	
+
 	private CubeExpression cube;
 
 	@Override
 	public void execute(Unit unit, Cube cube, Counter counter) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -30,7 +30,5 @@ public class WorkStatement extends ActionStatement {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 
 }
