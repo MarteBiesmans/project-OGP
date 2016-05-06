@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * test suite for the class Boulder
+ */
 public class BoulderTest {
 
 	@Test

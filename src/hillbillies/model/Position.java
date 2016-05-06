@@ -1,5 +1,3 @@
-//TODO comments checken
-//TODO accessrights checken
 package hillbillies.model;
 
 import java.util.Iterator;
@@ -9,37 +7,64 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A value class describing a position. The position consists of a cube and a
  * position in this cube.
+ * @invar	x, y and z are positive
  * 
- * @Value
  * @author Marte & Ellen
- *
  */
 @Value
 public class Position {
 
+	/**
+	 * create a new position (x,y,z)
+	 * 
+	 * @param	x
+	 * 			the x-value of this new position
+	 * @param	y
+	 * 			the y-value of this new position
+	 * @param	z
+	 * 			the z-value of this new position
+	 * @post	cube equals (x,y,z) / Cube.SIDE_LENGTH (rounded down)
+	 * @post	(x,y,z) equals (x,y,z) % Cube.SIDE_LENGTH
+	 * @throws	IllegalArgumentException
+	 * 			x, y or z are negative 			
+	 */
 	public Position(double x, double y, double z) throws IllegalArgumentException {
-		Cube cube = new Cube((int) (x / Cube.SIDE_LENGTH), (int) (y / Cube.SIDE_LENGTH), (int) (z / Cube.SIDE_LENGTH));
-		x %= Cube.SIDE_LENGTH;
-		y %= Cube.SIDE_LENGTH;
-		z %= Cube.SIDE_LENGTH;
-
-		this.cube = cube;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		if (x<0 || y<0 || z<0)
+			throw new IllegalArgumentException();
+		this.cube = new Cube((int) (x / Cube.SIDE_LENGTH),
+							 (int) (y / Cube.SIDE_LENGTH),
+							 (int) (z / Cube.SIDE_LENGTH));
+		this.x = x % Cube.SIDE_LENGTH;
+		this.y = y % Cube.SIDE_LENGTH;
+		this.z = z % Cube.SIDE_LENGTH;
 	}
 
-	public Position(double x, double y, double z, Cube cube) throws IllegalArgumentException, NullPointerException {
+	/**
+	 * create a new position (x,y,z) given a cube
+	 * 
+	 * @param	x
+	 * 			the x-coordinate inside the given cube
+	 * @param	y
+	 * 			the y-coordinate inside the given cube
+	 * @param	z
+	 * 			the z-coordinate inside the given cube
+	 * @param	cube
+	 * 			the cube where the new position is located
+	 * @throws	IllegalArgumentException
+	 * 			cube equals null
+	 */
+	public Position(double x, double y, double z, Cube cube) throws IllegalArgumentException {
 		if (cube == null)
-			throw new NullPointerException();
-
+			throw new IllegalArgumentException();
+		
 		this.cube = new Cube((int) (cube.getX() + (x / Cube.SIDE_LENGTH)), (int) (cube.getY() + (y / Cube.SIDE_LENGTH)),
 				(int) (cube.getZ() + (z / Cube.SIDE_LENGTH)));
-
+		
 		x %= Cube.SIDE_LENGTH;
 		y %= Cube.SIDE_LENGTH;
 		z %= Cube.SIDE_LENGTH;
 
+		//necessary because the given (x,y,z) may be negative
 		if (x < 0)
 			x += Cube.SIDE_LENGTH;
 		if (y < 0)
@@ -58,68 +83,65 @@ public class Position {
 		return this.cube;
 	}
 
-	private Cube cube;
-
-	private double x;
-	private double y;
-	private double z;
+	/**
+	 * a variable to store the cube of this position
+	 */
+	private final Cube cube;
 
 	/**
-	 * returns a position substracted by the other position
-	 * 
-	 * @param other
-	 *            the position to substract from this position
-	 * @return the result position
+	 * return the x-coordinate inside the cube of this Position
 	 */
-	public Position min(Position other) {
-		return new Position(this.getRealX() - other.getRealX(), this.getRealY() - other.getRealY(),
-				this.getRealZ() - other.getRealZ());
-	}
-
-	/**
-	 * return the x-value of this position
-	 */
-	public double getX() {
+	@Basic
+	private double getX() {
 		return this.x;
 	}
 
 	/**
-	 * return the real x-value of this position.
+	 * return the real x-coordinate of this position (including the cube)
 	 */
 	public double getRealX() {
 		return this.cube.getX() * Cube.SIDE_LENGTH + this.getX();
 	}
 
 	/**
-	 * return the y-value of this position
+	 * return the y-coordinate inside the cube of this Position
 	 */
-	public double getY() {
+	@Basic
+	private double getY() {
 		return this.y;
 	}
 
 	/**
-	 * return the real y-value of this position.
+	 * return the real y-coordinate of this position (including the cube)
 	 */
 	public double getRealY() {
 		return this.cube.getY() * Cube.SIDE_LENGTH + this.getY();
 	}
 
 	/**
-	 * return the z-value of this position
+	 * return the z-coordinate inside the cube of this Position
 	 */
-	public double getZ() {
+	@Basic
+	private double getZ() {
 		return this.z;
 	}
 
 	/**
-	 * return the real z-value of this position.
+	 * return the real z-coordinate of this position (including the cube)
 	 */
 	public double getRealZ() {
 		return this.cube.getZ() * Cube.SIDE_LENGTH + this.getZ();
 	}
+	
+	/**
+	 * variables storing the coordinates inside a cube of this Position
+	 */
+	private final double x;
+	private final double y;
+	private final double z;
 
 	/**
-	 * check wether this position is valid for a given world
+	 * check whether this position is valid for a given world
 	 * 
 	 * @param world
 	 *            the world to check
@@ -159,7 +181,7 @@ public class Position {
 	 * 
 	 * @param world
 	 *            the world to check
-	 * @return false if the position is not valid for any unit in the given
+	 * @return false if the position is not valid for any object in the given
 	 *         world
 	 * @return true if the position is valid and at least one neigbouring cube
 	 *         is solid/impassable
@@ -208,10 +230,8 @@ public class Position {
 		return "(" + this.getRealX() + "," + this.getRealY() + "," + this.getRealZ() + ")";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * create a hashCode
 	 */
 	@Override
 	public int hashCode() {
@@ -228,10 +248,8 @@ public class Position {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * check if this equals the given object
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -256,6 +274,13 @@ public class Position {
 		return true;
 	}
 
+	/**
+	 * calculate the square of the distance between this and a given Position
+	 * 
+	 * @param	other
+	 * 			the position to compare to
+	 * @return	the square of the distance between this and a given position
+	 */
 	public double getDistanceSquare(Position other) {
 		return ((this.getRealX() - other.getRealX()) * (this.getRealX() - other.getRealX()))
 				+ ((this.getRealY() - other.getRealY()) * (this.getRealY() - other.getRealY()))

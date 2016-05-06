@@ -1,4 +1,3 @@
-//TODO accessrights checken
 package hillbillies.model;
 
 import java.util.HashSet;
@@ -103,7 +102,7 @@ public class Cube {
 	 * @param world
 	 * @return true if all coördinates fit in the boundaries of the given world.
 	 */
-	protected boolean isValidCubeCoordinate(int x, int y, int z, World world) {
+	private boolean isValidCubeCoordinate(int x, int y, int z, World world) {
 		if ((x < 0) || (x >= world.getNbCubesX()) || (y < 0) || (y >= world.getNbCubesY()) || (z < 0)
 				|| (z >= world.getNbCubesZ()))
 			return false;
@@ -160,16 +159,6 @@ public class Cube {
 	 */
 	public Position getCenter() {
 		return new Position(SIDE_LENGTH / 2, SIDE_LENGTH / 2, SIDE_LENGTH / 2, this);
-	}
-
-	/**
-	 * returns the difference of this cube with another cube.
-	 * 
-	 * @param other
-	 *            The cube to substract from this cube.
-	 */
-	public Cube min(Cube other) {
-		return new Cube(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
 	}
 
 	/**

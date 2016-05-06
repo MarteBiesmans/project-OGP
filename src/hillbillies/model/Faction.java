@@ -1,4 +1,3 @@
-//TODO accessrights checken
 package hillbillies.model;
 
 import java.util.HashSet;
@@ -87,7 +86,7 @@ public class Faction {
 	 * @return	false if the faction belongs to a world that has reached it's maximum number of factions
 	 * @return	false if the faction belongs to a world that has reached it's maximum number of units
 	 */
-	public boolean canAddAsUnit(Unit unit) {
+	private boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead()) {
 			return false;
 		}
@@ -142,7 +141,8 @@ public class Faction {
 	 * @return true if this faction has proper units,
 	 * 			i.e. not null, alive and belonging to this faction
 	 */
-	public boolean hasProperUnits() {
+	@SuppressWarnings("unused")
+	private boolean hasProperUnits() {
 		for (Unit unit : this.units)
 			if (unit == null || unit.isDead() || unit.getFaction() != this)
 				return false;
@@ -170,7 +170,7 @@ public class Faction {
 	 * @return	true if the world is not null and the world contains this faction
 	 * 			and the world of this faction is null
 	 */
-	public boolean canHaveAsWorld(World world) {
+	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsFaction(this) && this.getWorld() == null);
 	}
 

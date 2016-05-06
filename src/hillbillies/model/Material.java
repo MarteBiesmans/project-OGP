@@ -1,4 +1,3 @@
-//TODO comments checken
 package hillbillies.model;
 
 import java.util.Random;
@@ -9,19 +8,19 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class of materials belonging to a world or to a unit.
  * 
- * @invar The position of each material must be a valid position for any
- *        material.
- * @invar Each Material can have its weight as weight.
- * @invar Each material that is not carried by a unit is located in a passable
- *        cube
- * @invar The world of each material must be a valid world for any material. |
- *        isValidWorld(getWorld())
+ * @invar	The position of each material must be a valid position for any material.
+ * @invar	Each Material can have its weight as weight.
+ * @invar	Each material that is not carried by a unit is located in a passable cube
+ * @invar	The world of each material must be a valid world for any material.
  * 
  * @author Ellen & Marte
  *
  */
 public abstract class Material extends TimeVariableObject {
 
+	/**
+	 * instance of the class Random, necessary to create random numbers
+	 */
 	private static final Random RANDOM_GEN = new Random();
 
 	/**
@@ -43,7 +42,9 @@ public abstract class Material extends TimeVariableObject {
 	}
 
 	/**
-	 * Return the position of this material.
+	 * Return the position of this material
+	 * @return	the position in the world, if it is not carried
+	 * @return	the position of the unit carrying it, if it is carried
 	 */
 	@Basic
 	@Raw
@@ -57,10 +58,9 @@ public abstract class Material extends TimeVariableObject {
 	 * Check whether the given position is a valid initial position for this
 	 * material.
 	 * 
-	 * @param position
-	 *            The position to check.
-	 * @return false if the position is null or the cube of the position is not
-	 *         passable
+	 * @param	position
+	 *          The position to check.
+	 * @return	false if the position is null or the position is not valid for an object in it's world
 	 */
 	private boolean canHaveAsPosition(Position position) {
 		if (position == null || !position.isValidForObjectIn(this.getWorld()))
@@ -71,11 +71,10 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Check whether this material should fall.
 	 * 
-	 * @return true if the cube of the position is not directly above a solid
-	 *         cube
-	 * @return false if the z-coordinate is 0
-	 * @return false if the material is carried by a unit
+	 * @return	false if the material is carried by a unit
 	 * @return	false if the position of the material equals null
+	 * @return	false if the z-coordinate is 0
+	 * @return	false if the cube of the position is directly above a solid cube
 	 */
 	private boolean shouldFall() {
 		if (this.getOwner() != null)
@@ -86,10 +85,10 @@ public abstract class Material extends TimeVariableObject {
 			return false;
 		Cube cubeBelow = new Cube(this.getPosition().getCube().getX(), this.getPosition().getCube().getY(),
 				this.getPosition().getCube().getZ() - 1);
-		if (this.getWorld().getTerrainType(cubeBelow).isPassable())
-			return true;
+		if (!this.getWorld().getTerrainType(cubeBelow).isPassable())
+			return false;
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -132,8 +131,8 @@ public abstract class Material extends TimeVariableObject {
 	 * 
 	 * @param owner
 	 *            The owner to check.
+	 * @return false if the material already has an owner
 	 * @return false if owner is null
-	 * @return false if the material already has a owner
 	 * @return false if the owner doesn't own the material
 	 */
 	private boolean canHaveAsOwner(Unit owner) {
@@ -150,13 +149,11 @@ public abstract class Material extends TimeVariableObject {
 	/**
 	 * Set the unit carrying this material to the given owner.
 	 * 
-	 * @param owner
-	 *            The new owner for this material.
-	 * @post The unit carrying this material is equal to the given owner.
-	 * @post The position of this material is null.
-	 * @post The material is deleted from the world.
-	 * @throws IllegalArgumentException
-	 *             The given owner is not a valid owner for this material.
+	 * @param	owner
+	 *          The new owner for this material.
+	 * @post	The unit carrying this material is equal to the given owner.
+	 * @throws 	IllegalArgumentException
+	 *          The given owner is not a valid owner for this material, except for when it is null
 	 */
 	@Raw
 	void setOwner(Unit owner) throws IllegalArgumentException {
@@ -165,6 +162,7 @@ public abstract class Material extends TimeVariableObject {
 				throw new IllegalArgumentException();
 		}
 		this.owner = owner;
+		//TODO moeten position en world hier niet null worden? (stond ook bij in de comments) 
 	}
 
 	/**
@@ -183,12 +181,12 @@ public abstract class Material extends TimeVariableObject {
 	}
 
 	/**
-	 * Check whether the given world is a valid world for any material.
+	 * Check whether the given world is a valid world for this material.
 	 * 
-	 * @param world
-	 *            The world to check.
+	 * @param	world
+	 *          The world to check.
 	 * @return false if the world is null
-	 * @return false if the world doesn't has this material as material
+	 * @return false if the world doesn't have this material as material
 	 * @return false if the material already exists in another world
 	 */
 	private boolean canHaveAsWorld(World world) {
@@ -200,18 +198,16 @@ public abstract class Material extends TimeVariableObject {
 			return false;
 		}
 		return true;
-		// return (world != null && world.hasAsMaterial(this) && this.getWorld()
-		// == null);
 	}
 
 	/**
 	 * Set the world of this material to the given world.
 	 * 
-	 * @param world
-	 *            The new world for this material.
-	 * @post The world of this new material is equal to the given world.
-	 * @throws IllegalArgumentException
-	 *             The given world is not a valid world for this material.
+	 * @param	world
+	 *          The new world for this material.
+	 * @post 	The world of this new material is equal to the given world.
+	 * @throws 	IllegalArgumentException
+	 *          The given world is not a valid world for this material.
 	 */
 	@Raw
 	void setWorld(World world) throws IllegalArgumentException {
@@ -243,12 +239,12 @@ public abstract class Material extends TimeVariableObject {
 	private final int weight;
 
 	/**
-	 * update the position of this material, based on it's current properties
-	 * and a given duration 'seconds' in seconds of game time
+	 * advance time, make the material fall if necessary
 	 * 
-	 * @param seconds
-	 * @throws IllegalArgumentException
-	 *             the seconds are not in the interval [0,0.2[
+	 * @param	seconds
+	 * 			the seconds to advance time
+	 * @throws	IllegalArgumentException
+	 *          the seconds are not in the interval [0,0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
@@ -258,12 +254,16 @@ public abstract class Material extends TimeVariableObject {
 	}
 
 	/**
+	 * update the position of this material, based on 
+	 * a given duration 'seconds' in seconds of game time
 	 * 
-	 * @param seconds
+	 * @param	seconds
+	 * 			the seconds to fall
+	 * @effect	the z-value of the position is reduced by FALLING_VELOCITY * seconds
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				this.getPosition().getRealZ() + FALLING_VELOCITY * seconds);
+				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.0));
 		this.setPosition(next);
 	}
 }

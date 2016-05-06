@@ -897,13 +897,13 @@ public class Unit extends TimeVariableObject {
 	// ADVANCE TIME en help methods
 
 	/**
-	 * update the position, activity status, hitpoints and stamina points of a
-	 * Unit, based on that Unit's current position, attributes and a given
+	 * update the attributes of a Unit, based on that Unit's current attributes and a given
 	 * duration 'seconds' in seconds of game time
 	 * 
-	 * @param seconds
-	 * @throws IllegalArgumentException
-	 *             the seconds are not in the interval [0,0.2[
+	 * @param	seconds
+	 * 			the amount of seconds to advance time
+	 * @throws	IllegalArgumentException
+	 *          the seconds are not in the interval [0, 0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
@@ -1659,7 +1659,6 @@ public class Unit extends TimeVariableObject {
 
 	// RELATIONS with world, faction and material
 	
-	//TODO: testen (voor expressions moest dit public staan)
 	public World getWorld() {
 		return this.world;
 	}
@@ -1769,7 +1768,6 @@ public class Unit extends TimeVariableObject {
 	 * @return The total number of materials collected in this unit. | result ==
 	 *         | card({material:Material | hasAsMaterial({material)})
 	 */
-	//TODO: testen schrijven (voor expressions moest dit public zijn)
 	public int getNbMaterials() {
 		return materials.size();
 	}

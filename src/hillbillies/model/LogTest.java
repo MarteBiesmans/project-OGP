@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+/**
+ * test suite for the class Log
+ */
 public class LogTest {
 	
 	@Test

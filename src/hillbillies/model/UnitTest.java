@@ -392,6 +392,11 @@ public class UnitTest {
 	}
 	
 	@Test
+	public void getWorld_() {
+		//TODO
+	}
+	
+	@Test
 	public void getFaction_() {
 		//TODO
 	}
@@ -403,6 +408,11 @@ public class UnitTest {
 	
 	@Test
 	public void hasBoulder_() {
+		//TODO
+	}
+	
+	@Test
+	public void getNbMaterials_() {
 		//TODO
 	}
 	
