@@ -40,12 +40,16 @@ public class Task {
 	 *         this.setActivities(activities)
 	 * @post This new task has no schedulers yet. | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority, List<Statement> activities) throws IllegalArgumentException {
+	public Task(String name, int priority, Statement activities, Cube cube) throws IllegalArgumentException {
 		this.setName(name);
 		this.setPriority(priority);
 		this.setActivities(activities);
 		this.setUnit(null);
+		this.cube = cube;
 	}
+	
+	//TODO: fancy maken -> gebruik template
+	private Cube cube;
 
 	/**
 	 * Return the name of this task.

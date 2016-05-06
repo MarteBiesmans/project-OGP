@@ -14,17 +14,17 @@ public class NextToExpression extends CubeExpression {
 		return expression;
 	}
 	
-	public CubeType getExpressionEvaluate(Unit unit) {
-		return getExpression().evaluate(unit);
+	public CubeType getExpressionEvaluate(Unit unit, Cube cube) {
+		return getExpression().evaluate(unit, cube);
 	}
 	
 	private final CubeExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit) {
-		for (Cube cube: ((Cube) getExpressionEvaluate(unit).getValue()).getAllNeighbouringCubes(unit.getWorld())) {
-			if (cube.isPassableIn(unit.getWorld()))
-				return new CubeType(cube);
+	public CubeType evaluate(Unit unit, Cube cube) {
+		for (Cube c: ((Cube) getExpressionEvaluate(unit, cube).getValue()).getAllNeighbouringCubes(unit.getWorld())) {
+			if (c.isPassableIn(unit.getWorld()))
+				return new CubeType(c);
 		}
 		return new CubeType(null);
 	}

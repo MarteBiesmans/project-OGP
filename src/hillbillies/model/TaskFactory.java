@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.programs.expressions.*;
@@ -8,77 +9,70 @@ import hillbillies.model.programs.type.*;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
-public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Type> {
+public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task> {
 
 	public TaskFactory() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public List<Type> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
+		List<Task> result = new ArrayList<>();
+		for (int[] element: selectedCubes) {
+			result.add(new Task(name, priority, activity, new Cube(element[0], element[1], element[2])));
+		}
+		return result;
 	}
 
 	@Override
 	public Statement createAssignment(String variableName, Expression<?> value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AssignmentStatement(variableName, value);
 	}
 
 	@Override
 	public Statement createWhile(Expression<?> condition, Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WhileStatement(condition, body);
 	}
 
 	@Override
 	public Statement createIf(Expression<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IfStatement((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BreakStatement();
 	}
 
 	@Override
 	public Statement createPrint(Expression<?> value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new PrintStatement(value, this);
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SequenceOfStatements(statements);
 	}
 
 	@Override
 	public Statement createMoveTo(Expression<?> position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new MoveToStatement((CubeExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression<?> position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkStatement((CubeExpression) position);
 	}
 
 	@Override
 	public Statement createFollow(Expression<?> unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new FollowStatement((UnitExpression) unit);
 	}
 
 	@Override
 	public Statement createAttack(Expression<?> unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AttackStatement((UnitExpression) unit);
 	}
 
 	@Override
@@ -154,7 +148,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Type>
 
 	@Override
 	public Expression<CubeType> createSelectedPosition(SourceLocation sourceLocation) {
-		return new SelectedExpression(null);
+		return new SelectedExpression();
 	}
 
 	@Override

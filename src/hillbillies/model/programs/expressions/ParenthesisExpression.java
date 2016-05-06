@@ -1,5 +1,6 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.Type;
 
@@ -13,15 +14,15 @@ public class ParenthesisExpression extends Expression<Type> {
 		return expression;
 	}
 	
-	public Type getExpressionEvaluate(Unit unit) {
-		return getExpression().evaluate(unit);
+	public Type getExpressionEvaluate(Unit unit, Cube cube) {
+		return getExpression().evaluate(unit, cube);
 	}
 	
 	private final Expression<?> expression;
 	
 	@Override
-	public Type evaluate(Unit unit) {
-		return getExpressionEvaluate(unit);
+	public Type evaluate(Unit unit, Cube cube) {
+		return getExpressionEvaluate(unit, cube);
 	}
 	
 	@Override

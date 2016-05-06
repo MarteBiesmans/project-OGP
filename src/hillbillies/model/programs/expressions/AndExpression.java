@@ -1,5 +1,6 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
 
@@ -18,21 +19,21 @@ public class AndExpression extends BooleanExpression {
 		return expression2;
 	}
 	
-	public BooleanType getSecondExpressionEvaluate(Unit unit) {
-		return getSecondExpression().evaluate(unit);
+	public BooleanType getSecondExpressionEvaluate(Unit unit, Cube cube) {
+		return getSecondExpression().evaluate(unit, cube);
 	}
 	
-	public BooleanType getFirstExpressionEvaluate(Unit unit) {
-		return getFirstExpression().evaluate(unit);
+	public BooleanType getFirstExpressionEvaluate(Unit unit, Cube cube) {
+		return getFirstExpression().evaluate(unit, cube);
 	}
 	
 	private final BooleanExpression expression1;
 	private final BooleanExpression expression2;
 
 	@Override
-	public BooleanType evaluate(Unit unit) {
-		return new BooleanType((boolean) getFirstExpressionEvaluate(unit).getValue() && 
-				(boolean) getSecondExpressionEvaluate(unit).getValue());
+	public BooleanType evaluate(Unit unit, Cube cube) {
+		return new BooleanType((boolean) getFirstExpressionEvaluate(unit, cube).getValue() && 
+				(boolean) getSecondExpressionEvaluate(unit, cube).getValue());
 	}
 
 	@Override

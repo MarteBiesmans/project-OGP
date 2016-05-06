@@ -1,7 +1,9 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.CubeType;
+import hillbillies.model.programs.type.UnitType;
 
 public class PositionOfExpression extends CubeExpression {
 
@@ -13,15 +15,15 @@ public class PositionOfExpression extends CubeExpression {
 		return expression;
 	}
 	
-	public Object getExpressionEvaluate(Unit unit) {
-		return getExpression().evaluate(unit);
+	public UnitType getExpressionEvaluate(Unit unit, Cube cube) {
+		return getExpression().evaluate(unit, cube);
 	}
 	
 	private final UnitExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit) {
-		return new CubeType(((Unit) getExpressionEvaluate(unit)).getCube());
+	public CubeType evaluate(Unit unit, Cube cube) {
+		return new CubeType(((Unit) getExpressionEvaluate(unit, cube).getValue()).getCube());
 	}
 	
 	@Override

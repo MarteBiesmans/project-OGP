@@ -1,5 +1,6 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.Type;
@@ -14,15 +15,15 @@ public class IsEnemyExpression extends BooleanExpression {
 		return expression;
 	}
 	
-	public Type getExpressionEvaluate(Unit unit) {
-		return getExpression().evaluate(unit);
+	public Type getExpressionEvaluate(Unit unit, Cube cube) {
+		return getExpression().evaluate(unit, cube);
 	}
 	
 	private final UnitExpression expression;
 
 	@Override
-	public BooleanType evaluate(Unit unit) {
-		return new BooleanType(((Unit) getExpressionEvaluate(unit).getValue()).getFaction() != unit.getFaction());
+	public BooleanType evaluate(Unit unit, Cube cube) {
+		return new BooleanType(((Unit) getExpressionEvaluate(unit, cube).getValue()).getFaction() != unit.getFaction());
 	}
 
 	@Override

@@ -8,9 +8,13 @@ public class WorkshopExpression extends CubeExpression {
 
 	public WorkshopExpression() {
 	}
+	
+	public CubeType evaluate(Unit unit) {
+		return evaluate(unit, null);
+	}
 
 	@Override
-	public CubeType evaluate(Unit unit) {
+	public CubeType evaluate(Unit unit, Cube cube) {
 		Cube nearestWorkshopSoFar = null;
 		for (Cube workshop : unit.getWorld().getAllWorkshops()) {
 				if (nearestWorkshopSoFar == null)

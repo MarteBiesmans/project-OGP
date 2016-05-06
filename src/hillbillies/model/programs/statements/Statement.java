@@ -1,6 +1,7 @@
 package hillbillies.model.programs.statements;
 
 import hillbillies.model.Counter;
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
 public abstract class Statement {
@@ -27,9 +28,9 @@ public abstract class Statement {
 		hasfullyexecuted = true;
 	}
 
-	public abstract void execute(Unit unit, Counter counter);
+	public abstract void execute(Unit unit, Cube cube, Counter counter);
 	
-	public abstract boolean canExecute(Unit unit, Counter counter);
+	public abstract boolean canExecute(Unit unit, Cube cube, Counter counter);
 	
 	public abstract boolean isWellFormed();
 	

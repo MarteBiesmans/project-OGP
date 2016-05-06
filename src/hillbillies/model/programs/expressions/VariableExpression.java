@@ -1,5 +1,6 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.Type;
 
@@ -9,8 +10,12 @@ public class VariableExpression extends Expression<Type> {
 		object = o;
 	}
 	
+	public Type evaluate() {
+		return evaluate(null, null);
+	}
+	
 	@Override
-	public Type evaluate(Unit unit) {
+	public Type evaluate(Unit unit, Cube cube) {
 		return object;
 	}
 	

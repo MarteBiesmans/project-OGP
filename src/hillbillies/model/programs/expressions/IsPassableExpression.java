@@ -15,15 +15,15 @@ public class IsPassableExpression extends BooleanExpression {
 		return expression;
 	}
 	
-	public CubeType getExpressionEvaluate(Unit unit) {
-		return getExpression().evaluate(unit);
+	public CubeType getExpressionEvaluate(Unit unit, Cube cube) {
+		return getExpression().evaluate(unit, cube);
 	}
 	
 	private final CubeExpression expression;
 	
 	@Override
-	public BooleanType evaluate(Unit unit) {
-		return new BooleanType(((Cube) getExpressionEvaluate(unit).getValue()).isPassableIn(unit.getWorld()));
+	public BooleanType evaluate(Unit unit, Cube cube) {
+		return new BooleanType(((Cube) getExpressionEvaluate(unit, cube).getValue()).isPassableIn(unit.getWorld()));
 	}
 	
 	@Override

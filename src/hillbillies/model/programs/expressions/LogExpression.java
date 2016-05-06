@@ -1,5 +1,6 @@
 package hillbillies.model.programs.expressions;
 
+import hillbillies.model.Cube;
 import hillbillies.model.Log;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.CubeType;
@@ -8,9 +9,13 @@ public class LogExpression extends CubeExpression {
 
 	public LogExpression() {
 	}
-
-	@Override
+	
 	public CubeType evaluate(Unit unit) {
+		return evaluate(unit, null);
+	}
+	
+	@Override
+	public CubeType evaluate(Unit unit, Cube cube) {
 		Log nearestLogSoFar = null;
 		for (Log log : unit.getWorld().getAllLogs()) {
 				if (nearestLogSoFar == null)

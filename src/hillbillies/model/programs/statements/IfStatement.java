@@ -1,18 +1,20 @@
 package hillbillies.model.programs.statements;
 
 import hillbillies.model.Counter;
+import hillbillies.model.Cube;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.expressions.Expression;
+import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class IfStatement extends Statement {
-	
-	private final Expression condition;
+
+	private final BooleanExpression condition;
 	private final Statement then;
 	private final Statement otherwise;
 	private boolean solvedCondition;
 	private boolean hasNotBeenExecutedOnce;
-	
-	private IfStatement(Expression condition, Statement then, Statement otherwise, boolean hasNotBeenExecutedOnce, boolean hasFullyExecuted, boolean solvedCondition) {
+
+	private IfStatement(BooleanExpression condition, Statement then, Statement otherwise,
+			boolean hasNotBeenExecutedOnce, boolean hasFullyExecuted, boolean solvedCondition) {
 		super(hasFullyExecuted);
 		this.condition = condition;
 		this.then = then;
@@ -21,49 +23,46 @@ public class IfStatement extends Statement {
 		this.solvedCondition = solvedCondition;
 	}
 
-	public IfStatement(Expression condition, Statement then, Statement otherwise){
+	public IfStatement(BooleanExpression condition, Statement then, Statement otherwise) {
 		this(condition, then, otherwise, true, false, false);
 	}
 
 	@Override
-	public void execute(Unit unit, Counter counter) {
-		counter.increment();
-		if(hasNotBeenExecutedOnce){
-			solvedCondition= (boolean) condition.evaluate(unit);
-			hasNotBeenExecutedOnce=false;
+	public void execute(Unit unit, Cube cube, Counter counter) {
+		if (hasNotBeenExecutedOnce) {
+			counter.increment();
+			solvedCondition = (boolean) condition.evaluate(unit, cube).getValue();
+			hasNotBeenExecutedOnce = false;
 		}
-		if(!(then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted())){
-			if(solvedCondition){
-				then.execute(unit, counter);
+		if (!this.hasBeenFullyExecuted()) {
+			if (solvedCondition) {
+				then.execute(unit, cube, counter);
+				return;
+			} else {
+				otherwise.execute(unit, cube, counter);
 				return;
 			}
-			else{
-				otherwise.execute(unit, counter);
-				return;
-			}
 		}
-		else
-			this.SetHasFullyExecutedToTrue();
 	}
 
 	@Override
-	public boolean canExecute(Unit unit, Counter counter) {
-		counter.increment();		
-		if (hasBeenFullyExecuted() || counter.getCount()>1000)
+	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
+		counter.increment();
+		if (hasBeenFullyExecuted() || counter.getCount() > 1000)
 			return false;
 
-		if (hasNotBeenExecutedOnce){
-			if((boolean) condition.evaluate(unit))
-				return then.canExecute(unit, counter);
+		if (hasNotBeenExecutedOnce) {
+			if ((boolean) condition.evaluate(unit, cube).getValue())
+				return then.canExecute(unit, cube, counter);
 			else
-				return otherwise.canExecute(unit, counter);
+				return otherwise.canExecute(unit, cube, counter);
 		}
-		if(!(then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted())){
-			if(solvedCondition){
-				return then.canExecute(unit, counter);
+		if (!(then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted())) {
+			if (solvedCondition) {
+				return then.canExecute(unit, cube, counter);
 			}
-			if(!solvedCondition)
-				return otherwise.canExecute(unit, counter);
+			if (!solvedCondition)
+				return otherwise.canExecute(unit, cube, counter);
 		}
 		return true;
 	}
@@ -80,6 +79,12 @@ public class IfStatement extends Statement {
 
 	@Override
 	public IfStatement clone() {
-		return new IfStatement(condition, then.clone(), otherwise.clone(), hasNotBeenExecutedOnce, hasBeenFullyExecuted(), solvedCondition);
+		return new IfStatement(condition, then.clone(), otherwise.clone(), hasNotBeenExecutedOnce,
+				hasBeenFullyExecuted(), solvedCondition);
+	}
+
+	@Override
+	public boolean hasBeenFullyExecuted() {
+		return (then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted());
 	}
 }

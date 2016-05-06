@@ -6,23 +6,22 @@ import hillbillies.model.programs.type.CubeType;
 
 public class SelectedExpression extends CubeExpression {
 
-	public SelectedExpression(XYZExpression e) {
-		expression = e;
+	public SelectedExpression() {
 	}
 	
 	public XYZExpression getExpression() {
 		return expression;
 	}
 	
-	public CubeType getExpressionEvaluate(Unit unit) {
-		return new CubeType((Cube) getExpression().evaluate(unit).getValue());
+	public CubeType getExpressionEvaluate(Unit unit, Cube cube) {
+		return new CubeType((Cube) getExpression().evaluate(unit, cube).getValue());
 	}
 	
 	private XYZExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit) {
-		return new CubeType((Cube) getExpressionEvaluate(unit).getValue());
+	public CubeType evaluate(Unit unit, Cube cube) {
+		return new CubeType(cube);
 	}
 	
 	@Override

@@ -13,8 +13,8 @@ public class XYZExpression extends CubeExpression {
 	private VariableExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit) {
-		return new CubeType((Cube) expression.evaluate(unit).getValue());
+	public CubeType evaluate(Unit unit, Cube cube) {
+		return new CubeType((Cube) expression.evaluate(unit, cube).getValue());
 	}
 	
 	@Override
