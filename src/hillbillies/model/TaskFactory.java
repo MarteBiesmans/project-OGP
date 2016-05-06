@@ -154,7 +154,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Type>
 
 	@Override
 	public Expression<CubeType> createSelectedPosition(SourceLocation sourceLocation) {
-		return new SelectedExpression();
+		return new SelectedExpression(null);
 	}
 
 	@Override
