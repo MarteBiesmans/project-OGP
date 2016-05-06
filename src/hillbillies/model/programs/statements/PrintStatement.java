@@ -4,25 +4,17 @@ import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.Expression;
-import hillbillies.part3.programs.ITaskFactory;
 
 public class PrintStatement extends Statement {
 	
-	private PrintStatement(Expression<?> expression, ITaskFactory<?,?,?> factory, boolean hasBeenFullyExecuted) {
+	private PrintStatement(Expression<?> expression, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.expression = expression;
-		TaskFactory = factory;
 	}
 
-	public PrintStatement(Expression<?> expression, ITaskFactory<?,?,?> factory) {
-		this(expression, factory, false);
+	public PrintStatement(Expression<?> expression) {
+		this(expression, false);
 	}
-	
-	public ITaskFactory<?,?,?> getTaskFactory() {
-		return TaskFactory;
-	}
-
-	private final ITaskFactory<?,?,?> TaskFactory;
 	
 	public Expression<?> getExpression() {
 		return expression;
@@ -33,7 +25,7 @@ public class PrintStatement extends Statement {
 	@Override
 	public void execute(Unit unit, Cube cube, Counter counter) {
 		counter.increment();
-		getTaskFactory().print(expression.evaluate(unit, cube).toString());
+		System.out.println(expression.evaluate(unit, cube).toString());
 		super.SetHasFullyExecutedToTrue();
 	}
 
@@ -58,7 +50,7 @@ public class PrintStatement extends Statement {
 
 	@Override
 	public PrintStatement clone() {
-		return new PrintStatement(getExpression(), getTaskFactory(), hasBeenFullyExecuted());
+		return new PrintStatement(getExpression(), hasBeenFullyExecuted());
 	}
 
 }
