@@ -31,7 +31,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 
 	@Override
 	public Statement createWhile(Expression<?> condition, Statement body, SourceLocation sourceLocation) {
-		return new WhileStatement(condition, body);
+		return new WhileStatement((BooleanExpression) condition, body);
 	}
 
 	@Override

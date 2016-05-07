@@ -7,12 +7,6 @@ import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class IfStatement extends Statement {
 
-	private final BooleanExpression condition;
-	private final Statement then;
-	private final Statement otherwise;
-	private boolean solvedCondition;
-	private boolean hasNotBeenExecutedOnce;
-
 	private IfStatement(BooleanExpression condition, Statement then, Statement otherwise,
 			boolean hasNotBeenExecutedOnce, boolean hasFullyExecuted, boolean solvedCondition) {
 		super(hasFullyExecuted);
@@ -27,6 +21,12 @@ public class IfStatement extends Statement {
 		this(condition, then, otherwise, true, false, false);
 	}
 
+	private final BooleanExpression condition;
+	private final Statement then;
+	private final Statement otherwise;
+	private boolean solvedCondition;
+	private boolean hasNotBeenExecutedOnce;
+	
 	@Override
 	public void execute(Unit unit, Cube cube, Counter counter) {
 		if (hasNotBeenExecutedOnce) {

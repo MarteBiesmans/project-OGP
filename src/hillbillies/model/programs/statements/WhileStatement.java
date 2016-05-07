@@ -3,26 +3,25 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.expressions.Expression;
-import hillbillies.model.programs.type.BooleanType;
+import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class WhileStatement extends Statement {
 
-	private WhileStatement(Statement body, Statement bodyCopy, Expression<BooleanType> condition, boolean hasBeenFullyExecuted) {
+	private WhileStatement(BooleanExpression condition, Statement body, Statement bodyCopy, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.condition = condition;
-		this.bodyCopy = bodyCopy.clone();
 		this.body = body.clone();
+		this.bodyCopy = bodyCopy.clone();
 	}	
 	
-	public WhileStatement(Expression<?> condition, Statement body) {
-		this(body, body, ((Expression<BooleanType>) condition), false);
+	public WhileStatement(BooleanExpression condition, Statement body) {
+		this(condition, body, body, false);
 		this.body.SetHasFullyExecutedToTrue();
 	}
 	
 	private Statement body;
 	private final Statement bodyCopy;
-	private final Expression<BooleanType> condition;
+	private final BooleanExpression condition;
 	
 	@Override
 	public void execute(Unit unit, Cube cube, Counter counter) {
@@ -68,7 +67,7 @@ public class WhileStatement extends Statement {
 
 	@Override
 	public WhileStatement clone() {
-		return new WhileStatement(body.clone(), bodyCopy.clone(), condition, hasBeenFullyExecuted());
+		return new WhileStatement(condition, body.clone(), bodyCopy.clone(), hasBeenFullyExecuted());
 	}
 
 }

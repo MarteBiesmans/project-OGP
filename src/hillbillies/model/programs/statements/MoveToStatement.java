@@ -7,28 +7,36 @@ import hillbillies.model.programs.expressions.CubeExpression;
 
 public class MoveToStatement extends ActionStatement {
 	
-	public MoveToStatement(CubeExpression expression) {
-		this.cube = expression;
+	private MoveToStatement(CubeExpression c, boolean hasBeenFullyExecuted) {
+		super(hasBeenFullyExecuted);
+		this.cube = c;
+	}
+	
+	public MoveToStatement(CubeExpression c) {
+		this(c, false);
 	}
 	
 	private CubeExpression cube;
-	
+
 	@Override
 	public void execute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		
+		counter.increment();
+		getActionHandler().move(worm);
+		SetHasFullyExecutedToTrue();
 	}
 
 	@Override
 	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		return false;
+		counter.increment();
+		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
+			return false;
+		}
+		return worm.canMove();
 	}
 
 	@Override
-	public Statement clone() {
-		// TODO Auto-generated method stub
-		return null;
+	public MoveStatement clone() {
+		return new MoveStatement(getActionHandler(), hasBeenFullyExecuted());
 	}
 
 	
