@@ -15,12 +15,12 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import ogp.framework.util.Util;
 
-
 /**
- * A class of units involving a position, name, strength, agility, toughness
- * and default behaviour.
+ * A class of units involving a position, name, strength, agility, toughness and
+ * default behaviour.
  * 
  * TODO mss zijn dit er meer?
+ * 
  * @invar The name of each unit must be a valid name for any unit. |
  *        isValidName(getName())
  * @invar The position of each unit must be a valid position for any unit. |
@@ -62,89 +62,83 @@ public class Unit extends TimeVariableObject {
 	private static final int MAX_VAL_PRIMARY_ATTRIBUTE = 200;
 
 	/**
-	 * Create a new unit with a given position, name, strength, agility, toughness 
-	 * and boolean to enable default behaviour or not.
+	 * Create a new unit with a given position, name, strength, agility,
+	 * toughness and boolean to enable default behaviour or not.
 	 * 
-	 * @effect	sets the name of this new unit to the given name
-	 * 			|setName(name)
-	 *      
-	 * @effect	sets the position of this new unit to the given position.
-	 * 			|setPosition(new Position(x, y, z))
-	 * @effect	sets the orientation of this new unit to the default value PI/2
-	 * 			|setOrientation((float) Math.PI/2)
-	 *       
-	 * @post	The strength of this new unit is equal to the given strength if it lies between the
-	 * 			minimum and maximum initial value of strength, else it will be the closest boundary value
-	 * 			|if (strength < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getStrength() == MIN_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else if (strength > MAX_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getStrength() == MAX_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else
-	 *			|	then new.getStrength == strength;
-	 * @post	The agility of this new unit is equal to the given agility if it lies between the
-	 * 			minimum and maximum initial value of agility, else it will be the closest boundary value
-	 * 			|if (agility < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getAgility() == MIN_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else if (agility > MAX_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getAgility() == MAX_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else
-	 *			|	then new.getAgility == agility;
-	 * @post	The toughness of this new unit is equal to the given tougness if it lies between the
-	 * 			minimum and maximum initial value of tougness, else it will be the closest boundary value
-	 * 			|if (tougness < MIN_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getToughness() == MIN_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else if (toughness > MAX_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getToughness() == MAX_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else
-	 *			|	then new.getToughness == toughness;
-	 * @post	The weight of this new unit is equal to the given weight if it lies between the
-	 * 			minimum and maximum initial value of weight, else it will be the closest boundary value
-	 * 			|if (weight < this.getMinimumInitValWeight())
-	 *			|	then new.getWeight() == this.getMinimumInitValWeight();
-	 *			|else if (weight > MAX_INIT_VAL_PRIMARY_ATTRIBUTE)
-	 *			|	then new.getWeight() == MAX_INIT_VAL_PRIMARY_ATTRIBUTE;
-	 *			|else
-	 *			|	then new.getWeight == weight;  
+	 * @effect sets the name of this new unit to the given name |setName(name)
+	 * 
+	 * @effect sets the position of this new unit to the given position.
+	 *         |setPosition(new Position(x, y, z))
+	 * @effect sets the orientation of this new unit to the default value PI/2
+	 *         |setOrientation((float) Math.PI/2)
+	 * 
+	 * @post The strength of this new unit is equal to the given strength if it
+	 *       lies between the minimum and maximum initial value of strength,
+	 *       else it will be the closest boundary value |if (strength <
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getStrength() ==
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE; |else if (strength >
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getStrength() ==
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE; |else | then new.getStrength ==
+	 *       strength;
+	 * @post The agility of this new unit is equal to the given agility if it
+	 *       lies between the minimum and maximum initial value of agility, else
+	 *       it will be the closest boundary value |if (agility <
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getAgility() ==
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE; |else if (agility >
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getAgility() ==
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE; |else | then new.getAgility ==
+	 *       agility;
+	 * @post The toughness of this new unit is equal to the given tougness if it
+	 *       lies between the minimum and maximum initial value of tougness,
+	 *       else it will be the closest boundary value |if (tougness <
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getToughness() ==
+	 *       MIN_INIT_VAL_PRIMARY_ATTRIBUTE; |else if (toughness >
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getToughness() ==
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE; |else | then new.getToughness ==
+	 *       toughness;
+	 * @post The weight of this new unit is equal to the given weight if it lies
+	 *       between the minimum and maximum initial value of weight, else it
+	 *       will be the closest boundary value |if (weight <
+	 *       this.getMinimumInitValWeight()) | then new.getWeight() ==
+	 *       this.getMinimumInitValWeight(); |else if (weight >
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE) | then new.getWeight() ==
+	 *       MAX_INIT_VAL_PRIMARY_ATTRIBUTE; |else | then new.getWeight ==
+	 *       weight;
 	 *
-	 * @effect	sets the hitpoints of this new unit to the maximum value
-	 * 			|setHitpoints(this.getMaxHitpoints())
-	 * @effect	sets the stamina points of this new unit to the maximum value
-	 * 			|setStaminaPoints(this.getMaxStaminaPoints());
+	 * @effect sets the hitpoints of this new unit to the maximum value
+	 *         |setHitpoints(this.getMaxHitpoints())
+	 * @effect sets the stamina points of this new unit to the maximum value
+	 *         |setStaminaPoints(this.getMaxStaminaPoints());
 	 * 
-	 * @effect	sets the activity of this new unit to NONE
-	 * 			|setActivity(Activity.NONE);
-	 * @post	this new unit has no acitivities in it's activity queue
-	 * 			|new.activityQueue.isEmpty()
-	 * @effect	sets the busy time of this new unit to zero
-	 * 			|setBusyTime(0);
+	 * @effect sets the activity of this new unit to NONE
+	 *         |setActivity(Activity.NONE);
+	 * @post this new unit has no acitivities in it's activity queue
+	 *       |new.activityQueue.isEmpty()
+	 * @effect sets the busy time of this new unit to zero |setBusyTime(0);
 	 * 
-	 * @post	the flag default behaviour of this new unit equals the value of the variable enableDefaultBehaviour
-	 * 			|new.defaultBehaviour == enableDefaultBehaviour;
+	 * @post the flag default behaviour of this new unit equals the value of the
+	 *       variable enableDefaultBehaviour |new.defaultBehaviour ==
+	 *       enableDefaultBehaviour;
 	 * 
-	 * @effect	moveToCube, moveToAdjacent en workAtCube of this new unit are all set to null
-	 * 			|setMoveToCube(null);
-	 * 			|setMoveToAdjacent(null);
-	 * 			|setWorkAtCube(null);
+	 * @effect moveToCube, moveToAdjacent en workAtCube of this new unit are all
+	 *         set to null |setMoveToCube(null); |setMoveToAdjacent(null);
+	 *         |setWorkAtCube(null);
 	 * 
-	 * @post	the world and faction of this new unit equal null
-	 * 			|new.world = null;
-	 *			|new.faction = null;
-	 * @effect	sets the experience points and level of this new unit to zero
-	 *			|setExperiencePoints(0);
-	 *			|setLevel(0);
+	 * @post the world and faction of this new unit equal null |new.world =
+	 *       null; |new.faction = null;
+	 * @effect sets the experience points and level of this new unit to zero
+	 *         |setExperiencePoints(0); |setLevel(0);
 	 * 
-	 * @post	This new unit has no materials yet.
-	 * 			|new.getNbMaterials() == 0
-	 * @post	this new unit is alive
-	 * 			|new.isDead == false
+	 * @post This new unit has no materials yet. |new.getNbMaterials() == 0
+	 * @post this new unit is alive |new.isDead == false
 	 * 
-	 * @throws	IllegalArgumentException
-	 * 			the given name is not valid
-	 * 			|!this.isValidName(name)
-	 * @throws	IllegalArgumentException
-	 * 			the given coordinates are not valid
-	 * 			|!this.canHaveAsPosition(new Position(x,y,z))
-	 * 
+	 * @throws IllegalArgumentException
+	 *             the given name is not valid |!this.isValidName(name)
+	 * @throws IllegalArgumentException
+	 *             the given coordinates are not valid
+	 *             |!this.canHaveAsPosition(new Position(x,y,z))
+	 * @invar The task of each unit must be a valid task for any unit. |
+	 *        isValidTask(getTask())
 	 */
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
 			boolean enableDefaultBehaviour) throws IllegalArgumentException {
@@ -206,22 +200,28 @@ public class Unit extends TimeVariableObject {
 		this.faction = null;
 		this.setExperiencePoints(0);
 		this.setLevel(0);
+		
+		// task
+		this.setTask(null);
 	}
 
 	// ATTRIBUTES: getAlpha(), isValidAlpha(), canHaveAsAlpha(), setAlpha() ...
 
 	/**
-	 * checks if the unit is a valid unit. This means that all attributes have to
-	 * be valid and that the unit must belong to a faction and must exist in a
-	 * world
+	 * checks if the unit is a valid unit. This means that all attributes have
+	 * to be valid and that the unit must belong to a faction and must exist in
+	 * a world
 	 * 
-	 * @return	true if position, name, strength, agility, toughness, weight and orientation are valid
-	 * 			and if this unit belongs to a faction and to a world
-	 * 			|result == canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
-	 *			|&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
-	 *			|&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
-	 *			|&& isValidOrientation(this.getOrientation())
-	 *			|&& this.getFaction() != null && this.getWorld() != null
+	 * @return true if position, name, strength, agility, toughness, weight and
+	 *         orientation are valid and if this unit belongs to a faction and
+	 *         to a world |result == canHaveAsPosition(this.getPosition()) &&
+	 *         isValidName(this.getName()) |&&
+	 *         isValidStrength(this.getStrength()) &&
+	 *         isValidAgility(this.getAgility()) |&&
+	 *         canHaveAsWeight(this.getWeight()) &&
+	 *         isValidToughness(this.getToughness()) |&&
+	 *         isValidOrientation(this.getOrientation()) |&& this.getFaction()
+	 *         != null && this.getWorld() != null
 	 */
 	boolean isValidUnit() {
 		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
@@ -242,17 +242,15 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * check wether the given position is valid for this unit
 	 * 
-	 * @param	position
-	 *          the position to check
-	 * @return	false if the given position equals null
-	 * 			|if (position==null)
-	 * 			|	then result == false
-	 * @return	false if the given position is not legal in the world of this unit
-	 * 			|if (world != null)
-	 * 			|	then result == position.isValidForObjectIn(this.getWorld())
-	 * @return	true if this unit doesn't have a world (position cannot be invalid)
-	 * 			|if (world == null)
-	 * 			|	then result == true
+	 * @param position
+	 *            the position to check
+	 * @return false if the given position equals null |if (position==null) |
+	 *         then result == false
+	 * @return false if the given position is not legal in the world of this
+	 *         unit |if (world != null) | then result ==
+	 *         position.isValidForObjectIn(this.getWorld())
+	 * @return true if this unit doesn't have a world (position cannot be
+	 *         invalid) |if (world == null) | then result == true
 	 */
 	private boolean canHaveAsPosition(Position position) {
 		if (position == null)
@@ -265,25 +263,27 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the position of this unit to the given coordinates.
 	 * 
-	 * @param	position
-	 *          the new position for this unit
-	 * @post	the new position of this unit is equal to the given position.
-	 * 			|new.getPosition() = position
+	 * @param position
+	 *            the new position for this unit
+	 * @post the new position of this unit is equal to the given position.
+	 *       |new.getPosition() = position
 	 * 
-	 * @effect	if this unit is not falling yet and it should fall, an activity falling will be added
-	 * 			|if  (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube()))
-	 * 			|	then insertActivity(Activity.FALLING)
-	 * @effect	if this unit was falling and reached a stable position, go to the next activity
-	 * 			|if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world))
-	 * 			|	then nextActivity()
+	 * @effect if this unit is not falling yet and it should fall, an activity
+	 *         falling will be added |if (this.getCurrentActivity() !=
+	 *         Activity.FALLING &&
+	 *         this.shouldStartFallingAt(position.getCube())) | then
+	 *         insertActivity(Activity.FALLING)
+	 * @effect if this unit was falling and reached a stable position, go to the
+	 *         next activity |if (this.getCurrentActivity() == Activity.FALLING
+	 *         && position.isStableForUnitIn(world)) | then nextActivity()
 	 * 
-	 * @throws	IllegalArgumentException
-	 *          the given coordinates are not valid for this unit
-	 *          |(!this.canHaveAsPosition(new Position(x,y,z)))
+	 * @throws IllegalArgumentException
+	 *             the given coordinates are not valid for this unit
+	 *             |(!this.canHaveAsPosition(new Position(x,y,z)))
 	 */
 	@Raw
 	private void setPosition(Position position) throws IllegalArgumentException {
-		if (! this.canHaveAsPosition(position))
+		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
@@ -301,8 +301,9 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * return the cube where this unit is located
-	 * @return	the cube of the position of this unit
-	 * 			|result == this.getPosition().getCube()
+	 * 
+	 * @return the cube of the position of this unit |result ==
+	 *         this.getPosition().getCube()
 	 */
 	public Cube getCube() {
 		return this.getPosition().getCube();
@@ -320,23 +321,19 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given name is a valid name for any unit.
 	 * 
-	 * @param	name
-	 *          The name to check.
-	 * @return	false if given name equals null
-	 * 			|if (name==null)
-	 * 			|	then result == false
-	 * @return	false if the given name is not at least two characters long
-	 * 			and doesn't start with an uppercase letter
-	 *          |if (name.length() < 2)
-	 *          |	then result == false
-	 *          |if (!Character.isUpperCase(name.charAt(0)))
-	 *          |	then result == false
-	 * @return	false if at least one character is not valid
-	 * 			(valid characters are letters, double quotes, single quotes and spaces)
-	 * 			|for each i in [0, name.length()]
-	 * 			|if ((!Character.isLetter(name.charAt(i))) && (!(name.charAt(i) == '"'))
-	 *			|	&& (!(name.charAt(i) == '\'')) && (!(name.charAt(i) == ' '))
-	 *			|	then result == false
+	 * @param name
+	 *            The name to check.
+	 * @return false if given name equals null |if (name==null) | then result ==
+	 *         false
+	 * @return false if the given name is not at least two characters long and
+	 *         doesn't start with an uppercase letter |if (name.length() < 2) |
+	 *         then result == false |if (!Character.isUpperCase(name.charAt(0)))
+	 *         | then result == false
+	 * @return false if at least one character is not valid (valid characters
+	 *         are letters, double quotes, single quotes and spaces) |for each i
+	 *         in [0, name.length()] |if ((!Character.isLetter(name.charAt(i)))
+	 *         && (!(name.charAt(i) == '"')) | && (!(name.charAt(i) == '\'')) &&
+	 *         (!(name.charAt(i) == ' ')) | then result == false
 	 */
 	private static boolean isValidName(String name) {
 		if (name == null)
@@ -351,7 +348,8 @@ public class Unit extends TimeVariableObject {
 		for (int i = 0; i < name.length(); i++) {
 			if ((!Character.isLetter(name.charAt(i))) // is it a letter?
 					&& (!(name.charAt(i) == '"')) // is it a double quote?
-					&& (!(name.charAt(i) == '\'')) // is it a single quote/apostrophe?
+					&& (!(name.charAt(i) == '\'')) // is it a single
+													// quote/apostrophe?
 					&& (!(name.charAt(i) == ' ')) // is it a space?
 			)
 				return false;
@@ -362,14 +360,13 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the name of this unit to the given name.
 	 * 
-	 * @param	name
-	 *          The new name for this unit.
-	 * @post	The name of this unit is equal to the given name if it is valid.
-	 * 			|if (isValidName(name))
-	 * 			|	then new.getName() == name
-	 * @throws	IllegalArgumentException
-	 *          The given name is not a valid name for this unit.
-	 *          |(!isValidName(name))
+	 * @param name
+	 *            The new name for this unit.
+	 * @post The name of this unit is equal to the given name if it is valid.
+	 *       |if (isValidName(name)) | then new.getName() == name
+	 * @throws IllegalArgumentException
+	 *             The given name is not a valid name for this unit.
+	 *             |(!isValidName(name))
 	 */
 	@Raw
 	public void setName(String name) throws IllegalArgumentException {
@@ -395,10 +392,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given strength is a valid strength for any unit.
 	 * 
-	 * @param	strength
-	 *          The strength to check.
-	 * @return	true if and only if strength lies between the minimum and maximum value for primary attributes.
-	 * 			|result == ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE))
+	 * @param strength
+	 *            The strength to check.
+	 * @return true if and only if strength lies between the minimum and maximum
+	 *         value for primary attributes. |result == ((strength >=
+	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <=
+	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidStrength(int strength) {
 		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -407,21 +406,19 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the strength of this unit to the given strength.
 	 * 
-	 * @param	strength
-	 *          The new strength for this unit.
-	 * @post	If the given strength is a valid strength for this unit, the new
-	 *			strength of this unit is equal to the given strength.
-	 *			|if (isValidStrength(strength))
-	 *			|	then new.getStrength() == strength
-	 * @post	If the given strength lies beyond the limits of the specified
-	 *       	minimum and maximum value, the new strength will be this limit
-	 *       	value.
-	 *       	|if (strength < MIN_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getStrength() == MIN_VAL_PRIMARY_ATTRIBUTE
-	 *       	|if (strength > MAX_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getStrength() == MAX_VAL_PRIMARY_ATTRIBUTE
-	 * @effect	the weight of this unit is set to it's current weight to meet the possible new limits
-	 * 			|setWeight(this.getWeight())
+	 * @param strength
+	 *            The new strength for this unit.
+	 * @post If the given strength is a valid strength for this unit, the new
+	 *       strength of this unit is equal to the given strength. |if
+	 *       (isValidStrength(strength)) | then new.getStrength() == strength
+	 * @post If the given strength lies beyond the limits of the specified
+	 *       minimum and maximum value, the new strength will be this limit
+	 *       value. |if (strength < MIN_VAL_PRIMARY_ATTRIBUTE) | then
+	 *       new.getStrength() == MIN_VAL_PRIMARY_ATTRIBUTE |if (strength >
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getStrength() ==
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE
+	 * @effect the weight of this unit is set to it's current weight to meet the
+	 *         possible new limits |setWeight(this.getWeight())
 	 */
 	@Raw
 	public void setStrength(int strength) {
@@ -451,11 +448,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given agility is a valid agility for any unit.
 	 * 
-	 * @param	agility
-	 *          The agility to check.
-	 * @return	true if and only if agility lies between the minimum and maximum
-	 *         	value for primary attributes.
-	 *         	|result == ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE))
+	 * @param agility
+	 *            The agility to check.
+	 * @return true if and only if agility lies between the minimum and maximum
+	 *         value for primary attributes. |result == ((agility >=
+	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <=
+	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidAgility(int agility) {
 		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -464,21 +462,19 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the agility of this unit to the given agility.
 	 * 
-	 * @param	agility
-	 *          The new agility for this unit.
-	 * @post	If the given agility is a valid agility for this unit, the new
-	 *       	agility of this unit is equal to the given agility.
-	 *       	|if (isValidAgility(agility))
-	 *       	|	then new.getAgility() == agility
-	 * @post	If the given agility lies beyond the limits of the specified
-	 *       	minimum and maximum value, the new agility will be this limit
-	 *       	value.
-	 *       	|if (agility < MIN_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getAgility() == MIN_VAL_PRIMARY_ATTRIBUTE
-	 *       	|if (agility > MAX_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getAgility() == MAX_VAL_PRIMARY_ATTRIBUTE
-	 * @effect	the weight of this unit is set to it's current weight to meet the possible new limits
-	 * 			|setWeight(this.getWeight())
+	 * @param agility
+	 *            The new agility for this unit.
+	 * @post If the given agility is a valid agility for this unit, the new
+	 *       agility of this unit is equal to the given agility. |if
+	 *       (isValidAgility(agility)) | then new.getAgility() == agility
+	 * @post If the given agility lies beyond the limits of the specified
+	 *       minimum and maximum value, the new agility will be this limit
+	 *       value. |if (agility < MIN_VAL_PRIMARY_ATTRIBUTE) | then
+	 *       new.getAgility() == MIN_VAL_PRIMARY_ATTRIBUTE |if (agility >
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getAgility() ==
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE
+	 * @effect the weight of this unit is set to it's current weight to meet the
+	 *         possible new limits |setWeight(this.getWeight())
 	 */
 	@Raw
 	public void setAgility(int agility) {
@@ -506,12 +502,13 @@ public class Unit extends TimeVariableObject {
 	}
 
 	/**
-	 * return the total weight of this unit (including weight of carried materials)
-	 * @return	the weight of this unit plus the weight of carried materials
-	 * 			|weightSoFar == this.getWeight()
-	 * 			|for each material in this.materials
-	 * 			|	weightSoFar += material.getWeight()
-	 * 			|result == weightSoFar
+	 * return the total weight of this unit (including weight of carried
+	 * materials)
+	 * 
+	 * @return the weight of this unit plus the weight of carried materials
+	 *         |weightSoFar == this.getWeight() |for each material in
+	 *         this.materials | weightSoFar += material.getWeight() |result ==
+	 *         weightSoFar
 	 */
 	private int getTotalWeight() {
 		int weightSoFar = this.getWeight();
@@ -523,10 +520,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the minimum value for the primary attribute weight.
 	 * 
-	 * @return	the maximum of (strength + agility) / 2 and the minimum value for any primary attribute
-	 * 			|result == Math.max(
-	 * 			| (int) Math.ceil((double) ((this.strength + this.agility) / 2.0)),
-	 * 			| MIN_VAL_PRIMARY_ATTRIBUTE )
+	 * @return the maximum of (strength + agility) / 2 and the minimum value for
+	 *         any primary attribute |result == Math.max( | (int)
+	 *         Math.ceil((double) ((this.strength + this.agility) / 2.0)), |
+	 *         MIN_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumWeight() {
 		int minimumWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
@@ -536,10 +533,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the minimum initial value for the primary attribute weight.
 	 * 
-	 * @return	the maximum of (strength + agility) / 2 and the minimum initial value for any primary attribute
-	 * 			|Math.max(
-	 * 			|(int) Math.ceil((double) ((this.strength + this.agility) / 2.0)),
-	 * 			| MIN_INIT_VAL_PRIMARY_ATTRIBUTE )
+	 * @return the maximum of (strength + agility) / 2 and the minimum initial
+	 *         value for any primary attribute |Math.max( |(int)
+	 *         Math.ceil((double) ((this.strength + this.agility) / 2.0)), |
+	 *         MIN_INIT_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumInitValWeight() {
 		int minimumInitValWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
@@ -549,11 +546,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given weight is a valid weight for any unit.
 	 * 
-	 * @param	weight
-	 *          The weight to check.
-	 * @return	true if and only if weight lies between the minimum and maximum
-	 *         	value for primary attributes.
-	 *         	|result == ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE))
+	 * @param weight
+	 *            The weight to check.
+	 * @return true if and only if weight lies between the minimum and maximum
+	 *         value for primary attributes. |result == ((weight >=
+	 *         this.getMinimumWeight()) && (weight <=
+	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private boolean canHaveAsWeight(int weight) {
 		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -562,33 +560,34 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the weight of this unit to the given weight.
 	 * 
-	 * @param	weight
-	 *          The new weight for this unit.
-	 * @post	If the given weight is a valid weight for this unit, the new weight
-	 *       	of this unit is equal to the given weight.
-	 *       	|if (this.canHaveAsWeight(weight))
-	 *       	|	then new.getWeight() == weight
-	 * @post	If the given weight lies beyond the limits of the specified minimum
-	 *       	and maximum value, the new weight will be this limit value.
-	 *       	|if (weight < this.getMinimumWeight())
-	 *       	|	then new.getWeight() == this.getMinimumWeight()
-	 *       	|if (weight > MAX_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getWeight() == MAX_VAL_PRIMARY_ATTRIBUTE
-	 * @post	If after the change of weight, hitpoints and stamina points aren't
-	 *       	legal anymore, they will be changed to a legal value.
-	 *       	|if (!new.canHaveAsHitpoints(this.getHitpoints()) )
-	 *       	|	then new.getHitpoints() == new.getMaxHitpoints()
-	 *       	|if (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) )
-	 *       	|	then new.getStaminaPoints() == new.getMaxStaminaPoints()
+	 * @param weight
+	 *            The new weight for this unit.
+	 * @post If the given weight is a valid weight for this unit, the new weight
+	 *       of this unit is equal to the given weight. |if
+	 *       (this.canHaveAsWeight(weight)) | then new.getWeight() == weight
+	 * @post If the given weight lies beyond the limits of the specified minimum
+	 *       and maximum value, the new weight will be this limit value. |if
+	 *       (weight < this.getMinimumWeight()) | then new.getWeight() ==
+	 *       this.getMinimumWeight() |if (weight > MAX_VAL_PRIMARY_ATTRIBUTE) |
+	 *       then new.getWeight() == MAX_VAL_PRIMARY_ATTRIBUTE
+	 * @post If after the change of weight, hitpoints and stamina points aren't
+	 *       legal anymore, they will be changed to a legal value. |if
+	 *       (!new.canHaveAsHitpoints(this.getHitpoints()) ) | then
+	 *       new.getHitpoints() == new.getMaxHitpoints() |if
+	 *       (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) ) | then
+	 *       new.getStaminaPoints() == new.getMaxStaminaPoints()
 	 */
 	@Raw
 	public void setWeight(int weight) {
 		if (this.canHaveAsWeight(weight)) {
-			this.weight = weight; }
+			this.weight = weight;
+		}
 		if (weight < this.getMinimumWeight()) {
-			this.weight = this.getMinimumWeight(); }
+			this.weight = this.getMinimumWeight();
+		}
 		if (weight > MAX_VAL_PRIMARY_ATTRIBUTE) {
-			this.weight = MAX_VAL_PRIMARY_ATTRIBUTE; }
+			this.weight = MAX_VAL_PRIMARY_ATTRIBUTE;
+		}
 
 		if (!this.canHaveAsHitpoints(this.getHitpoints()))
 			this.setHitpoints(this.getMaxHitpoints());
@@ -610,15 +609,15 @@ public class Unit extends TimeVariableObject {
 		return this.toughness;
 	}
 
-
 	/**
 	 * Check whether the given toughness is a valid toughness for any unit.
 	 * 
-	 * @param	toughness
-	 *          The toughness to check.
-	 * @return	true if and only if toughness lies between the minimum and
-	 *         	maximum value for primary attributes.
-	 *         	|result == ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE))
+	 * @param toughness
+	 *            The toughness to check.
+	 * @return true if and only if toughness lies between the minimum and
+	 *         maximum value for primary attributes. |result == ((toughness >=
+	 *         MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <=
+	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidToughness(int toughness) {
 		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
@@ -627,25 +626,24 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the toughness of this unit to the given toughness.
 	 * 
-	 * @param	toughness
-	 *          The new toughness for this unit.
-	 * @post	If the given toughness is a valid toughness for this unit, the new
-	 *       	toughness of this unit is equal to the given toughness.
-	 *       	|if (isValidToughness(toughness))
-	 *       	|	then new.getToughness() == toughness
-	 * @post	If the given toughness lies beyond the limits of the specified
-	 *       	minimum and maximum value, the new toughness will be this
-	 *       	limitvalue.
-	 *       	|if (toughness < MIN_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getToughness() == MIN_VAL_PRIMARY_ATTRIBUTE
-	 *       	|if (toughness > MAX_VAL_PRIMARY_ATTRIBUTE)
-	 *       	|	then new.getToughness() == MAX_VAL_PRIMARY_ATTRIBUTE
-	 * @post	If after the change of toughness, hitpoints and stamina points
-	 *       	aren't legal anymore, they will be changed to a legal value.
-	 *       	|if (!new.canHaveAsHitpoints(this.getHitpoints()) )
-	 *       	|	then new.getHitpoints() == new.getMaxHitpoints()
-	 *       	|if (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) )
-	 *       	|	then new.getStaminaPoints() == new.getMaxStaminaPoints()
+	 * @param toughness
+	 *            The new toughness for this unit.
+	 * @post If the given toughness is a valid toughness for this unit, the new
+	 *       toughness of this unit is equal to the given toughness. |if
+	 *       (isValidToughness(toughness)) | then new.getToughness() ==
+	 *       toughness
+	 * @post If the given toughness lies beyond the limits of the specified
+	 *       minimum and maximum value, the new toughness will be this
+	 *       limitvalue. |if (toughness < MIN_VAL_PRIMARY_ATTRIBUTE) | then
+	 *       new.getToughness() == MIN_VAL_PRIMARY_ATTRIBUTE |if (toughness >
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE) | then new.getToughness() ==
+	 *       MAX_VAL_PRIMARY_ATTRIBUTE
+	 * @post If after the change of toughness, hitpoints and stamina points
+	 *       aren't legal anymore, they will be changed to a legal value. |if
+	 *       (!new.canHaveAsHitpoints(this.getHitpoints()) ) | then
+	 *       new.getHitpoints() == new.getMaxHitpoints() |if
+	 *       (!new.canHaveAsStaminaPoints(this.getStaminaPoints()) ) | then
+	 *       new.getStaminaPoints() == new.getMaxStaminaPoints()
 	 */
 	@Raw
 	public void setToughness(int toughness) {
@@ -667,7 +665,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int toughness;
 
-	
 	/**
 	 * Return the hitpoints of this unit.
 	 */
@@ -680,8 +677,9 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the maximum number of hitpoints of this unit.
 	 * 
-	 * @return	the maximum hitpoints based on the weight and thoughness of this unit
-	 * 			|result == (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0)
+	 * @return the maximum hitpoints based on the weight and thoughness of this
+	 *         unit |result == (int) Math.ceil((2 * this.getWeight() *
+	 *         this.getToughness()) / 100.0)
 	 */
 	public int getMaxHitpoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -690,10 +688,11 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given hitpoints are valid hitpoints for this unit.
 	 * 
-	 * @param	hitpoints
-	 *          The hitpoints to check.
-	 * @return	true if and only if hitpoints lie between zero and the maximum value
-	 * 			| result == ( (hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()) )
+	 * @param hitpoints
+	 *            The hitpoints to check.
+	 * @return true if and only if hitpoints lie between zero and the maximum
+	 *         value | result == ( (hitpoints >= 0) && (hitpoints <=
+	 *         this.getMaxHitpoints()) )
 	 */
 	private boolean canHaveAsHitpoints(double hitpoints) {
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpoints()));
@@ -702,12 +701,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the hitpoints of this unit to the given hitpoints.
 	 * 
-	 * @param	hitpoints
-	 * 			The new hitpoints for this unit.
-	 * @pre		The given hitpoints must be valid hitpoints for this unit.
-	 * 			|this.canHaveAsHitpoints(hitpoints)
-	 * @post	The hitpoints of this unit is equal to the given hitpoints.
-	 *       	|new.getHitpoints() == hitpoints
+	 * @param hitpoints
+	 *            The new hitpoints for this unit.
+	 * @pre The given hitpoints must be valid hitpoints for this unit.
+	 *      |this.canHaveAsHitpoints(hitpoints)
+	 * @post The hitpoints of this unit is equal to the given hitpoints.
+	 *       |new.getHitpoints() == hitpoints
 	 */
 	@Raw
 	private void setHitpoints(double hitpoints) {
@@ -732,8 +731,9 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the maximum number of stamina points of this unit.
 	 * 
-	 * @return	the maximum stamina points based on the weight and thoughness of this unit
-	 * 			|result == (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0)
+	 * @return the maximum stamina points based on the weight and thoughness of
+	 *         this unit |result == (int) Math.ceil((2 * this.getWeight() *
+	 *         this.getToughness()) / 100.0)
 	 */
 	public int getMaxStaminaPoints() {
 		return (int) Math.ceil((2 * this.getWeight() * this.getToughness()) / 100.0);
@@ -742,10 +742,11 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given stamina points are a valid value for this unit.
 	 * 
-	 * @param	staminaPoints
-	 *          The staminaPoints to check.
-	 * @return	true if and only if stamina points lie between zero and the maximum value
-	 * 			|result == ( (staminaPoints >= 0) && (staminaPoints <= this.getMaxHitpoints()) )
+	 * @param staminaPoints
+	 *            The staminaPoints to check.
+	 * @return true if and only if stamina points lie between zero and the
+	 *         maximum value |result == ( (staminaPoints >= 0) && (staminaPoints
+	 *         <= this.getMaxHitpoints()) )
 	 */
 	private boolean canHaveAsStaminaPoints(double staminaPoints) {
 		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
@@ -754,12 +755,12 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the stamina points of this unit to the given stamina points.
 	 * 
-	 * @param	staminaPoints
-	 *          The new stamina points for this unit.
-	 * @pre		The given stamina points must be valid stamina points for this unit.
-	 *      	|this.canHaveAsStaminaPoints(staminaPoints)
-	 * @post	The stamina points of this unit are equal to the given stamina points.
-	 * 			|new.getStaminaPoints() == staminaPoints
+	 * @param staminaPoints
+	 *            The new stamina points for this unit.
+	 * @pre The given stamina points must be valid stamina points for this unit.
+	 *      |this.canHaveAsStaminaPoints(staminaPoints)
+	 * @post The stamina points of this unit are equal to the given stamina
+	 *       points. |new.getStaminaPoints() == staminaPoints
 	 */
 	@Raw
 	private void setStaminaPoints(double staminaPoints) {
@@ -784,10 +785,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether the given orientation is a valid orientation for any unit.
 	 * 
-	 * @param	theta
-	 *          The orientation to check.
-	 * @return	true if and only if theta lies in the interval [0, 2*PI[
-	 * 			|result == (theta>=0 && theta<(2*Math.PI))
+	 * @param theta
+	 *            The orientation to check.
+	 * @return true if and only if theta lies in the interval [0, 2*PI[ |result
+	 *         == (theta>=0 && theta<(2*Math.PI))
 	 */
 	private static boolean isValidOrientation(double theta) {
 		return (theta >= 0.0 && theta < (2.0 * Math.PI));
@@ -796,14 +797,13 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
-	 * @param	theta
-	 *          The new orientation for this unit.
-	 * @post	If the given orientation theta is valid orientation, the new
-	 *       	orientation equals this value.
-	 * 			If the given orientation theta lies outside the interval [0, 2*PI[,
-	 *       	the new orientation of this unit is equal to the equivalent angle
-	 *       	in this interval with the same sinus and cosinus.
-	 *       	|result == Math.abs(theta % (2.0 * Math.PI))
+	 * @param theta
+	 *            The new orientation for this unit.
+	 * @post If the given orientation theta is valid orientation, the new
+	 *       orientation equals this value. If the given orientation theta lies
+	 *       outside the interval [0, 2*PI[, the new orientation of this unit is
+	 *       equal to the equivalent angle in this interval with the same sinus
+	 *       and cosinus. |result == Math.abs(theta % (2.0 * Math.PI))
 	 */
 	@Raw
 	void setOrientation(double theta) {
@@ -824,10 +824,11 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether the given experience points are valid for this unit
-	 * @param	points
-	 * 			The points to check
-	 * @return 	true if the given points are greater or equal than zero
-	 * 			|result == (points >= 0)
+	 * 
+	 * @param points
+	 *            The points to check
+	 * @return true if the given points are greater or equal than zero |result
+	 *         == (points >= 0)
 	 */
 	private boolean isValidExperiencePoints(int points) {
 		return (points >= 0);
@@ -836,11 +837,11 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * set the experience points of this unit to the given points
 	 * 
-	 * @param	points
-	 * 			the number of experience points to set
-	 * @post	if points is valid, the experience points if this unit equal points
-	 * 			|if (isValidExperiencePoints(points))
-	 * 			|	then new.getExperiencePoints() == points
+	 * @param points
+	 *            the number of experience points to set
+	 * @post if points is valid, the experience points if this unit equal points
+	 *       |if (isValidExperiencePoints(points)) | then
+	 *       new.getExperiencePoints() == points
 	 */
 	private void setExperiencePoints(int points) {
 		if (isValidExperiencePoints(points))
@@ -862,10 +863,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * check wheter the given level is a valid level for this unit
 	 * 
-	 * @param	level
-	 * 			the level to check
-	 * @return	true if the level is greater or equal than zero
-	 * 			|result == level >= 0
+	 * @param level
+	 *            the level to check
+	 * @return true if the level is greater or equal than zero |result == level
+	 *         >= 0
 	 */
 	private boolean isValidLevel(int level) {
 		return level >= 0;
@@ -874,11 +875,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * set the level of this unit to the given level
 	 * 
-	 * @param	level
-	 * 			the level to set to
-	 * @post	if the given level is valid, the level of this unit equals this value
-	 * 			|if (isValidLevel(level))
-	 * 			|	then new.getLevel() == level
+	 * @param level
+	 *            the level to set to
+	 * @post if the given level is valid, the level of this unit equals this
+	 *       value |if (isValidLevel(level)) | then new.getLevel() == level
 	 */
 	private void setLevel(int level) {
 		if (isValidLevel(level))
@@ -890,24 +890,22 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int level;
 
-	
-	//TODO vanaf hier comments checken
-	
-	
+	// TODO vanaf hier comments checken
+
 	// ADVANCE TIME en help methods
 
 	/**
-	 * update the attributes of a Unit, based on that Unit's current attributes and a given
-	 * duration 'seconds' in seconds of game time
+	 * update the attributes of a Unit, based on that Unit's current attributes
+	 * and a given duration 'seconds' in seconds of game time
 	 * 
-	 * @param	seconds
-	 * 			the amount of seconds to advance time
-	 * @throws	IllegalArgumentException
-	 *          the seconds are not in the interval [0, 0.2[
+	 * @param seconds
+	 *            the amount of seconds to advance time
+	 * @throws IllegalArgumentException
+	 *             the seconds are not in the interval [0, 0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
-			 throw new IllegalArgumentException();
+		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double) seconds, 0.2))
+			throw new IllegalArgumentException();
 
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
 			this.busyTimeMin(seconds);
@@ -1658,7 +1656,7 @@ public class Unit extends TimeVariableObject {
 	}
 
 	// RELATIONS with world, faction and material
-	
+
 	public World getWorld() {
 		return this.world;
 	}
@@ -1863,5 +1861,50 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering whether this unit is terminated.
 	 */
 	private boolean isDead = false;
+
+	/**
+	 * Return the task of this unit.
+	 */
+	@Basic
+	@Raw
+	public Task getTask() {
+		return this.task;
+	}
+
+	/**
+	 * Check whether the given task is a valid task for any unit.
+	 * 
+	 * @param task
+	 *            The task to check.
+	 * @return | result == (task != null)
+	 */
+	public static boolean isValidTask(Task task) {
+		return (task != null);
+	}
+
+	/**
+	 * Set the task of this unit to the given task.
+	 * 
+	 * @param task
+	 *            The new task for this unit.
+	 * @post The task of this new unit is equal to the given task. |
+	 *       new.getTask() == task
+	 * @throws IllegalArgumentException
+	 *             The given task is not a valid task for any unit. | !
+	 *             isValidTask(getTask())
+	 */
+	@Raw
+	public void setTask(Task task) throws IllegalArgumentException {
+		if (task != null) {
+			if (!isValidTask(task))
+				throw new IllegalArgumentException();
+		}
+		this.task = task;
+	}
+
+	/**
+	 * Variable registering the task of this unit.
+	 */
+	private Task task;
 
 }
