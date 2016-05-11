@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
+/**
+ * a test suite for the class World
+ */
 public class WorldTest {
 	
 
@@ -285,12 +288,24 @@ public class WorldTest {
 	
 	@Test
 	public void getAllUnits_LegalCase(){
-		//TODO
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Set<Unit> allTestUnits = new HashSet<Unit>();
+				
+		for (int x = 0; x < 4; x++) {
+			Unit testUnit = new Unit(x, 1.3, 0.5, "James O'Hara", 50, 50, 25, 55, true);
+			testWorld.addUnit(testUnit);
+			allTestUnits.add(testUnit);
+		}
+		assertEquals(testWorld.getAllUnits(), allTestUnits);		
 	}
 	
 	@Test
 	public void getAllUnits_LegalCaseEmpty(){
-		//TODO
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Set<Unit> allTestUnits = new HashSet<Unit>();
+		assertEquals(testWorld.getAllUnits(), allTestUnits);
 	}
 	
 	@Test
@@ -310,29 +325,81 @@ public class WorldTest {
 
 	@Test
 	public void getAllActiveFactions(){
-		//TODO
-		//empty
-		//including non-active factions
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Set<Faction> allTestFactions = new HashSet<Faction>();
+		
+		Faction testFaction = new Faction();
+		testWorld.addFaction(testFaction);
+		allTestFactions.add(testFaction);
+		
+		assertEquals(testWorld.getAllActiveFactions(), new HashSet<Faction>() );
+		
+		Unit testUnit = new Unit(2.5, 1.3, 0.5, "James O'Hara", 50, 50, 25, 55, true);
+		testFaction.addUnit(testUnit);
+		assertEquals(testWorld.getAllActiveFactions(), allTestFactions);
 	}
 	
-	@Test
-	public void getAllMaterials(){
-		//TODO
-	}
 	
 	@Test
 	public void getAllLogs(){
-		//TODO
+		int[][][] terrainTypes = new int[10][10][10];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Set<Material> allTestLogs = new HashSet<Material>();
+		assertTrue(testWorld.getAllLogs().isEmpty());
+
+		Boulder testBoulder = new Boulder();
+		Position testPosition1 = new Position(0.2,0.5,0.8);
+		testWorld.addMaterial(testBoulder, testPosition1);
+		
+		Log testLog = new Log();
+		Position testPosition2 = new Position(0.3,0.5,0.8);
+		testWorld.addMaterial(testLog, testPosition2);
+		allTestLogs.add(testLog);
+		
+		assertEquals(testWorld.getAllLogs(), allTestLogs);
 	}
 	
 	@Test
 	public void getAllBoulders(){
-		//TODO
+		int[][][] terrainTypes = new int[10][10][10];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Set<Material> allTestBoulders = new HashSet<Material>();
+		assertTrue(testWorld.getAllBoulders().isEmpty());
+
+		Boulder testBoulder = new Boulder();
+		Position testPosition1 = new Position(0.2,0.5,0.8);
+		testWorld.addMaterial(testBoulder, testPosition1);
+		allTestBoulders.add(testBoulder);
+		
+		Log testLog = new Log();
+		Position testPosition2 = new Position(0.3,0.5,0.8);
+		testWorld.addMaterial(testLog, testPosition2);
+		
+		assertEquals(testWorld.getAllBoulders(), allTestBoulders);
+	}
+	
+	@Test
+	public void advanceTime_LegalSeconds(){
+		int[][][] terrainTypes = new int [5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		float seconds = (float)0.2;
+		testWorld.advanceTime(seconds);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void advanceTime_IllegalSeconds(){
-		//TODO
+	public void advanceTime_TooBigSeconds(){
+		int[][][] terrainTypes = new int [5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.advanceTime((float)0.3);
+		throw new IllegalArgumentException();
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void advanceTime_TooSmallSeconds(){
+		int[][][] terrainTypes = new int [5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.advanceTime((float)-0.000000001);
 		throw new IllegalArgumentException();
 	}
 }

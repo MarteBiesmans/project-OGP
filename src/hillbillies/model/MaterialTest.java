@@ -29,7 +29,7 @@ public class MaterialTest {
 		Boulder testBoulder = new Boulder();
 		Position testPosition = new Position(0.2,0.5,0.8);
 		testWorld.addMaterial(testBoulder, testPosition);
-		testBoulder.advanceTime((float) 0.2);
+		testBoulder.advanceTime((float) 0.3);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)

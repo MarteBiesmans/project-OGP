@@ -906,8 +906,8 @@ public class Unit extends TimeVariableObject {
 	 *          the seconds are not in the interval [0, 0.2[
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (seconds < 0 || Util.fuzzyGreaterThanOrEqualTo((double)seconds, 0.2)      )
-			 throw new IllegalArgumentException();
+		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
+			throw new IllegalArgumentException();
 
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
 			this.busyTimeMin(seconds);

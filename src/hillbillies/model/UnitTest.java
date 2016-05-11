@@ -163,28 +163,58 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void getPosition_() {
-		//TODO
+	public void getPosition() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getPosition(), new Position(3.1, 1.1, 5.9));
 	}
 	
 	@Test
-	public void getCube_() {
-		//TODO
+	public void getCube() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getCube(), new Cube(3, 1, 5));
 	}
 	
 	@Test
-	public void getName_() {
-		//TODO
+	public void getName() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getName(), "James O'Hara");
 	}
 	
 	@Test
-	public void setName_() {
-		//TODO
+	public void setName_LegalCase() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setName("James'\"");
+		assertEquals(testUnit.getName(), "James'\"");
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void setName_IllegalCase_NoCapital() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setName("james");
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void setName_IllegalCase_Null() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setName(null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void setName_IllegalCase_TooSmall() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setName("j");
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void setName_IllegalCharacter() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setName("James.O'Hara");
 	}
 	
 	@Test
 	public void getStrength_() {
-		//TODO
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getStrength(), 50);
 	}
 
 	@Test
@@ -196,7 +226,8 @@ public class UnitTest {
 	
 	@Test
 	public void getAgility_() {
-		//TODO
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getAgility(), 50);
 	}
 
 	@Test
@@ -207,8 +238,9 @@ public class UnitTest {
 	}
 
 	@Test
-	public void getWeight_() {
-		//TODO
+	public void getWeight() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getWeight(), 55);
 	}
 	
 	@Test
@@ -228,7 +260,8 @@ public class UnitTest {
 	
 	@Test
 	public void getToughness_() {
-		//TODO
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getToughness(), 25);
 	}
 
 	@Test
@@ -247,29 +280,37 @@ public class UnitTest {
 	}
 
 	@Test
-	public void getHitpoints_() {
-		//TODO
+	public void getHitpoints() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals((int)testUnit.getHitpoints(), 28);
 	}
 	
 	@Test
 	public void getMaxHitpoints_Test() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals(testUnit.getMaxHitpoints(), 28);
+		testUnit.setToughness(30);
+		assertEquals(testUnit.getMaxHitpoints(), 33);
 	}
 	
 	@Test
-	public void getStaminaPoints_() {
-		//TODO
+	public void getStaminaPoints() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals((int)testUnit.getStaminaPoints(), 28);
 	}
 	
 	@Test
 	public void getMaxStaminaPoints_() {
-		//TODO
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getMaxStaminaPoints(), 28);
+		testUnit.setToughness(30);
+		assertEquals(testUnit.getMaxStaminaPoints(), 33);
 	}
 	
 	@Test
 	public void getOrientation_() {
-		//TODO
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), Math.PI/2));
 	}
 	
 	@Test
@@ -282,13 +323,33 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void getExperiencePoints_() {
-		//TODO
+	public void getExperiencePoints() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getExperiencePoints(), 0);
 	}
 	
 	@Test
 	public void advanceTime_() {
 		//TODO
+	}
+	
+	//TODO testUnits in world toevoegen (volgende 3 tests)
+	@Test
+	public void advanceTime_LegalSeconds(){
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.advanceTime((float) 0.2);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void advanceTime_TooBigSeconds(){
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.advanceTime((float) 0.3);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void advanceTime_TooSmallSeconds(){
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.advanceTime((float) -0.00000001);
 	}
 	
 	@Test
