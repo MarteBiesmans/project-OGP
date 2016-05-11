@@ -7,19 +7,27 @@ import hillbillies.model.programs.type.CubeType;
 public class XYZExpression extends CubeExpression {
 
 	public XYZExpression(int x, int y, int z) {
-		expression = new VariableExpression(new CubeType(new Cube(x, y, z)));
+		cube = new Cube(x, y, z);
 	}
 	
-	private VariableExpression expression;
+	private Cube cube;
+	
+	private Cube getCube() {
+		return cube;
+	}
+	
+	public CubeType evaluate() {
+		return evaluate(null, null);
+	}
 	
 	@Override
 	public CubeType evaluate(Unit unit, Cube cube) {
-		return new CubeType((Cube) expression.evaluate(unit, cube).getValue());
+		return new CubeType(getCube());
 	}
 	
 	@Override
 	public String toString(){
-		return expression.toString();
+		return getCube().toString();
 	}
 
 }
