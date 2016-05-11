@@ -2,23 +2,22 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.type.Type;
 
-public class VariableExpression extends Expression<Type> {
+public class VariableExpression extends Expression<Object> {
 
-	public VariableExpression(Type o) {
+	public VariableExpression(Object o) {
 		object = o;
 	}
 
-	public Type evaluate() {
+	public Object evaluate() {
 		return evaluate(null, null);
 	}
 
 	@Override
-	public Type evaluate(Unit unit, Cube cube) {
+	public Object evaluate(Unit unit, Cube cube) {
 		return object;
 	}
 
-	private final Type object;
+	private final Object object;
 
 }
