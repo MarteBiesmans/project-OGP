@@ -47,7 +47,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 
 	@Override
 	public Statement createPrint(Expression<?> value, SourceLocation sourceLocation) {
-		return new PrintStatement(value, this);
+		return new PrintStatement(value);
 	}
 
 	@Override

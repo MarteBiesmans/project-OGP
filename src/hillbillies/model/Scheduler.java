@@ -35,10 +35,6 @@ public class Scheduler {
 	public boolean hasAsTask(@Raw Task task) {
 		return tasks.contains(task);
 	}
-	
-	public static boolean isValidTask(Task task) {
-		return true;
-	}
 
 	/**
 	 * Check whether this scheduler can have the given task
@@ -54,7 +50,7 @@ public class Scheduler {
 	 */
 	@Raw
 	public boolean canHaveAsTask(Task task) {
-		return (task != null) && (Task.isValidScheduler(this));
+		return (task != null);
 	}
 
 	/**
@@ -72,8 +68,6 @@ public class Scheduler {
 	public boolean hasProperTasks() {
 		for (Task task : tasks) {
 			if (!canHaveAsTask(task))
-				return false;
-			if (!task.hasAsScheduler(this))
 				return false;
 		}
 		return true;
@@ -102,7 +96,7 @@ public class Scheduler {
 	 *       | new.hasAsTask(task)
 	 */
 	public void addTask(@Raw Task task) {
-		assert (task != null) && (task.hasAsScheduler(this));
+		assert (task != null);
 		tasks.add(task);
 	}
 
@@ -122,7 +116,7 @@ public class Scheduler {
 	 */
 	@Raw
 	public void removeTask(Task task) {
-		assert this.hasAsTask(task) && (!task.hasAsScheduler(this));
+		assert this.hasAsTask(task);
 		tasks.remove(task);
 	}
 

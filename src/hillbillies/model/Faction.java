@@ -3,11 +3,12 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.*;
 
 /**
  * a class describing a faction, i.e. a group of units working together
  * 
+ * @invar Each faction can have its scheduler as scheduler.
  * @author Ellen & Marte
  */
 public class Faction {
@@ -18,12 +19,14 @@ public class Faction {
 	final static int MAX_UNITS = 50;
 
 	/**
-	 * create a new empty faction
+	 * create a new empty faction with a new scheduler
 	 * 
 	 * @post this faction doesn't have any units
+	 * @post this faction has a new scheduler
 	 */
 	public Faction() {
 		this.units = new HashSet<Unit>();
+		this.scheduler = new Scheduler();
 	}
 
 	/**
@@ -33,8 +36,8 @@ public class Faction {
 	 *            The unit to add to this faction
 	 * @post if the unit can have this faction as a faction the unit is added to
 	 *       the faction
-	 * @throws	IllegalArgumentException
-	 * 			the given unit cannot be added to this faction
+	 * @throws IllegalArgumentException
+	 *             the given unit cannot be added to this faction
 	 */
 	public void addUnit(Unit unit) throws IllegalArgumentException {
 		if (!canAddAsUnit(unit)) {
@@ -57,8 +60,8 @@ public class Faction {
 	 *            The unit to remove from this faction
 	 * @post if the unit belongs to this faction the unit is removed from this
 	 *       faction
-	 * @throws	IllegalArgumentException
-	 * 			this faction doesn't contain the given unit
+	 * @throws IllegalArgumentException
+	 *             this faction doesn't contain the given unit
 	 */
 	public void removeUnit(Unit unit) throws IllegalArgumentException {
 		if (!this.hasAsUnit(unit))
@@ -74,17 +77,19 @@ public class Faction {
 	}
 
 	/**
-	 * check whether the given unit can be added to this faction, considering the
-	 *         units condition and the number of units in this faction and in
-	 *         the world
+	 * check whether the given unit can be added to this faction, considering
+	 * the units condition and the number of units in this faction and in the
+	 * world
 	 * 
 	 * @param unit
 	 *            The unit to check if it can be added to this faction
-	 * @return	false if the given unit is dead
-	 * @return	false if the given unit already belongs to a faction
-	 * @return	false if this faction has reached it's maximum number of units
-	 * @return	false if the faction belongs to a world that has reached it's maximum number of factions
-	 * @return	false if the faction belongs to a world that has reached it's maximum number of units
+	 * @return false if the given unit is dead
+	 * @return false if the given unit already belongs to a faction
+	 * @return false if this faction has reached it's maximum number of units
+	 * @return false if the faction belongs to a world that has reached it's
+	 *         maximum number of factions
+	 * @return false if the faction belongs to a world that has reached it's
+	 *         maximum number of units
 	 */
 	private boolean canAddAsUnit(Unit unit) {
 		if (unit.isDead()) {
@@ -138,8 +143,8 @@ public class Faction {
 	/**
 	 * check whether this faction has proper units
 	 * 
-	 * @return true if this faction has proper units,
-	 * 			i.e. not null, alive and belonging to this faction
+	 * @return true if this faction has proper units, i.e. not null, alive and
+	 *         belonging to this faction
 	 */
 	@SuppressWarnings("unused")
 	private boolean hasProperUnits() {
@@ -165,10 +170,10 @@ public class Faction {
 	/**
 	 * check whether this faction can be in the given world
 	 * 
-	 * @param	world
-	 * 			the world to check
-	 * @return	true if the world is not null and the world contains this faction
-	 * 			and the world of this faction is null
+	 * @param world
+	 *            the world to check
+	 * @return true if the world is not null and the world contains this faction
+	 *         and the world of this faction is null
 	 */
 	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsFaction(this) && this.getWorld() == null);
@@ -176,11 +181,13 @@ public class Faction {
 
 	/**
 	 * set the world of this faction to the given world
-	 * @param	world
-	 * 			the world to set to
-	 * @throws	IllegalArgumentException
-	 * 			the given world is not null and this faction can not have the given world as world
-	 * 			
+	 * 
+	 * @param world
+	 *            the world to set to
+	 * @throws IllegalArgumentException
+	 *             the given world is not null and this faction can not have the
+	 *             given world as world
+	 * 
 	 */
 	public void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
@@ -195,5 +202,32 @@ public class Faction {
 	 * a variable registering the world this faction belongs to
 	 */
 	private World world;
+
+	/**
+	 * Return the scheduler of this faction.
+	 */
+	@Basic
+	@Raw
+	@Immutable
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
+
+	/**
+	 * Check whether this faction can have the given scheduler as its scheduler.
+	 * 
+	 * @param scheduler
+	 *            The scheduler to check.
+	 * @return true if the given scheduler is not null.
+	 */
+	@Raw
+	public boolean canHaveAsScheduler(Scheduler scheduler) {
+		return (scheduler != null);
+	}
+
+	/**
+	 * Variable registering the scheduler of this faction.
+	 */
+	private final Scheduler scheduler;
 
 }

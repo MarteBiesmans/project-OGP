@@ -795,7 +795,6 @@ public class World extends TimeVariableObject {
 				// het een log is
 				result.add((Log) material);
 		}
-
 		return result;
 	}
 

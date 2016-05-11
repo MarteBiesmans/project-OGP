@@ -2,23 +2,24 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.type.Type;
+import worms.model.Worm;
 
-public class VariableExpression extends Expression<Type> {
+public class VariableExpression extends Expression<Object> {
 
-	public VariableExpression(Type o) {
-		object = o;
+	public VariableExpression(String name) {
+		variableName = name;
 	}
-
-	public Type evaluate() {
-		return evaluate(null, null);
-	}
+	
+	private String variableName;	
 
 	@Override
-	public Type evaluate(Unit unit, Cube cube) {
-		return object;
+	public Object evaluate(Unit unit, Cube cube) {
+		return getGlobal(variableName).getValue();
 	}
-
-	private final Type object;
+	
+	@Override
+	public String toString(){
+		return variableName;
+	}
 
 }
