@@ -28,6 +28,41 @@ public class LogExpression extends CubeExpression {
 			return null;
 		return new CubeType(nearestLogSoFar.getPosition().getCube());
 	}
+	
+	public CubeType testEvaluate(Unit unit, Cube cube) {
+		return new CubeType((Cube) unit.getWorld().getAllMaterials().stream().
+				filter(material -> material instanceof Log).
+				map(log -> new LogDistPair((Log) log, unit)).
+				reduce((x, y) -> x.getMinimum(y)).
+				get().getLog().getPosition().getCube());
+	}
+
+	private class LogDistPair {
+
+		private final Double distance;
+		private Log log;
+
+		private LogDistPair(Log log, Unit unit) {
+			this.log = log;
+			this.distance = unit.getPosition().getDistanceSquare(log.getPosition());
+		}
+
+		private Double getDistance() {
+			return distance;
+		}
+
+		private Log getLog() {
+			return log;
+		}
+		
+		private LogDistPair getMinimum(LogDistPair other) {
+			if (this.getDistance() <= other.getDistance())
+				return this;
+			else
+				return other;
+		}
+
+	}
 
 	@Override
 	public String toString() {
