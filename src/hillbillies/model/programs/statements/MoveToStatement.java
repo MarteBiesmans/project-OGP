@@ -4,41 +4,26 @@ import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.CubeExpression;
+import hillbillies.model.programs.expressions.UnitExpression;
 
 public class MoveToStatement extends ActionStatement {
 	
-	private MoveToStatement(CubeExpression c, boolean hasBeenFullyExecuted) {
-		super(hasBeenFullyExecuted);
+	public MoveToStatement(CubeExpression c) {
 		this.cube = c;
 	}
 	
-	public MoveToStatement(CubeExpression c) {
-		this(c, false);
+	public CubeExpression getCube() {
+		return cube;
 	}
 	
 	private CubeExpression cube;
 
-	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		getActionHandler().move(worm);
-		SetHasFullyExecutedToTrue();
-	}
-
-	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
-			return false;
+	public void execute() {
+		if(getTask().getUnit() == null){
+			throw new NullPointerException("this task has no unit");
 		}
-		return worm.canMove();
+		getTask().getUnit().moveTo(getCube().evaluate().getValue());
+		this.setCompleted(true);
 	}
-
-	@Override
-	public MoveStatement clone() {
-		return new MoveStatement(getActionHandler(), hasBeenFullyExecuted());
-	}
-
-	
 
 }

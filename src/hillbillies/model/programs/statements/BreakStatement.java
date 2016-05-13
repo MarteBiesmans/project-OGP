@@ -5,36 +5,39 @@ import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 
 public class BreakStatement extends Statement {
-
-	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		
+	
+	public BreakStatement() {
 	}
-
+	
 	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
+	public void execute() {
+		Statement whileStatement = getWhileStatement();
+		if(whileStatement == null){
+			throw new IllegalStateException("This break is not in a while loop.");
+		}
+		whileStatement.setCompleted(true);
+	}
+	
+	/**
+	 * Return the most inner while or for loop that is a parent of this
+	 * break statement.
+	 * @return
+	 */
+	private Statement getWhileStatement(){
+		Statement upperStatement = getParentStatement();
+		while(!(upperStatement instanceof WhileStatement)){
+			if(upperStatement.hasParentStatement()){
+				upperStatement = upperStatement.getParentStatement();
+			} else {
+				return null;
+			}
+		}
+		return upperStatement;
+	}
+	
+	@Override
+	public boolean isMutable() {
 		return false;
 	}
-
-	@Override
-	public boolean isWellFormed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean containsActionStatement() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Statement clone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

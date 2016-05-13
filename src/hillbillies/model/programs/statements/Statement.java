@@ -1,41 +1,74 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import java.util.HashSet;
 
-public abstract class Statement {
+import hillbillies.model.Task;
 
-	protected Statement(boolean hasfullyexecuted) {
-		this.hasfullyexecuted = hasfullyexecuted;
+public abstract class Statement implements Cloneable {
+
+	public abstract void execute();
+	
+	public abstract boolean isMutable();
+	
+	@Override
+	public Statement clone() {
+		try {
+			if (isMutable())
+				return (Statement) super.clone();
+			else
+				return this;
+		} catch (CloneNotSupportedException exc) {
+			assert false;
+			return null;
+		}
 	}
 	
-	protected Statement() {
-		this(false);
-	}
-	
-	/**
-	 * Naming with 'fully' to avoid confusion since execute() doesn't per se
-	 * make this attribute true
-	 */
-	private boolean hasfullyexecuted;
-
-	public boolean hasBeenFullyExecuted() {
-		return hasfullyexecuted;
-	}
-	
-	public void SetHasFullyExecutedToTrue() {
-		hasfullyexecuted = true;
+	public HashSet<Statement> getDirectChildStatements(){
+		return new HashSet<Statement>();
 	}
 
-	public abstract void execute(Unit unit, Cube cube, Counter counter);
+	protected boolean isCompleted() {
+		return completed;
+	}
+
+	protected void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
+	private boolean completed = false;
+
+	public void reset() {
+		setCompleted(false);
+		for (Statement child : getDirectChildStatements())
+			child.reset();
+	}
+
+	protected Statement getParentStatement() {
+		return parentStatement;
+	}
 	
-	public abstract boolean canExecute(Unit unit, Cube cube, Counter counter);
-	
-	public abstract boolean isWellFormed();
-	
-	public abstract boolean containsActionStatement();
-	
-	public abstract Statement clone();
+	public void setParentStatement(Statement parentStatement) {
+		this.parentStatement = parentStatement;
+	}
+
+	protected boolean hasParentStatement() {
+		return (getParentStatement() != null);
+	}
+
+	private Statement parentStatement = null;
+
+	protected Task getTask() {
+		if (this.hasParentStatement()) {
+			return this.getParentStatement().getTask();
+		} else {
+			return this.task;
+		}
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	private Task task;
 
 }

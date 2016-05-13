@@ -10,25 +10,19 @@ public class WorkStatement extends ActionStatement {
 	public WorkStatement(CubeExpression expression) {
 		this.cube = expression;
 	}
+	
+	public CubeExpression getCube() {
+		return cube;
+	}
 
 	private CubeExpression cube;
 
-	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Statement clone() {
-		// TODO Auto-generated method stub
-		return null;
+	public void execute() {
+		if(getTask().getUnit() == null){
+			throw new NullPointerException("this task has no unit");
+		}
+		getTask().getUnit().workAt(getCube().evaluate().getValue());
+		this.setCompleted(true);
 	}
 
 }

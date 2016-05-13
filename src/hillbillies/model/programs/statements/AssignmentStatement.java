@@ -8,57 +8,58 @@ import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.Type;
 
 public class AssignmentStatement extends Statement {
-	
-	private AssignmentStatement(String variableName, Expression<?> value, boolean hasFullyExecuted) {
-		super(hasFullyExecuted);
-		this.variableName = variableName;
-		this.expression = value;	
-	}
 
-	public AssignmentStatement(String variableName, Expression<?> value) {
-		this(variableName, value, false);
-	}
-
-	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		unit.getProgram().setGlobal(getVariableName(), new Type(getExpression().evaluate(unit, cube)));
-		SetHasFullyExecutedToTrue();
+	public AssignmentStatement(String variableName, Object variableType, Expression<?> valueExpression) {
+		setVariableName(variableName);
+		setVariableType(variableType);
+		setValueExpression(valueExpression);
+		try {
+			if (getVariableType().getClass() != getValueExpression().evaluate().getClass()) {
+				throw new IllegalArgumentException("Value is not of the given type.");
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();		
-		if (hasBeenFullyExecuted() || counter.getCount()>1000)
-			return false;
-		return true;
+	public void execute() {
+		getTask().setGlobalVariable(getVariableName(), getValueExpression().evaluate());
+		setCompleted(true);
 	}
 
-	public String getVariableName() {
+	private String getVariableName() {
 		return variableName;
 	}
 
-	private final String variableName;
-
-	public Expression<?> getExpression() {
-		return expression;
+	private void setVariableName(String variableName) {
+		this.variableName = variableName;
 	}
 
-	private final Expression<?> expression;
+	private String variableName;
+
+	private Object getVariableType() {
+		return variableType;
+	}
+
+	private void setVariableType(Object variableType) {
+		this.variableType = variableType;
+	}
+
+	private Object variableType;
+
+	private Expression<?> getValueExpression() {
+		return valueExpression;
+	}
+
+	public void setValueExpression(Expression<?> valueExpression) {
+		this.valueExpression = valueExpression;
+	}
+
+	private Expression<?> valueExpression;
 
 	@Override
-	public boolean isWellFormed() {
+	public boolean isMutable() {
 		return true;
-	}
-
-	@Override
-	public boolean containsActionStatement() {
-		return false;
-	}
-	
-	@Override
-	public AssignmentStatement clone() {
-		return new AssignmentStatement(variableName, expression, hasBeenFullyExecuted());
 	}
 
 }

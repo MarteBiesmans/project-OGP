@@ -11,26 +11,20 @@ public class FollowStatement extends ActionStatement {
 	public FollowStatement(UnitExpression expression) {
 		this.unit = expression;
 	}
-
+	
+	public UnitExpression getUnit() {
+		return unit;
+	}
+	
 	private UnitExpression unit;
 	
 	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		
+	public void execute() {
+		if(getTask().getUnit() == null){
+			throw new NullPointerException("this task has no unit");
+		}
+		getTask().getUnit().follow(getUnit().evaluate().getValue());
+		this.setCompleted(true);
 	}
-
-	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Statement clone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+	
 }

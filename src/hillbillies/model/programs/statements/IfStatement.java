@@ -1,5 +1,7 @@
 package hillbillies.model.programs.statements;
 
+import java.util.HashSet;
+
 import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Unit;
@@ -7,84 +9,108 @@ import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class IfStatement extends Statement {
 
-	private IfStatement(BooleanExpression condition, Statement then, Statement otherwise,
-			boolean hasNotBeenExecutedOnce, boolean hasFullyExecuted, boolean solvedCondition) {
-		super(hasFullyExecuted);
+	public IfStatement(BooleanExpression condition, Statement ifBody, Statement elseBody) {
+		setCondition(condition);
+		setIfBody(ifBody);
+		setElseBody(elseBody);
+		setConditionChecked(false);
+	}
+
+	public BooleanExpression getCondition() {
+		return condition;
+	}
+
+	public void setCondition(BooleanExpression condition) {
 		this.condition = condition;
-		this.then = then;
-		this.otherwise = otherwise;
-		this.hasNotBeenExecutedOnce = hasNotBeenExecutedOnce;
-		this.solvedCondition = solvedCondition;
 	}
 
-	public IfStatement(BooleanExpression condition, Statement then, Statement otherwise) {
-		this(condition, then, otherwise, true, false, false);
+	private BooleanExpression condition;
+
+	private boolean isConditionOutcome() {
+		return conditionOutcome;
 	}
 
-	private final BooleanExpression condition;
-	private final Statement then;
-	private final Statement otherwise;
-	private boolean solvedCondition;
-	private boolean hasNotBeenExecutedOnce;
+	private void setConditionOutcome(boolean conditionOutcome) {
+		this.conditionOutcome = conditionOutcome;
+	}
+
+	private boolean conditionOutcome;
+
+	private boolean isConditionChecked() {
+		return conditionChecked;
+	}
+
+	private void setConditionChecked(boolean conditionChecked) {
+		this.conditionChecked = conditionChecked;
+	}
+
+	private boolean conditionChecked;
+
+	public Statement getIfBody() {
+		return ifBody;
+	}
+
+	public void setIfBody(Statement ifBody) {
+		this.ifBody = ifBody;
+		this.getIfBody().setParentStatement(this);
+	}
+
+	private Statement ifBody;
+
+	public Statement getElseBody() {
+		return elseBody;
+	}
+
+	public void setElseBody(Statement elseBody) {
+		this.elseBody = elseBody;
+		if (elseBody != null) {
+			elseBody.setParentStatement(this);
+		}
+	}
+
+	private Statement elseBody;
+
+	public void execute() {
+		if (!isConditionChecked()) {
+			setConditionOutcome(getCondition().evaluate().getValue());
+			setConditionChecked(true);
+			if (!isConditionOutcome() && getElseBody() == null)
+				this.setCompleted(true);
+		} else {
+			if (isConditionOutcome()) {
+				getIfBody().execute();
+				if (getIfBody().isCompleted()) {
+					this.setCompleted(true);
+				}
+			} else {
+				if (getElseBody() != null) {
+					getElseBody().execute();
+					if (getElseBody().isCompleted())
+						this.setCompleted(true);
+				} else
+					this.setCompleted(true);
+			}
+		}
+
+	}
 	
 	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		if (hasNotBeenExecutedOnce) {
-			counter.increment();
-			solvedCondition = (boolean) condition.evaluate(unit, cube).getValue();
-			hasNotBeenExecutedOnce = false;
-		}
-		if (!this.hasBeenFullyExecuted()) {
-			if (solvedCondition) {
-				then.execute(unit, cube, counter);
-				return;
-			} else {
-				otherwise.execute(unit, cube, counter);
-				return;
-			}
-		}
+	public void reset() {
+		setConditionChecked(false);
+		super.reset();
+	}
+	
+	public HashSet<Statement> getDirectChildStatements() {
+		HashSet<Statement> children = new HashSet<Statement>();
+		children.add(getIfBody());
+		if (getElseBody() != null)
+			children.add(getElseBody());
+		return children;
 	}
 
 	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		if (hasBeenFullyExecuted() || counter.getCount() > 1000)
-			return false;
-
-		if (hasNotBeenExecutedOnce) {
-			if ((boolean) condition.evaluate(unit, cube).getValue())
-				return then.canExecute(unit, cube, counter);
-			else
-				return otherwise.canExecute(unit, cube, counter);
-		}
-		if (!(then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted())) {
-			if (solvedCondition) {
-				return then.canExecute(unit, cube, counter);
-			}
-			if (!solvedCondition)
-				return otherwise.canExecute(unit, cube, counter);
-		}
+	public boolean isMutable() {
 		return true;
 	}
-
-	@Override
-	public boolean isWellFormed() {
-		return then.isWellFormed() && otherwise.isWellFormed();
-	}
-
-	@Override
-	public boolean containsActionStatement() {
-		return then.containsActionStatement() || otherwise.containsActionStatement();
-	}
-
-	@Override
-	public IfStatement clone() {
-		return new IfStatement(condition, then.clone(), otherwise.clone(), hasNotBeenExecutedOnce,
-				hasBeenFullyExecuted(), solvedCondition);
-	}
-
-	@Override
-	public boolean hasBeenFullyExecuted() {
-		return (then.hasBeenFullyExecuted() || otherwise.hasBeenFullyExecuted());
-	}
+	
 }

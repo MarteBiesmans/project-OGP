@@ -1,78 +1,79 @@
 package hillbillies.model.programs.statements;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
 
 public class SequenceOfStatements extends Statement {
 
-	private SequenceOfStatements(List<Statement> statements, boolean hasBeenFullyExecuted) {
-		super(hasBeenFullyExecuted);
-		this.listofstatements = statements;
-	}
-	
 	public SequenceOfStatements(List<Statement> statements) {
-		this(statements, false);
+		this.statements = statements;
+		for (Statement statement : statements) {
+			if(statement == null){
+				System.out.println("Warning: statement cannot be null.");
+			} else {
+				statement.setParentStatement(this);
+			}
+		}
+		statements.removeAll(Collections.singleton(null));
+		resetIterator();
 	}
-
-	private final List<Statement> listofstatements;
+	
+	public void execute(){
+		getCurrentStatement().execute();
+		if(getCurrentStatement().isCompleted()){
+			setNextStatement();
+		}
+	}
+	
+	private void resetIterator(){
+		setIterator(getStatements().iterator());
+		setNextStatement();
+	}
+	
+	private void setNextStatement(){
+		if(getIterator().hasNext())
+			setCurrentStatement(getIterator().next());
+		else
+			this.setCompleted(true);
+	}
 	
 	@Override
-	public void execute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		for (Statement statement:  listofstatements) {
-			if (!statement.hasBeenFullyExecuted()) {
-				statement.execute(unit, cube, counter);
-				return;
-			}
-		}
-		SetHasFullyExecutedToTrue();
+	public void reset(){
+		super.reset();
+		resetIterator();
+	}
+	
+	private Statement getCurrentStatement() {
+		return currentStatement;
+	}
+	
+	private void setCurrentStatement(Statement currentStatement) {
+		this.currentStatement = currentStatement;
+	}
+	
+	private Statement currentStatement;
+	
+	private Iterator<Statement> getIterator() {
+		return iterator;
+	}
+	
+	private void setIterator(Iterator<Statement> iterator) {
+		this.iterator = iterator;
+	}
+	
+	private Iterator<Statement> iterator = null;
+	
+	private List<Statement> statements;
+	
+	private List<Statement> getStatements(){
+		return statements;
 	}
 
 
 	@Override
-	public boolean canExecute(Unit unit, Cube cube, Counter counter) {
-		counter.increment();
-		if (hasBeenFullyExecuted() || counter.getCount() > 1000)
-			return false;
-		for (Statement statement: listofstatements) {
-			if (!statement.hasBeenFullyExecuted() ) {
-				return statement.canExecute(unit, cube, counter);
-			}
-		}
+	public boolean isMutable() {
 		return true;
 	}
-
-
-	@Override
-	public boolean isWellFormed() {
-		for (Statement statement: listofstatements) {
-			if(!statement.isWellFormed())
-				return false;
-		}
-		return true;
-	}
-
-
-	@Override
-	public boolean containsActionStatement() {
-		for (Statement statement: listofstatements) {
-			if(statement.containsActionStatement())
-				return true;
-		}
-		return false;
-	}
-
-	@Override
-	public SequenceOfStatements clone() {
-		List<Statement> clonedlist = new ArrayList<Statement>();
-		for(Statement statement: listofstatements) {
-			clonedlist.add(statement.clone());
-		}
-		return new SequenceOfStatements(clonedlist , hasBeenFullyExecuted());
-	}
-
+	
 }
