@@ -204,7 +204,7 @@ public abstract class Material extends TimeVariableObject {
 	 * Set the world of this material to the given world.
 	 * 
 	 * @param	world
-	 *          The new world for this material.
+	 *          The new world for this material. (can be null)
 	 * @post 	The world of this new material is equal to the given world.
 	 * @throws 	IllegalArgumentException
 	 *          The given world is not a valid world for this material.

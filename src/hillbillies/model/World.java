@@ -689,9 +689,13 @@ public class World extends TimeVariableObject {
 	 *      this.hasAsMaterial(material) && | (material.getWorld() == null)
 	 * @post This world no longer has the given material as one of its
 	 *       materials. | ! new.hasAsMaterial(material)
+	 * @throws	IllegalArgumentException
+	 * 			this world does not contain the given material
+	 * @throws	IllegalArgumentException
+	 * 			the world of this material cannot be set to null
 	 */
 	@Raw
-	void removeMaterial(Material material) {
+	void removeMaterial(Material material) throws IllegalArgumentException {
 		if (!this.hasAsMaterial(material))
 			throw new IllegalArgumentException();
 		this.materials.remove(material);

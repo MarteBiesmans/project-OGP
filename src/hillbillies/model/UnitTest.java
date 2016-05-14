@@ -1,7 +1,6 @@
 package hillbillies.model;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
@@ -333,23 +332,31 @@ public class UnitTest {
 		//TODO
 	}
 	
-	//TODO testUnits in world toevoegen (volgende 3 tests)
 	@Test
 	public void advanceTime_LegalSeconds(){
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		Unit testUnit = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.addUnit(testUnit);
 		testUnit.advanceTime((float) 0.2);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void advanceTime_TooBigSeconds(){
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		Unit testUnit = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.addUnit(testUnit);
 		testUnit.advanceTime((float) 0.3);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void advanceTime_TooSmallSeconds(){
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		testUnit.advanceTime((float) -0.00000001);
+		Unit testUnit = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.addUnit(testUnit);
+		testUnit.advanceTime((float) -0.00001);
 	}
 	
 	@Test
