@@ -77,5 +77,9 @@ public class WhileStatement extends Statement {
 	public boolean isMutable() {
 		return true;
 	}
+	
+	public boolean isWellFormed(){
+		return getBody().isWellFormed();
+	}
 
 }

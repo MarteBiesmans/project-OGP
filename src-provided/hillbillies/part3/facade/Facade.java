@@ -7,6 +7,7 @@ import java.util.Set;
 import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
+import hillbillies.model.TaskFactory;
 import hillbillies.model.Unit;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.programs.ITaskFactory;
@@ -15,6 +16,9 @@ import hillbillies.tests.facade.Part3TestPartial;
 import ogp.framework.util.ModelException;
 
 public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
+	
+	//TODO: try- catch modelexception
+	
 	/**
 	 * Create a new instance of a Task factory.
 	 * 
@@ -46,8 +50,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *         interface for an explanation of its parameters.
 	 */
 	public ITaskFactory<?, ?, Task> createTaskFactory() {
-		//TODO
-		return null;
+		return new TaskFactory();
 	}
 
 	/**
@@ -69,8 +72,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 * @note Single-student groups may always return true for this method.
 	 */
 	public boolean isWellFormed(Task task) throws ModelException{
-		//TODO
-		return false;
+		return task.getActivities().isWellFormed();
 	}
 
 	/**
@@ -85,8 +87,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public Scheduler getScheduler(Faction faction) throws ModelException{
-		//TODO
-		return null;
+		return faction.getScheduler();
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public void schedule(Scheduler scheduler, Task task) throws ModelException{
-		//TODO
+		scheduler.addTask(task);
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 */
 
 	public void replace(Scheduler scheduler, Task original, Task replacement) throws ModelException{
-		//TODO
+		scheduler.replaceTask(original, replacement);
 	}
 
 	/**
@@ -134,8 +135,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.s
 	 */
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException{
-		//TODO
-		return false;
+		return scheduler.areTasksPartOf(tasks);
 	}
 
 	/**
@@ -154,8 +154,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public Iterator<Task> getAllTasksIterator(Scheduler scheduler) throws ModelException{
-		//TODO
-		return null;
+		return scheduler.getAllTasksIterator();
 	}
 
 	/**
@@ -168,8 +167,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public Set<Scheduler> getSchedulersForTask(Task task) throws ModelException{
-		//TODO
-		return null;
+		return task.getAllSchedulers();
 	}
 
 	/**
@@ -183,8 +181,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public Unit getAssignedUnit(Task task) throws ModelException{
-		//TODO
-		return null;
+		return task.getUnit();
 	}
 
 	/**
@@ -198,8 +195,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public Task getAssignedTask(Unit unit) throws ModelException{
-		//TODO
-		return null;
+		return unit.getTask();
 	}
 
 	/**
@@ -212,8 +208,7 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public String getName(Task task) throws ModelException{
-		//TODO
-		return null;
+		return task.getName();
 	}
 
 	/**
@@ -226,7 +221,6 @@ public class Facade extends hillbillies.part2.facade.Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	public int getPriority(Task task) throws ModelException{
-		//TODO
-		return 0;
+		return task.getPriority();
 	}
 }

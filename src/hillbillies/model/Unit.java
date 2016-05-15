@@ -1196,8 +1196,9 @@ public class Unit extends TimeVariableObject {
 		this.activityQueue.add(0, activity);
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
-
-	private void nextActivity() {
+	
+	//TODO: tests als hier nog tijd voor is :(
+	public void nextActivity() {
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);

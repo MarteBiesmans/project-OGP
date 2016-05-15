@@ -76,4 +76,13 @@ public class SequenceOfStatements extends Statement {
 		return true;
 	}
 	
+	public boolean isWellFormed(){
+		for (Statement statement : statements) {
+			if(!statement.isWellFormed()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }

@@ -1,6 +1,9 @@
 //TODO	comments (formal!)
 package hillbillies.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.programs.statements.Statement;
 
@@ -13,13 +16,15 @@ import hillbillies.model.programs.statements.Statement;
  * @invar Each task can have its cube as cube. | canHaveAsCube(this.getCube())
  * @invar The unit of each task must be a valid unit for any task. |
  *        isValidUnit(getUnit())
+ * @invar   Each task must have proper schedulers.
+	 *        | hasProperSchedulers()
  */
-public class Task {
+public class Task implements Comparable<Task> {
 
 	/**
 	 * Initialize this new task with given name, priority, activities and cube.
 	 * This new task will be intitialized as a non-terminated task with no unit
-	 * yet.
+	 * yet and with no schedulers yet.
 	 *
 	 * @param name
 	 *            The name for this new task.
@@ -46,6 +51,8 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *             This new task cannot have the given cube as its cube. | !
 	 *             canHaveAsCube(this.getCube())
+	 * @post   This new task has no schedulers yet.
+	 *       | new.getNbSchedulers() == 0
 	 */
 	public Task(String name, int priority, Statement activities, Cube cube) throws IllegalArgumentException {
 		if (!canHaveAsName(name))
@@ -59,6 +66,15 @@ public class Task {
 			throw new IllegalArgumentException();
 		this.cube = cube;
 		this.setUnit(null);
+	}
+
+	public boolean isWellFormed() {
+		return activities.isWellFormed();
+	}
+
+	@Override
+	public int compareTo(Task other) {
+		return Integer.compare(other.getPriority(), this.getPriority());
 	}
 
 	/**
@@ -230,10 +246,135 @@ public class Task {
 			throw new IllegalArgumentException();
 		this.unit = unit;
 	}
+	
+	public boolean isBeingExecuted() {
+		return (this.getUnit() != null);
+	}
 
 	/**
 	 * Variable registering the unit of this task.
 	 */
 	private Unit unit;
+
+	/**
+	 * Check whether this task has the given scheduler as one of its
+	 * schedulers.
+	 * 
+	 * @param  scheduler
+	 *         The scheduler to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsScheduler(@Raw Scheduler scheduler) {
+		return schedulers.contains(scheduler);
+	}
+
+	/**
+	 * Check whether this task can have the given scheduler
+	 * as one of its schedulers.
+	 * 
+	 * @param  scheduler
+	 *         The scheduler to check.
+	 * @return True if and only if the given scheduler is effective
+	 *         and that scheduler is a valid scheduler for a task.
+	 *       | result ==
+	 *       |   (scheduler != null) &&
+	 *       |   Scheduler.isValidTask(this)
+	 */
+	@Raw
+	public boolean canHaveAsScheduler(Scheduler scheduler) {
+		return (scheduler != null);
+	}
+
+	/**
+	 * Check whether this task has proper schedulers attached to it.
+	 * 
+	 * @return True if and only if this task can have each of the
+	 *         schedulers attached to it as one of its schedulers,
+	 *         and if each of these schedulers references this task as
+	 *         the task to which they are attached.
+	 *       | for each scheduler in Scheduler:
+	 *       |   if (hasAsScheduler(scheduler))
+	 *       |     then canHaveAsScheduler(scheduler) &&
+	 *       |          (scheduler.getTask() == this)
+	 */
+	public boolean hasProperSchedulers() {
+		for (Scheduler scheduler : schedulers) {
+			if (!canHaveAsScheduler(scheduler))
+				return false;
+			if (scheduler.hasAsTask(this))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of schedulers associated with this task.
+	 *
+	 * @return  The total number of schedulers collected in this task.
+	 *        | result ==
+	 *        |   card({scheduler:Scheduler | hasAsScheduler({scheduler)})
+	 */
+	public int getNbSchedulers() {
+		return schedulers.size();
+	}
+
+	/**
+	 * Add the given scheduler to the set of schedulers of this task.
+	 * 
+	 * @param  scheduler
+	 *         The scheduler to be added.
+	 * @pre    The given scheduler is effective and already references
+	 *         this task.
+	 *       | (scheduler != null) && (scheduler.getTask() == this)
+	 * @post   This task has the given scheduler as one of its schedulers.
+	 *       | new.hasAsScheduler(scheduler)
+	 */
+	public void addScheduler(@Raw Scheduler scheduler) {
+		assert canHaveAsScheduler(scheduler);
+		schedulers.add(scheduler);
+		scheduler.getAllTasks().add(this);
+	}
+
+	/**
+	 * Remove the given scheduler from the set of schedulers of this task.
+	 * 
+	 * @param  scheduler
+	 *         The scheduler to be removed.
+	 * @pre    This task has the given scheduler as one of
+	 *         its schedulers, and the given scheduler does not
+	 *         reference any task.
+	 *       | this.hasAsScheduler(scheduler) &&
+	 *       | (scheduler.getTask() == null)
+	 * @post   This task no longer has the given scheduler as
+	 *         one of its schedulers.
+	 *       | ! new.hasAsScheduler(scheduler)
+	 */
+	@Raw
+	public void removeScheduler(Scheduler scheduler) {
+		assert this.hasAsScheduler(scheduler);
+		schedulers.remove(scheduler);
+		scheduler.getAllTasks().remove(this);
+		if (this.getUnit().getFaction() == scheduler.getFaction());
+			//TODO: stop met uitvoeren van deze task
+	}
+	
+	public Set<Scheduler> getAllSchedulers() {
+		return this.schedulers;
+	}
+
+	/**
+	 * Variable referencing a set collecting all the schedulers
+	 * of this task.
+	 * 
+	 * @invar  The referenced set is effective.
+	 *       | schedulers != null
+	 * @invar  Each scheduler registered in the referenced list is
+	 *         effective and not yet terminated.
+	 *       | for each scheduler in schedulers:
+	 *       |   ( (scheduler != null) &&
+	 *       |     (! scheduler.isTerminated()) )
+	 */
+	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
 
 }

@@ -1,9 +1,5 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
-
 public class BreakStatement extends Statement {
 	
 	public BreakStatement() {
@@ -38,6 +34,11 @@ public class BreakStatement extends Statement {
 	@Override
 	public boolean isMutable() {
 		return false;
+	}
+	
+	@Override
+	public boolean isWellFormed(){
+		return getWhileStatement() != null;
 	}
 
 }

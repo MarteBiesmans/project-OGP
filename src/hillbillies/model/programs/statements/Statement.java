@@ -10,6 +10,10 @@ public abstract class Statement implements Cloneable {
 	
 	public abstract boolean isMutable();
 	
+	public boolean isWellFormed() {
+		return true;
+	}
+	
 	@Override
 	public Statement clone() {
 		try {

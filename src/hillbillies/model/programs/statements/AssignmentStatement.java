@@ -11,7 +11,7 @@ public class AssignmentStatement extends Statement {
 
 	public AssignmentStatement(String variableName, Object variableType, Expression<?> valueExpression) {
 		setVariableName(variableName);
-		setVariableType(variableType);
+		setVariableType(variableType); //TODO: is type bijhouden wel nodig?
 		setValueExpression(valueExpression);
 		try {
 			if (getVariableType().getClass() != getValueExpression().evaluate().getClass()) {

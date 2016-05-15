@@ -113,4 +113,8 @@ public class IfStatement extends Statement {
 		return true;
 	}
 	
+	public boolean isWellFormed(){
+		return (getIfBody().isWellFormed() && (getElseBody() == null || getElseBody().isWellFormed()));
+	}
+	
 }
