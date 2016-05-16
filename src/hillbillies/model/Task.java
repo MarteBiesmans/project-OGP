@@ -451,7 +451,7 @@ public class Task implements Comparable<Task> {
 			for (Scheduler scheduler: getAllSchedulers())
 				scheduler.removeTask(this);
 		}
-		getActivities().execute(counter);
+		getActivities().execute(); //TODO: counter nog gebruiken!
 	}
 
 }
