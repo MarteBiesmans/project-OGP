@@ -2,6 +2,7 @@ package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
 import hillbillies.model.Log;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.CubeType;
 
@@ -10,17 +11,13 @@ public class LogExpression extends CubeExpression {
 	public LogExpression() {
 	}
 	
-	public CubeType evaluate(Unit unit) {
-		return evaluate(unit, null);
-	}
-	
 	@Override
-	public CubeType evaluate(Unit unit, Cube cube) {
+	public CubeType evaluate(Task task) {
 		Log nearestLogSoFar = null;
-		for (Log log : unit.getWorld().getAllLogs()) {
+		for (Log log : task.getUnit().getWorld().getAllLogs()) {
 				if (nearestLogSoFar == null)
 					nearestLogSoFar = log;
-				else if (unit.getPosition().getDistanceSquare(log.getPosition()) < unit.getPosition()
+				else if (task.getUnit().getPosition().getDistanceSquare(log.getPosition()) < task.getUnit().getPosition()
 						.getDistanceSquare(nearestLogSoFar.getPosition()))
 					nearestLogSoFar = log;
 		}
@@ -29,10 +26,10 @@ public class LogExpression extends CubeExpression {
 		return new CubeType(nearestLogSoFar.getPosition().getCube());
 	}
 	
-	public CubeType testEvaluate(Unit unit, Cube cube) {
-		return new CubeType((Cube) unit.getWorld().getAllMaterials().stream().
+	public CubeType testEvaluate(Task task) {
+		return new CubeType((Cube) task.getUnit().getWorld().getAllMaterials().stream().
 				filter(material -> material instanceof Log).
-				map(log -> new LogDistPair((Log) log, unit)).
+				map(log -> new LogDistPair((Log) log, task.getUnit())).
 				reduce((x, y) -> x.getMinimum(y)).
 				get().getLog().getPosition().getCube());
 	}

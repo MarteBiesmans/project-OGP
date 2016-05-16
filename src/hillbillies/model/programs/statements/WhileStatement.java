@@ -2,9 +2,6 @@ package hillbillies.model.programs.statements;
 
 import java.util.HashSet;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class WhileStatement extends Statement {
@@ -48,7 +45,7 @@ public class WhileStatement extends Statement {
 	@Override
 	public void execute() {
 		if(!isConditionChecked()){
-			if(getCondition().evaluate().getValue()){
+			if((boolean) getCondition().evaluate(getTask()).getValue()){
 				setConditionChecked(true);
 			}else{
 				setCompleted(true);

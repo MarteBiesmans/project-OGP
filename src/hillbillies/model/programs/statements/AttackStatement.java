@@ -1,7 +1,5 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.UnitExpression;
 
@@ -22,7 +20,7 @@ public class AttackStatement extends ActionStatement {
 		if(getTask().getUnit() == null){
 			throw new NullPointerException("this task has no unit");
 		}
-		getTask().getUnit().attack(getUnit().evaluate().getValue());
+		getTask().getUnit().attack((Unit) getUnit().evaluate(getTask()).getValue());
 		this.setCompleted(true);
 	}
 }

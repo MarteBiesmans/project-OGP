@@ -1,7 +1,5 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.Expression;
 
 public class PrintStatement extends Statement {
@@ -18,7 +16,7 @@ public class PrintStatement extends Statement {
 	
 	@Override
 	public void execute() {
-		System.out.println(this.getMessage().evaluate().toString());
+		System.out.println(this.getMessage().evaluate(getTask()).toString());
 		this.setCompleted(true);
 	}
 

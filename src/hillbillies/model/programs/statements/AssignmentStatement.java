@@ -1,11 +1,7 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Scheduler;
 import hillbillies.model.programs.expressions.Expression;
-import hillbillies.model.programs.type.BooleanType;
-import hillbillies.model.programs.type.Type;
 
 public class AssignmentStatement extends Statement {
 
@@ -14,7 +10,7 @@ public class AssignmentStatement extends Statement {
 		setVariableType(variableType); //TODO: is type bijhouden wel nodig?
 		setValueExpression(valueExpression);
 		try {
-			if (getVariableType().getClass() != getValueExpression().evaluate().getClass()) {
+			if (getVariableType().getClass() != getValueExpression().evaluate(getTask()).getClass()) {
 				throw new IllegalArgumentException("Value is not of the given type.");
 			}
 		} catch (Exception e) {
@@ -23,7 +19,8 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	public void execute() {
-		getTask().setGlobalVariable(getVariableName(), getValueExpression().evaluate());
+		for (Scheduler scheduler: getTask().getAllSchedulers())
+			scheduler.setGlobalVariable(getVariableName(), getValueExpression().evaluate(getTask()));
 		setCompleted(true);
 	}
 

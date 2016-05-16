@@ -62,6 +62,7 @@ public class Task implements Comparable<Task> {
 		if (!canHaveAsActivities(activities))
 			throw new IllegalArgumentException();
 		this.activities = activities;
+		this.getActivities().setTask(this);
 		if (!canHaveAsCube(cube))
 			throw new IllegalArgumentException();
 		this.cube = cube;
@@ -96,7 +97,7 @@ public class Task implements Comparable<Task> {
 	 */
 	@Raw
 	public boolean canHaveAsName(String name) {
-		return true;
+		return (name != null);
 	}
 
 	/**
@@ -167,6 +168,10 @@ public class Task implements Comparable<Task> {
 	@Raw
 	public boolean canHaveAsActivities(Statement activities) {
 		return (activities != null);
+	}
+	
+	public boolean isFullyExecuted() {
+		return activities.isCompleted();
 	}
 
 	/**
@@ -376,5 +381,15 @@ public class Task implements Comparable<Task> {
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
+	
+	public void execute(Counter counter) {
+		//TODO: moet dit wel hier gecheckt worden?
+		if (getActivities().isCompleted()) {
+			this.setUnit(null);
+			for (Scheduler scheduler: getAllSchedulers())
+				scheduler.removeTask(this);
+		}
+		getActivities().execute(counter);
+	}
 
 }

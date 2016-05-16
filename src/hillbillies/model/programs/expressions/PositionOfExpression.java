@@ -1,6 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.CubeType;
 import hillbillies.model.programs.type.UnitType;
@@ -15,15 +15,15 @@ public class PositionOfExpression extends CubeExpression {
 		return expression;
 	}
 	
-	public UnitType getExpressionEvaluate(Unit unit, Cube cube) {
-		return getExpression().evaluate(unit, cube);
+	public UnitType getExpressionEvaluate(Task task) {
+		return getExpression().evaluate(task);
 	}
 	
 	private final UnitExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit, Cube cube) {
-		return new CubeType(((Unit) getExpressionEvaluate(unit, cube).getValue()).getCube());
+	public CubeType evaluate(Task task) {
+		return new CubeType(((Unit) getExpressionEvaluate(task).getValue()).getCube());
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.UnitType;
@@ -15,15 +15,15 @@ public class IsAliveExpression extends BooleanExpression {
 		return expression;
 	}
 	
-	public UnitType getExpressionEvaluate(Unit unit, Cube cube) {
-		return getExpression().evaluate(unit, cube);
+	public UnitType getExpressionEvaluate(Task task) {
+		return getExpression().evaluate(task);
 	}
 	
 	private final UnitExpression expression;
 	
 	@Override
-	public BooleanType evaluate(Unit unit, Cube cube) {
-		return new BooleanType(!((Unit) getExpressionEvaluate(unit, cube).getValue()).isDead());
+	public BooleanType evaluate(Task task) {
+		return new BooleanType(!((Unit) getExpressionEvaluate(task).getValue()).isDead());
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.type.CubeType;
 
 public class SelectedExpression extends CubeExpression {
@@ -13,15 +13,15 @@ public class SelectedExpression extends CubeExpression {
 		return expression;
 	}
 	
-	public CubeType getExpressionEvaluate(Unit unit, Cube cube) {
-		return new CubeType((Cube) getExpression().evaluate(unit, cube).getValue());
+	public CubeType getExpressionEvaluate(Task task) {
+		return new CubeType((Cube) getExpression().evaluate(task).getValue());
 	}
 	
 	private XYZExpression expression;
 	
 	@Override
-	public CubeType evaluate(Unit unit, Cube cube) {
-		return new CubeType(cube);
+	public CubeType evaluate(Task task) {
+		return new CubeType(task.getCube());
 	}
 	
 	@Override

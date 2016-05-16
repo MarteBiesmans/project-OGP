@@ -1,10 +1,9 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 
 public abstract class Expression<T> {
 
-	public abstract T evaluate(Unit unit, Cube cube);
+	public abstract T evaluate(Task task);
 
 }

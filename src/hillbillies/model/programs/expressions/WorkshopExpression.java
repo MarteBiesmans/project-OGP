@@ -1,25 +1,21 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.type.CubeType;
 
 public class WorkshopExpression extends CubeExpression {
 
 	public WorkshopExpression() {
 	}
-	
-	public CubeType evaluate(Unit unit) {
-		return evaluate(unit, null);
-	}
 
 	@Override
-	public CubeType evaluate(Unit unit, Cube cube) {
+	public CubeType evaluate(Task task) {
 		Cube nearestWorkshopSoFar = null;
-		for (Cube workshop : unit.getWorld().getAllWorkshops()) {
+		for (Cube workshop : task.getUnit().getWorld().getAllWorkshops()) {
 				if (nearestWorkshopSoFar == null)
 					nearestWorkshopSoFar = workshop;
-				else if (unit.getPosition().getDistanceSquare(workshop.getCenter()) < unit.getPosition()
+				else if (task.getUnit().getPosition().getDistanceSquare(workshop.getCenter()) < task.getUnit().getPosition()
 						.getDistanceSquare(nearestWorkshopSoFar.getCenter()))
 					nearestWorkshopSoFar = workshop;
 		}

@@ -1,8 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
-import worms.model.Worm;
+import hillbillies.model.Task;
 
 public class VariableExpression extends Expression<Object> {
 
@@ -13,8 +11,8 @@ public class VariableExpression extends Expression<Object> {
 	private String variableName;	
 
 	@Override
-	public Object evaluate(Unit unit, Cube cube) {
-		return getGlobal(variableName).getValue();
+	public Object evaluate(Task task) {
+		return task.getUnit().getFaction().getScheduler().getGlobalVariable(variableName);
 	}
 	
 	@Override

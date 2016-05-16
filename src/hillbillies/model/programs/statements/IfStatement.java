@@ -2,9 +2,6 @@ package hillbillies.model.programs.statements;
 
 import java.util.HashSet;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
 import hillbillies.model.programs.expressions.BooleanExpression;
 
 public class IfStatement extends Statement {
@@ -72,7 +69,7 @@ public class IfStatement extends Statement {
 
 	public void execute() {
 		if (!isConditionChecked()) {
-			setConditionOutcome(getCondition().evaluate().getValue());
+			setConditionOutcome((boolean) getCondition().evaluate(getTask()).getValue());
 			setConditionChecked(true);
 			if (!isConditionOutcome() && getElseBody() == null)
 				this.setCompleted(true);

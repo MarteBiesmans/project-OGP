@@ -32,8 +32,8 @@ import ogp.framework.util.Util;
  */
 
 /**
- * A class of units involving a position, name, strength, agility, toughness, weight and
- * default behaviour.
+ * A class of units involving a position, name, strength, agility, toughness,
+ * weight and default behaviour.
  * 
  * TODO mss zijn dit er meer?
  * 
@@ -216,7 +216,7 @@ public class Unit extends TimeVariableObject {
 		this.faction = null;
 		this.setExperiencePoints(0);
 		this.setLevel(0);
-		
+
 		// task
 		this.setTask(null);
 	}
@@ -508,8 +508,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int agility;
 
-	
-
 	/**
 	 * Return the toughness of this unit.
 	 */
@@ -574,7 +572,7 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering the toughness of this unit.
 	 */
 	private int toughness;
-	
+
 	/**
 	 * Return the weight of this unit.
 	 */
@@ -833,7 +831,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private double orientation;
 
-	
 	/**
 	 * return the experience points of this unit
 	 */
@@ -910,8 +907,7 @@ public class Unit extends TimeVariableObject {
 	 * a variable to register the level of this unit
 	 */
 	private int level;
-	
-	
+
 	// RELATIONS with world, faction and material
 
 	/**
@@ -924,11 +920,13 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether the world of this unit can be set to the given world
-	 * @param 	world
-	 * 			the world to check
-	 * @return	true if all these are true: the given world is not null, this unit already belongs 
-	 * 			to the given world, the current world of this unit equals null
-	 * 			| result == (world != null && world.hasAsUnit(this) && this.getWorld() == null)
+	 * 
+	 * @param world
+	 *            the world to check
+	 * @return true if all these are true: the given world is not null, this
+	 *         unit already belongs to the given world, the current world of
+	 *         this unit equals null | result == (world != null &&
+	 *         world.hasAsUnit(this) && this.getWorld() == null)
 	 */
 	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
@@ -936,16 +934,18 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * set the world of this unit to the given world
-	 * @param 	world
-	 * 			the world to set to (can be null)
-	 * @post	world of this unit equals the given world
-	 * 			|new.getWorld() == world
-	 * @throws	IllegalArgumentException
-	 * 			the world of this unit cannot be set to the given world except if it equals null
-	 * 			| (world != null && !canHaveAsWorld(world))
-	 * @throws	IllegalArgumentException
-	 * 			this unit already has a recorded world and already belongs to it
-	 * 			| ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
+	 * 
+	 * @param world
+	 *            the world to set to (can be null)
+	 * @post world of this unit equals the given world |new.getWorld() == world
+	 * @throws IllegalArgumentException
+	 *             the world of this unit cannot be set to the given world
+	 *             except if it equals null | (world != null &&
+	 *             !canHaveAsWorld(world))
+	 * @throws IllegalArgumentException
+	 *             this unit already has a recorded world and already belongs to
+	 *             it | ((this.getWorld() != null) &&
+	 *             (this.getWorld().hasAsUnit(this)))
 	 */
 	void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
@@ -961,7 +961,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private World world;
 
-	
 	/**
 	 * return the faction this unit belongs to
 	 */
@@ -972,11 +971,13 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether this unit can belong to the given faction
-	 * @param 	faction
-	 * 			the faction to check
-	 * @return	true if al these are true: the given faction is not null, the given faction
-	 * 			contains this unit, the current faction of this unit equals null
-	 * 			| (faction != null && faction.hasAsUnit(this) && this.getFaction() == null)
+	 * 
+	 * @param faction
+	 *            the faction to check
+	 * @return true if al these are true: the given faction is not null, the
+	 *         given faction contains this unit, the current faction of this
+	 *         unit equals null | (faction != null && faction.hasAsUnit(this) &&
+	 *         this.getFaction() == null)
 	 */
 	private boolean canHaveAsFaction(Faction faction) {
 		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
@@ -984,13 +985,15 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * set the faction of this unit to the given faction
-	 * @param 	faction
-	 * 			the faction to set to (can be null)
-	 * @post	the faction of this unit equals the given faction
-	 * 			|new.getFaction() == faction
-	 * @throws 	IllegalArgumentException
-	 * 			the faction of this unit cannot be set to the given faction except if it equals null
-	 * 			|  ((faction != null) && (!canHaveAsFaction(faction)))
+	 * 
+	 * @param faction
+	 *            the faction to set to (can be null)
+	 * @post the faction of this unit equals the given faction |new.getFaction()
+	 *       == faction
+	 * @throws IllegalArgumentException
+	 *             the faction of this unit cannot be set to the given faction
+	 *             except if it equals null | ((faction != null) &&
+	 *             (!canHaveAsFaction(faction)))
 	 */
 	void setFaction(Faction faction) throws IllegalArgumentException {
 		if (faction != null)
@@ -1007,10 +1010,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether this unit has the given material as one of its materials.
 	 * 
-	 * @param 	material
-	 *          The material to check.
-	 * @return	true if the variable materials contains the given material
-	 * 			|result == materials.contains(material)
+	 * @param material
+	 *            The material to check.
+	 * @return true if the variable materials contains the given material
+	 *         |result == materials.contains(material)
 	 */
 	@Raw
 	boolean hasAsMaterial(@Raw Material material) {
@@ -1019,9 +1022,10 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether this unit carries at least one log
-	 * @return	true if at least one material of this unit is a log
-	 * 			|if (for some material in this.materials (material instanceof Log))
-	 * 			|	result == true
+	 * 
+	 * @return true if at least one material of this unit is a log |if (for some
+	 *         material in this.materials (material instanceof Log)) | result ==
+	 *         true
 	 */
 	public boolean hasLog() {
 		for (Material material : this.materials) {
@@ -1033,9 +1037,10 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether this unit carries at least one boulder
-	 * @return	true if at least one material of this unit is a boulder
-	 * 			|if (for some material in this.materials (material instanceof Boulder))
-	 * 			|	result == true
+	 * 
+	 * @return true if at least one material of this unit is a boulder |if (for
+	 *         some material in this.materials (material instanceof Boulder)) |
+	 *         result == true
 	 */
 	public boolean hasBoulder() {
 		for (Material material : this.materials) {
@@ -1049,10 +1054,10 @@ public class Unit extends TimeVariableObject {
 	 * Check whether this unit can have the given material as one of its
 	 * materials.
 	 * 
-	 * @param 	material
-	 *        	The material to check.
-	 * @return	true if the given material does not equal null
-	 * 			|result == (material != null)
+	 * @param material
+	 *            The material to check.
+	 * @return true if the given material does not equal null |result ==
+	 *         (material != null)
 	 */
 	@Raw
 	private boolean canHaveAsMaterial(Material material) {
@@ -1062,10 +1067,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether this unit has proper materials attached to it.
 	 * 
-	 * @return	false if at least one material is not valid or has not this unit as owner
-	 * 			| if (for some material in materials 
-	 * 			|		(!this.canHaveAsMaterial(material) || material.getOwner() != this))
-	 * 			|	then result == false
+	 * @return false if at least one material is not valid or has not this unit
+	 *         as owner | if (for some material in materials |
+	 *         (!this.canHaveAsMaterial(material) || material.getOwner() !=
+	 *         this)) | then result == false
 	 */
 	@SuppressWarnings("unused")
 	private boolean hasProperMaterials() {
@@ -1081,8 +1086,8 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the number of materials associated with this unit.
 	 *
-	 * @return	the number of materials carried by this unit
-	 * 			|result == materials.size()
+	 * @return the number of materials carried by this unit |result ==
+	 *         materials.size()
 	 */
 	public int getNbMaterials() {
 		return materials.size();
@@ -1091,16 +1096,16 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Add the given material to the set of materials of this unit.
 	 * 
-	 * @param	material
-	 *          The material to be added.
-	 * @post 	This unit has the given material as one of its materials if possible
-	 * 			|new.hasAsMaterial(material)
-	 * @throws	IllegalArgumentException
-	 * 			the material cannot be carried by this unit
-	 * 			| (!canHaveAsMaterial(material))
-	 * @throws	IllegalArgumentException
-	 * 			the unit cannot be the owner of this material
-	 * 			| (!material.canHaveAsOwner(owner))
+	 * @param material
+	 *            The material to be added.
+	 * @post This unit has the given material as one of its materials if
+	 *       possible |new.hasAsMaterial(material)
+	 * @throws IllegalArgumentException
+	 *             the material cannot be carried by this unit |
+	 *             (!canHaveAsMaterial(material))
+	 * @throws IllegalArgumentException
+	 *             the unit cannot be the owner of this material |
+	 *             (!material.canHaveAsOwner(owner))
 	 */
 	void addMaterial(@Raw Material material) throws IllegalArgumentException {
 		if (!canHaveAsMaterial(material)) {
@@ -1119,13 +1124,13 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Remove the given material from the set of materials of this unit.
 	 * 
-	 * @param	material
-	 *          The material to be removed.
-	 * @post	This unit no longer has the given material as one of its materials.
-	 *       	| ! new.hasAsMaterial(material)
-	 * @throws	IllegalArgumentException
-	 * 			the given material is not carried by this unit
-	 * 			| (!this.hasAsMaterial(material))
+	 * @param material
+	 *            The material to be removed.
+	 * @post This unit no longer has the given material as one of its materials.
+	 *       | ! new.hasAsMaterial(material)
+	 * @throws IllegalArgumentException
+	 *             the given material is not carried by this unit |
+	 *             (!this.hasAsMaterial(material))
 	 */
 	@Raw
 	void removeMaterial(Material material) throws IllegalArgumentException {
@@ -1147,7 +1152,7 @@ public class Unit extends TimeVariableObject {
 	private final Set<Material> materials = new HashSet<Material>();
 
 	// TODO vanaf hier comments checken
-	
+
 	// ACTIVITY//
 
 	/**
@@ -1196,8 +1201,8 @@ public class Unit extends TimeVariableObject {
 		this.activityQueue.add(0, activity);
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
-	
-	//TODO: tests als hier nog tijd voor is :(
+
+	// TODO: tests als hier nog tijd voor is :(
 	public void nextActivity() {
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
@@ -1296,24 +1301,26 @@ public class Unit extends TimeVariableObject {
 	 * update the attributes of a Unit, based on that Unit's current attributes
 	 * and a given duration 'seconds' in seconds of game time
 	 * 
-	 * @param 	seconds
-	 *          the amount of seconds to advance time
-	 * @effect	reduce the busyTime of the unit with the given seconds if it is
-	 * 			not moving, doing nothing or falling
-	 * @effect	attack for the given seconds if this unit is attacking
-	 * @effect	fall for the given seconds if this unit is falling
-	 * @effect	move for the given seconds if this unit is moving and getMoveToAdjacent does not equal null
-	 * @effect	work for the given seconds if this unit is working
-	 * @effect	rest for the given seconds if this unit is resting
-	 * @effect	start default behaviour if current activity is NONE and default behaviour is enabled
-	 * @effect	TODO shouldFall
-	 * @effect	level up if experiencePoints - 10 * level > 10
-	 * @effect	die if hitpoints equal zero
-	 * @throws 	IllegalArgumentException
-	 *          the seconds are not in the interval [0, 0.2]
+	 * @param seconds
+	 *            the amount of seconds to advance time
+	 * @effect reduce the busyTime of the unit with the given seconds if it is
+	 *         not moving, doing nothing or falling
+	 * @effect attack for the given seconds if this unit is attacking
+	 * @effect fall for the given seconds if this unit is falling
+	 * @effect move for the given seconds if this unit is moving and
+	 *         getMoveToAdjacent does not equal null
+	 * @effect work for the given seconds if this unit is working
+	 * @effect rest for the given seconds if this unit is resting
+	 * @effect start default behaviour if current activity is NONE and default
+	 *         behaviour is enabled
+	 * @effect TODO shouldFall
+	 * @effect level up if experiencePoints - 10 * level > 10
+	 * @effect die if hitpoints equal zero
+	 * @throws IllegalArgumentException
+	 *             the seconds are not in the interval [0, 0.2]
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
+		if (!(Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
 			throw new IllegalArgumentException();
 
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
@@ -1351,11 +1358,10 @@ public class Unit extends TimeVariableObject {
 			this.die();
 	}
 
-	
 	/**
 	 * 
-	 * @param 	seconds
-	 * 			the seconds to attack
+	 * @param seconds
+	 *            the seconds to attack
 	 */
 	private void attacking(float seconds) {
 		if (this.getBusyTime() == 0)
@@ -1364,13 +1370,12 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * 
-	 * @param 	seconds
-	 * 			the seconds to fall
+	 * @param seconds
+	 *            the seconds to fall
 	 */
 	private void falling(float seconds) {
-		Position next = new Position(this.getPosition().getRealX(), 
-									 this.getPosition().getRealY(),
-									 Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
+		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
+				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
 			this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
 		try {
@@ -1392,11 +1397,13 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * 
-	 * @param 	seconds
-	 * 			the seconds to move
-	 * @effect	reduce stamina points with 10*seconds while sprinting if this results in a positive number
-	 * @effect	while sprinting, set stamina points to zero and stop sprinting if currenct value reduced
-	 * 			with 10*seconds results in a negative number
+	 * @param seconds
+	 *            the seconds to move
+	 * @effect reduce stamina points with 10*seconds while sprinting if this
+	 *         results in a positive number
+	 * @effect while sprinting, set stamina points to zero and stop sprinting if
+	 *         currenct value reduced with 10*seconds results in a negative
+	 *         number
 	 */
 	private void moving(float seconds) {
 		if (this.isSprinting()) {
@@ -1525,6 +1532,24 @@ public class Unit extends TimeVariableObject {
 
 	private void beingUseless(float seconds) {
 
+		if (getFaction().getScheduler().getHighestPriorityTaskNotExecuted() != null) {
+			nextTask();
+		}
+
+		else
+			doRandomBehaviour();
+	}
+	
+	private void nextTask() {
+		if (getTask().isFullyExecuted())
+			getFaction().getScheduler().removeTask(getTask());
+		else
+			getTask().setPriority(getTask().getPriority() - 1);
+		setTask(getFaction().getScheduler().getHighestPriorityTaskNotExecuted());
+		getTask().setUnit(this);
+	}
+
+	private void doRandomBehaviour() {
 		int randomFight = RANDOM_GEN.nextInt(4);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
@@ -1607,8 +1632,8 @@ public class Unit extends TimeVariableObject {
 		}
 		this.setLevel(this.getLevel() + 1);
 	}
-	
-	//MOVING AND PATH FINDING//
+
+	// MOVING AND PATH FINDING//
 
 	/**
 	 * Moves this unit to an adjacent cube.
@@ -1799,8 +1824,8 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private Cube moveToCube;
-	
-	//SPECIAL FORMS OF MOVING: sprinting and falling//
+
+	// SPECIAL FORMS OF MOVING: sprinting and falling//
 
 	/**
 	 * if the unit is sprinting, it will start walking. If the unit is walking,
@@ -1836,10 +1861,9 @@ public class Unit extends TimeVariableObject {
 		}
 		return false;
 	}
-	
 
-	//DEFAULT BEHAVIOUR//
-	
+	// DEFAULT BEHAVIOUR//
+
 	/**
 	 * starts the default behaviour of this unit
 	 */
@@ -1863,7 +1887,7 @@ public class Unit extends TimeVariableObject {
 
 	private boolean defaultBehaviour;
 
-	//WORKING//
+	// WORKING//
 
 	/**
 	 * this unit starts working.
@@ -1899,28 +1923,28 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * get this unit working
 	 * 
-	 * @effect	set activity of this unit to working
+	 * @effect set activity of this unit to working
 	 */
 	public void work() {
 		this.setActivity(Activity.WORKING);
 	}
-	
-	//RESTING//
+
+	// RESTING//
 
 	/**
 	 * get this unit resting
-	 * @effect	set activity of this unit to resting
+	 * 
+	 * @effect set activity of this unit to resting
 	 */
 	public void rest() {
 		this.setActivity(Activity.RESTING);
 		if (this.isResting())
 			this.canStopResting = false;
 	}
-	
+
 	private boolean canStopResting;
 
-	
-	//ATTACK AND DEFEND//
+	// ATTACK AND DEFEND//
 
 	/**
 	 * 

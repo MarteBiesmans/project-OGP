@@ -1,7 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.type.BooleanType;
 
 public class NotExpression extends BooleanExpression {
@@ -14,15 +13,15 @@ public class NotExpression extends BooleanExpression {
 		return expression;
 	}
 	
-	public BooleanType getExpressionEvaluate(Unit unit, Cube cube) {
-		return getExpression().evaluate(unit, cube);
+	public BooleanType getExpressionEvaluate(Task task) {
+		return getExpression().evaluate(task);
 	}
 	
 	private final BooleanExpression expression;
 	
 	@Override
-	public BooleanType evaluate(Unit unit, Cube cube) {
-		return new BooleanType(! ((boolean) getExpressionEvaluate(unit, cube).getValue()));
+	public BooleanType evaluate(Task task) {
+		return new BooleanType(! ((boolean) getExpressionEvaluate(task).getValue()));
 	}
 	
 	@Override

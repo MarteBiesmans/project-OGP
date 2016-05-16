@@ -23,7 +23,7 @@ public class FollowStatement extends ActionStatement {
 		if(getTask().getUnit() == null){
 			throw new NullPointerException("this task has no unit");
 		}
-		getTask().getUnit().follow(getUnit().evaluate().getValue());
+		getTask().getUnit().follow(((Unit) getUnit().evaluate(getTask()).getValue()));
 		this.setCompleted(true);
 	}
 	

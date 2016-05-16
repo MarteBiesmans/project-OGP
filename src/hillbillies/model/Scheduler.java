@@ -3,9 +3,12 @@ package hillbillies.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -165,6 +168,38 @@ public class Scheduler {
 		result.sort((a, b) -> a.compareTo(b));
 		return result;
 	}
+	
+	public Task getHighestPriorityTaskNotExecuted() {
+		for (Task task: getSortedTasks()) {
+			if (!task.isBeingExecuted())
+				return task;
+		}
+		return null;
+	}
+	
+	public void assignTaskToUnit(Task task, Unit unit) {
+		if (task.isBeingExecuted() && task.getUnit() != unit) {
+			//TODO: stop executing task
+		}
+		if (unit.getTask() != null) {
+			this.addTask(unit.getTask());
+		}
+		unit.setTask(task);
+		task.setUnit(unit);
+	}
+	
+	public void resetTaskToUnit(Task task, Unit unit) throws IllegalStateException {
+		if (task.getUnit() != unit || unit.getTask() != task)
+			throw new IllegalStateException();
+		unit.setTask(null); //TODO: of unit.nextTask ofzo?
+		task.setUnit(null);
+	}
+	
+	public Set<Task> getAllTasksThatSatisfy(Predicate<Task> condition) {
+		Set<Task> tasksSoFar = new HashSet<Task>(getAllTasks());
+		tasksSoFar.stream().filter(condition);
+		return tasksSoFar;
+	}
 
 	/**
 	 * Variable referencing a set collecting all the tasks of this scheduler.
@@ -177,8 +212,8 @@ public class Scheduler {
 	private final Set<Task> tasks = new HashSet<Task>();
 
 	/**
+	 * TODO
 	 * TO BE ADDED TO CLASS HEADING
-	 * 
 	 * @invar Each scheduler can have its faction as faction. |
 	 *        canHaveAsFaction(this.getFaction())
 	 */
@@ -209,5 +244,54 @@ public class Scheduler {
 	 * Variable registering the faction of this scheduler.
 	 */
 	private final Faction faction;
+	
+	/**
+	 * Set a global variable of this program referenced by a given name to a given basic expression.
+	 * @param name
+	 * 			The name to reference the (new) global variable by.
+	 * @param value
+	 * 			The value to set the (new) global value to in the form of a basic expression.
+	 */
+	public void setGlobalVariable(String name, Object value){
+		this.getGlobalVariables().put(name, value);
+	}
+	
+	/**
+	 * Get the basic expression containing the value of a global variable of this program by name.
+	 * @param name
+	 * 			The name of the global variable.
+	 * @return The basic expression containing the value of the global variable.
+	 */
+	// Public for the purpose of testing. Otherwise protected.
+	public Object getGlobalVariable(String name){
+		if(!hasGlobalVariable(name)){
+			System.err.println("Variable with the name '"+name+"' doesn't exist!");
+		}
+		return getGlobalVariables().get(name);
+	}
+	
+	/**
+	 * Check if there exists a global variable in this program with the given name.
+	 * @param name
+	 * 			The name to check on.
+	 * @return True if such a variable exists, false otherwise.
+	 */
+	protected boolean hasGlobalVariable(String name){
+		return getGlobalVariables().containsKey(name);
+	}
+	
+	/**
+	 * Return the map referencing the names and respective basic expressions containing the values of
+	 * the global variables of this program.
+	 */
+	private Map<String, Object> getGlobalVariables() {
+		return globalVariables;
+	}
+	
+	/**
+	 * A map referencing the names and respective basic expressions containing the values of
+	 * the global variables of this program.
+	 */
+	private final Map<String, Object> globalVariables = new HashMap<String, Object>();
 
 }

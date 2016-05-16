@@ -31,7 +31,7 @@ public abstract class Statement implements Cloneable {
 		return new HashSet<Statement>();
 	}
 
-	protected boolean isCompleted() {
+	public boolean isCompleted() {
 		return completed;
 	}
 
