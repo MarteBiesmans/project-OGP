@@ -1,9 +1,6 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Counter;
-import hillbillies.model.Cube;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.expressions.CubeExpression;
 import hillbillies.model.programs.expressions.UnitExpression;
 
 public class FollowStatement extends ActionStatement {

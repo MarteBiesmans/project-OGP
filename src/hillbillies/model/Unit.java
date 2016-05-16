@@ -206,9 +206,10 @@ public class Unit extends TimeVariableObject {
 		// behaviour
 		this.defaultBehaviour = enableDefaultBehaviour;
 
-		// moveTo and moveToAdjacent, workAtCube
+		// moveTo and moveToAdjacent, followUnit, workAtCube
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
+		this.setFollowUnit(null);
 		this.setWorkAtCube(null);
 
 		// world, faction, experience points and level
@@ -1215,6 +1216,8 @@ public class Unit extends TimeVariableObject {
 					this.setMoveToCube(null);
 					this.setMoveToAdjacent(null);
 				}
+				if (this.isFollowing())
+					this.setFollowUnit(null);
 				this.activityQueue.remove(0);
 				if (!this.getActivityQueue().isEmpty()) {
 					if (this.getActivityQueue().get(0) == Activity.NONE)
@@ -1256,7 +1259,7 @@ public class Unit extends TimeVariableObject {
 	 * returns wheter this unit is moving or not.
 	 */
 	public boolean isMoving() {
-		return (this.getCurrentActivity() == Activity.WALKING) || (this.getCurrentActivity() == Activity.SPRINTING);
+		return (this.getCurrentActivity() == Activity.WALKING) || (this.getCurrentActivity() == Activity.SPRINTING || this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	public boolean isWalking() {
@@ -1268,6 +1271,10 @@ public class Unit extends TimeVariableObject {
 	 */
 	public boolean isSprinting() {
 		return (this.getCurrentActivity() == Activity.SPRINTING);
+	}
+	
+	public boolean isFollowing() {
+		return (this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	/**
@@ -1387,6 +1394,7 @@ public class Unit extends TimeVariableObject {
 							next.getRealZ() - (World.FALLING_VELOCITY * seconds / 10));
 					try {
 						this.setPosition(next);
+						break;
 					} catch (IllegalArgumentException r) {
 						continue;
 					}
@@ -1467,11 +1475,23 @@ public class Unit extends TimeVariableObject {
 								next.getRealZ() + (zVelocity * seconds / 10));
 						try {
 							this.setPosition(next);
+							break;
 						} catch (IllegalArgumentException r) {
 							continue;
 						}
 					}
 				}
+			}
+		}
+		
+		if (this.isFollowing()) {
+			if (this.getFollowUnit().isDead()) {
+				this.setFollowUnit(null);
+				this.nextActivity();
+			} else if (this.getCube().isSameOrNeighbouringCube(this.getFollowUnit().getCube())){
+				nextActivity();
+			} else {
+				this.setMoveToCube(this.getFollowUnit().getCube());
 			}
 		}
 	}
@@ -1541,10 +1561,11 @@ public class Unit extends TimeVariableObject {
 	}
 	
 	private void nextTask() {
-		if (getTask().isFullyExecuted())
+		if (getTask().isCompleted()) {
 			getFaction().getScheduler().removeTask(getTask());
-		else
+		} else {
 			getTask().setPriority(getTask().getPriority() - 1);
+		}
 		setTask(getFaction().getScheduler().getHighestPriorityTaskNotExecuted());
 		getTask().setUnit(this);
 	}
@@ -1660,7 +1681,7 @@ public class Unit extends TimeVariableObject {
 				this.getPosition().getCube().getZ() + z);
 
 		if (moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld())) {
-			if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING)) {
+			if (!(this.isMoving())) {
 				this.setActivity(Activity.WALKING);
 			}
 
@@ -1825,7 +1846,7 @@ public class Unit extends TimeVariableObject {
 
 	private Cube moveToCube;
 
-	// SPECIAL FORMS OF MOVING: sprinting and falling//
+	// SPECIAL FORMS OF MOVING: sprinting, falling and following//
 
 	/**
 	 * if the unit is sprinting, it will start walking. If the unit is walking,
@@ -1861,6 +1882,32 @@ public class Unit extends TimeVariableObject {
 		}
 		return false;
 	}
+	
+	/**
+	 * this unit will start following the other unit.
+	 * @param other		the other unit that will be followed by this unit.
+	 */
+	public void follow(Unit other) {
+		this.setFollowUnit(other);
+		this.setActivity(Activity.FOLLOWING);
+		moveTo(getFollowUnit().getCube());
+	}
+	
+	/**
+	 * returns the cube far away where this unit is going.
+	 * 
+	 * @return
+	 */
+	private Unit getFollowUnit() {
+		return this.followUnit;
+	}
+
+	private void setFollowUnit(Unit other) {
+		this.followUnit = other;
+	}
+
+	private Unit followUnit;
+	
 
 	// DEFAULT BEHAVIOUR//
 

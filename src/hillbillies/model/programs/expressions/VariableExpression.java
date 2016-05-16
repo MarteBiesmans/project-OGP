@@ -12,7 +12,7 @@ public class VariableExpression extends Expression<Object> {
 
 	@Override
 	public Object evaluate(Task task) {
-		return task.getUnit().getFaction().getScheduler().getGlobalVariable(variableName);
+		return task.getGlobalVariable(variableName);
 	}
 	
 	@Override

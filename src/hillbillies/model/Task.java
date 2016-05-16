@@ -1,7 +1,9 @@
 //TODO	comments (formal!)
 package hillbillies.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -76,6 +78,10 @@ public class Task implements Comparable<Task> {
 	@Override
 	public int compareTo(Task other) {
 		return Integer.compare(other.getPriority(), this.getPriority());
+	}
+	
+	public void reset() {
+		getActivities().reset();
 	}
 
 	/**
@@ -170,7 +176,7 @@ public class Task implements Comparable<Task> {
 		return (activities != null);
 	}
 	
-	public boolean isFullyExecuted() {
+	public boolean isCompleted() {
 		return activities.isCompleted();
 	}
 
@@ -381,6 +387,62 @@ public class Task implements Comparable<Task> {
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
+	
+	/**
+	 * Set a global variable of this program referenced by a given name to a given basic expression.
+	 * @param name
+	 * 			The name to reference the (new) global variable by.
+	 * @param value
+	 * 			The value to set the (new) global value to in the form of a basic expression.
+	 */
+	public void setGlobalVariable(String name, Object value){
+		this.getGlobalVariables().put(name, value);
+	}
+	
+	public void removeGlobalVariable(String name) {
+		if(!hasGlobalVariable(name)){
+			System.err.println("Variable with the name '"+name+"' doesn't exist!");
+		}
+		this.getGlobalVariables().remove(name);
+	}
+	
+	/**
+	 * Get the basic expression containing the value of a global variable of this program by name.
+	 * @param name
+	 * 			The name of the global variable.
+	 * @return The basic expression containing the value of the global variable.
+	 */
+	// Public for the purpose of testing. Otherwise protected.
+	public Object getGlobalVariable(String name){
+		if(!hasGlobalVariable(name)){
+			System.err.println("Variable with the name '"+name+"' doesn't exist!");
+		}
+		return getGlobalVariables().get(name);
+	}
+	
+	/**
+	 * Check if there exists a global variable in this program with the given name.
+	 * @param name
+	 * 			The name to check on.
+	 * @return True if such a variable exists, false otherwise.
+	 */
+	protected boolean hasGlobalVariable(String name){
+		return getGlobalVariables().containsKey(name);
+	}
+	
+	/**
+	 * Return the map referencing the names and respective basic expressions containing the values of
+	 * the global variables of this program.
+	 */
+	private Map<String, Object> getGlobalVariables() {
+		return globalVariables;
+	}
+	
+	/**
+	 * A map referencing the names and respective basic expressions containing the values of
+	 * the global variables of this program.
+	 */
+	private final Map<String, Object> globalVariables = new HashMap<String, Object>();
 	
 	public void execute(Counter counter) {
 		//TODO: moet dit wel hier gecheckt worden?

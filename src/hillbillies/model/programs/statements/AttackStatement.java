@@ -23,4 +23,5 @@ public class AttackStatement extends ActionStatement {
 		getTask().getUnit().attack((Unit) getUnit().evaluate(getTask()).getValue());
 		this.setCompleted(true);
 	}
+	
 }

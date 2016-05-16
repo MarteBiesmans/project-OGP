@@ -1,6 +1,5 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.Scheduler;
 import hillbillies.model.programs.expressions.Expression;
 
 public class AssignmentStatement extends Statement {
@@ -16,11 +15,16 @@ public class AssignmentStatement extends Statement {
 		} catch (Exception e) {
 		}
 	}
+	
+	@Override
+	public void reset() {
+		getTask().removeGlobalVariable(getVariableName());
+		super.reset();
+	}
 
 	@Override
 	public void execute() {
-		for (Scheduler scheduler: getTask().getAllSchedulers())
-			scheduler.setGlobalVariable(getVariableName(), getValueExpression().evaluate(getTask()));
+		getTask().setGlobalVariable(getVariableName(), getValueExpression().evaluate(getTask()));
 		setCompleted(true);
 	}
 
