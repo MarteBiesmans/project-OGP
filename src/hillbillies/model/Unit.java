@@ -13,6 +13,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
 
 /**
@@ -1205,6 +1206,10 @@ public class Unit extends TimeVariableObject {
 
 	// TODO: tests als hier nog tijd voor is :(
 	public void nextActivity() {
+		if (this.getTask() != null) {
+			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
+				getTask().getActivities().getExecutingStatement().setCompleted(true);
+		}
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);
@@ -1333,11 +1338,11 @@ public class Unit extends TimeVariableObject {
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
 			this.busyTimeMin(seconds);
 
-		if (this.isAttacking())
-			attacking(seconds);
-
 		if (this.isFalling())
 			falling(seconds);
+		
+		if (this.isAttacking())
+			attacking(seconds);
 
 		if (this.isMoving() && this.getMoveToAdjacent() != null)
 			moving(seconds);
@@ -1401,6 +1406,8 @@ public class Unit extends TimeVariableObject {
 				}
 			}
 		}
+		if (this.canStopFalling())
+			this.nextActivity();
 	}
 
 	/**
@@ -1414,6 +1421,7 @@ public class Unit extends TimeVariableObject {
 	 *         number
 	 */
 	private void moving(float seconds) {
+		
 		if (this.isSprinting()) {
 			double stamina = this.getStaminaPoints() - seconds * 10;
 			if (stamina > 0)
@@ -1485,15 +1493,12 @@ public class Unit extends TimeVariableObject {
 		}
 		
 		if (this.isFollowing()) {
-			if (this.getFollowUnit().isDead()) {
-				this.setFollowUnit(null);
-				this.nextActivity();
-			} else if (this.getCube().isSameOrNeighbouringCube(this.getFollowUnit().getCube())){
+			if (this.getFollowUnit() == null || this.getFollowUnit().isDead()) {
 				nextActivity();
-			} else {
+			} else
 				this.setMoveToCube(this.getFollowUnit().getCube());
-			}
 		}
+		
 	}
 
 	private void working(float seconds) {

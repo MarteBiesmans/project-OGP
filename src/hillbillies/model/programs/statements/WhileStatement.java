@@ -11,6 +11,11 @@ public class WhileStatement extends Statement {
 		setBody(body);
 	}
 	
+	@Override
+	public Statement getExecutingStatement() {
+		return getBody().getExecutingStatement();
+	}
+	
 	public BooleanExpression getCondition() {
 		return condition;
 	}

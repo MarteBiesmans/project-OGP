@@ -21,7 +21,6 @@ public class AttackStatement extends ActionStatement {
 			throw new NullPointerException("this task has no unit");
 		}
 		getTask().getUnit().attack((Unit) getUnit().evaluate(getTask()).getValue());
-		this.setCompleted(true);
 	}
 	
 }

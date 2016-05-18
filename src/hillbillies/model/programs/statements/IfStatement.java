@@ -12,6 +12,15 @@ public class IfStatement extends Statement {
 		setElseBody(elseBody);
 		setConditionChecked(false);
 	}
+	
+	@Override
+	public Statement getExecutingStatement() {
+		if (getConditionOutcome())
+			return getIfBody().getExecutingStatement();
+		else if (getElseBody() != null)
+			return getElseBody().getExecutingStatement();
+		return this; //TODO: this should never happen, right?..
+	}
 
 	public BooleanExpression getCondition() {
 		return condition;
@@ -23,7 +32,7 @@ public class IfStatement extends Statement {
 
 	private BooleanExpression condition;
 
-	private boolean isConditionOutcome() {
+	private boolean getConditionOutcome() {
 		return conditionOutcome;
 	}
 

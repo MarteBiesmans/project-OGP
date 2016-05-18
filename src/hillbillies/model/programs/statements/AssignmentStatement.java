@@ -4,16 +4,10 @@ import hillbillies.model.programs.expressions.Expression;
 
 public class AssignmentStatement extends Statement {
 
-	public AssignmentStatement(String variableName, Object variableType, Expression<?> valueExpression) {
+	public AssignmentStatement(String variableName, Expression<?> valueExpression) {
 		setVariableName(variableName);
-		setVariableType(variableType); //TODO: is type bijhouden wel nodig?
+		setVariableType(valueExpression.evaluate(getTask()).getClass());
 		setValueExpression(valueExpression);
-		try {
-			if (getVariableType().getClass() != getValueExpression().evaluate(getTask()).getClass()) {
-				throw new IllegalArgumentException("Value is not of the given type.");
-			}
-		} catch (Exception e) {
-		}
 	}
 	
 	@Override

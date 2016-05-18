@@ -20,7 +20,6 @@ public class MoveToStatement extends ActionStatement {
 			throw new NullPointerException("this task has no unit");
 		}
 		getTask().getUnit().moveTo((Cube) getCube().evaluate(getTask()).getValue());
-		this.setCompleted(true);
 	}
 
 }

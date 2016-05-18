@@ -19,6 +19,11 @@ public class SequenceOfStatements extends Statement {
 		resetIterator();
 	}
 	
+	@Override
+	public Statement getExecutingStatement() {
+		return getCurrentStatement().getExecutingStatement();
+	}
+	
 	public void execute(){
 		getCurrentStatement().execute();
 		if(getCurrentStatement().isCompleted()){

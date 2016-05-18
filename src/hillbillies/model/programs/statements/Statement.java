@@ -2,16 +2,23 @@ package hillbillies.model.programs.statements;
 
 import java.util.HashSet;
 
+import hillbillies.model.Counter;
 import hillbillies.model.Task;
 
 public abstract class Statement implements Cloneable {
 
 	public abstract void execute();
 	
+	public abstract boolean canExecute(Counter couneter);
+	
 	public abstract boolean isMutable();
 	
 	public boolean isWellFormed() {
 		return true;
+	}
+	
+	public Statement getExecutingStatement() {
+		return this;
 	}
 	
 	@Override
@@ -35,7 +42,7 @@ public abstract class Statement implements Cloneable {
 		return completed;
 	}
 
-	protected void setCompleted(boolean completed) {
+	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
 

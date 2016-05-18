@@ -20,7 +20,6 @@ public class WorkStatement extends ActionStatement {
 			throw new NullPointerException("this task has no unit");
 		}
 		getTask().getUnit().workAt((Cube) getCube().evaluate(getTask()).getValue());
-		this.setCompleted(true);
 	}
 
 }
