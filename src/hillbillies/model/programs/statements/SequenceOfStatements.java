@@ -3,7 +3,6 @@ package hillbillies.model.programs.statements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import hillbillies.model.Task;
@@ -46,7 +45,6 @@ public class SequenceOfStatements extends Statement {
 		SetHasFullyExecutedToTrue();
 	}
 
-
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
 		counter.increment();
@@ -60,7 +58,6 @@ public class SequenceOfStatements extends Statement {
 		return true;
 	}
 
-
 	@Override
 	public boolean isWellFormed() {
 		for (Statement statement: getListOfStatements()) {
@@ -69,7 +66,6 @@ public class SequenceOfStatements extends Statement {
 		}
 		return true;
 	}
-
 
 	@Override
 	public boolean containsActionStatement() {
