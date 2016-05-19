@@ -467,6 +467,7 @@ public class Facade implements IFacade {
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.
 	 */
+	@SuppressWarnings("deprecation")
 	public void work(Unit unit) throws ModelException {
 		try{
 			unit.work();
