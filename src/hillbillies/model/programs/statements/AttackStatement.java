@@ -3,22 +3,29 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.expressions.UnitExpression;
+import hillbillies.model.programs.expressions.IUnitExpression;
 
 public class AttackStatement extends ActionStatement {
 	
-	private AttackStatement(boolean hasBeenFullyExecuted) {
+	private AttackStatement(IUnitExpression unit, boolean hasBeenFullyExecuted) {
 		super(false, hasBeenFullyExecuted);
+		this.unit = unit;
 	}
 	
-	public AttackStatement() {
-		this(false);
+	public AttackStatement(IUnitExpression unit) {
+		this(unit, false);
 	}
+	
+	public IUnitExpression getUnit() {
+		return unit;
+	}
+	
+	private final IUnitExpression unit;
 
 	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
-//		TODO: getActionHandler().move(worm);
+		task.getUnit().attack((Unit) getUnit().evaluate(task).getValue());
 		SetHasFullyExecutedToTrue();
 	}
 
@@ -34,18 +41,10 @@ public class AttackStatement extends ActionStatement {
 
 	@Override
 	public AttackStatement clone() {
-		return new AttackStatement(hasBeenFullyExecuted());
+		return new AttackStatement(getUnit(), hasBeenFullyExecuted());
 	}
 
-//	public AttackStatement(UnitExpression expression) {
-//		this.unit = expression;
-//	}
-//	
-//	public UnitExpression getUnit() {
-//		return unit;
-//	}
-//	
-//	private UnitExpression unit;
+
 //	
 //	@Override
 //	public void execute() {
