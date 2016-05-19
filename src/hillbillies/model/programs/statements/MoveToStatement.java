@@ -3,23 +3,29 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Task;
-import hillbillies.model.programs.expressions.CubeExpression;
+import hillbillies.model.programs.expressions.ICubeExpression;
 
 public class MoveToStatement extends ActionStatement {
 	
-	private MoveToStatement(boolean hasBeenFullyExecuted) {
-		super(hasBeenFullyExecuted, false);
+	private MoveToStatement(ICubeExpression cube, boolean hasBeenFullyExecuted) {
+		super(false, hasBeenFullyExecuted);
+		this.cube = cube;
 	}
 	
-	public MoveToStatement() {
-		this(false);
+	public MoveToStatement(ICubeExpression cube) {
+		this(cube, false);
 	}
+	
+	public ICubeExpression getCube() {
+		return cube;
+	}
+	
+	private final ICubeExpression cube;
 
 	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
-//		TODO: getActionHandler().move(worm);
-		SetHasFullyExecutedToTrue();
+		task.getUnit().moveTo((Cube) getCube().evaluate(task).getValue());
 	}
 
 	@Override
@@ -34,7 +40,7 @@ public class MoveToStatement extends ActionStatement {
 
 	@Override
 	public MoveToStatement clone() {
-		return new MoveToStatement(hasBeenFullyExecuted());
+		return new MoveToStatement(getCube(), hasBeenFullyExecuted());
 	}
 
 //	public MoveToStatement(CubeExpression c) {

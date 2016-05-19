@@ -26,7 +26,6 @@ public class AttackStatement extends ActionStatement {
 	public void execute(Task task, Counter counter) {
 		counter.increment();
 		task.getUnit().attack((Unit) getUnit().evaluate(task).getValue());
-		SetHasFullyExecutedToTrue();
 	}
 
 	@Override

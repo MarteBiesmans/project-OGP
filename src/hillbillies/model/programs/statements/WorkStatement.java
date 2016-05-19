@@ -4,22 +4,29 @@ import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Task;
 import hillbillies.model.programs.expressions.CubeExpression;
+import hillbillies.model.programs.expressions.ICubeExpression;
 
 public class WorkStatement extends ActionStatement {
-
-	private WorkStatement(boolean hasBeenFullyExecuted) {
+	
+	private WorkStatement(ICubeExpression cube, boolean hasBeenFullyExecuted) {
 		super(false, hasBeenFullyExecuted);
+		this.cube = cube;
 	}
 	
-	public WorkStatement() {
-		this(false);
+	public WorkStatement(ICubeExpression cube) {
+		this(cube, false);
 	}
+	
+	public ICubeExpression getCube() {
+		return cube;
+	}
+	
+	private final ICubeExpression cube;
 
 	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
-//		TODO: getActionHandler().move(worm);
-		SetHasFullyExecutedToTrue();
+		task.getUnit().workAt((Cube) getCube().evaluate(task).getValue());
 	}
 
 	@Override
@@ -34,7 +41,7 @@ public class WorkStatement extends ActionStatement {
 
 	@Override
 	public WorkStatement clone() {
-		return new WorkStatement(hasBeenFullyExecuted());
+		return new WorkStatement(getCube(), hasBeenFullyExecuted());
 	}
 	
 //	public WorkStatement(CubeExpression expression) {

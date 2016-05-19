@@ -3,23 +3,30 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
-import hillbillies.model.programs.expressions.UnitExpression;
+import hillbillies.model.programs.expressions.IUnitExpression;
 
 public class FollowStatement extends ActionStatement {
 	
-	private FollowStatement(boolean hasBeenFullyExecuted) {
+	private FollowStatement(IUnitExpression unit, boolean hasBeenFullyExecuted) {
 		super(false, hasBeenFullyExecuted);
+		this.unit = unit;
 	}
 	
 	public FollowStatement(IUnitExpression unit) {
-		this(false);
+		this(unit, false);
 	}
+	
+	public IUnitExpression getUnit() {
+		return unit;
+	}
+	
+	private final IUnitExpression unit;
+
 
 	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
-//		TODO: getActionHandler().move(worm);
-		SetHasFullyExecutedToTrue();
+		task.getUnit().follow((Unit) getUnit().evaluate(task).getValue());
 	}
 
 	@Override
@@ -29,12 +36,11 @@ public class FollowStatement extends ActionStatement {
 			return false;
 		}
 		return true;
-//		TODO: weghalen return worm.canMove();
 	}
 
 	@Override
 	public FollowStatement clone() {
-		return new FollowStatement(hasBeenFullyExecuted());
+		return new FollowStatement(getUnit(), hasBeenFullyExecuted());
 	}
 
 //	public FollowStatement(UnitExpression expression) {
