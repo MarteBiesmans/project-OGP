@@ -13,7 +13,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
 import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
 
@@ -63,7 +62,7 @@ import ogp.framework.util.Util;
  * 
  * @author Ellen & Marte
  */
-public class Unit extends TimeVariableObject {
+public class Unit implements ITimeVariableObject {
 
 	/**
 	 * constant necessary to create random numbers
@@ -300,8 +299,9 @@ public class Unit extends TimeVariableObject {
 	 *             the given coordinates are not valid for this unit
 	 *             |(!this.canHaveAsPosition(new Position(x,y,z)))
 	 */
+	@Override
 	@Raw
-	private void setPosition(Position position) throws IllegalArgumentException {
+	void setPosition(Position position) throws IllegalArgumentException {
 		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
@@ -1388,7 +1388,7 @@ public class Unit extends TimeVariableObject {
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
+				Math.max(this.getPosition().getRealZ() + ITimeVariableObject.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
 			this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
 		try {
@@ -1397,7 +1397,7 @@ public class Unit extends TimeVariableObject {
 			if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
 				while (!next.getCube().equals(this.getMoveToAdjacent())) {
 					next = new Position(next.getRealX(), next.getRealY(),
-							next.getRealZ() - (World.FALLING_VELOCITY * seconds / 10));
+							next.getRealZ() - (ITimeVariableObject.FALLING_VELOCITY * seconds / 10));
 					try {
 						this.setPosition(next);
 						break;
@@ -1765,7 +1765,7 @@ public class Unit extends TimeVariableObject {
 		}
 		Map<Cube, Double> visited = new HashMap<Cube, Double>();
 		Map<Cube, Cube> shortestPath = new HashMap<Cube, Cube>();
-		Queue<CubeDistPair> queue = new PriorityQueue<CubeDistPair>();
+		Queue<DistPair<Cube>> queue = new PriorityQueue<DistPair<Cube>>();
 
 		while (currentDistance != Double.MAX_VALUE) {
 			if (current.equals(this.getMoveToCube())) {
@@ -1788,7 +1788,7 @@ public class Unit extends TimeVariableObject {
 					if (newDistance < unvisited.get(cube)) {
 						unvisited.put(cube, newDistance);
 						shortestPath.put(cube, current);
-						queue.offer(new CubeDistPair(cube, newDistance));
+						queue.offer(new DistPair<Cube>(cube, newDistance));
 					}
 				}
 			}
@@ -1796,50 +1796,18 @@ public class Unit extends TimeVariableObject {
 			visited.put(current, currentDistance);
 			unvisited.remove(current);
 
-			while (!queue.isEmpty() && visited.containsKey(queue.peek().getCube()))
+			while (!queue.isEmpty() && visited.containsKey(queue.peek().getThing()))
 				queue.poll();
 
 			// No next node -> no path
 			if (queue.isEmpty())
 				return;
-			CubeDistPair next = queue.poll();
-			current = next.getCube();
+			DistPair<Cube> next = queue.poll();
+			current = next.getThing();
 			currentDistance = next.getDistance();
 		}
 
 		return;
-	}
-
-	private class CubeDistPair implements Comparable<CubeDistPair> {
-
-		private final Double distance;
-		private final Cube cube;
-
-		private CubeDistPair(Cube cube, Double distance) {
-			this.cube = cube;
-			this.distance = distance;
-		}
-
-		private Double getDistance() {
-			return distance;
-		}
-
-		private Cube getCube() {
-			return cube;
-		}
-
-		@Override
-		public int compareTo(CubeDistPair other) {
-			return this.getDistance().compareTo(other.getDistance());
-		}
-		
-		private CubeDistPair getMinimum(CubeDistPair other) {
-			if (this.getDistance() <= other.getDistance())
-				return this;
-			else
-				return other;
-		}
-
 	}
 
 	/**
@@ -2130,5 +2098,39 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering the task of this unit.
 	 */
 	private Task task;
+	
+	/**
+	 * sets the busytime of this time variable object to the given seconds
+	 * 
+	 * @post busyTime of this time variable object will equal the given seconds
+	 *       if it is a positive value, else busyTime will equal 0
+	 * @param busyTime
+	 */
+	protected void setBusyTime(double busyTime) {
+		this.busyTime = Math.max(busyTime, 0);
+	}
+
+	/**
+	 * returns the busytime of this time variable object
+	 */
+	protected double getBusyTime() {
+		return this.busyTime;
+	}
+
+	/**
+	 * substracts the given seconds off of the busytime of this time variable
+	 * object.
+	 * 
+	 * @param seconds
+	 */
+	protected void busyTimeMin(double seconds) {
+		this.setBusyTime(this.getBusyTime() - seconds);
+	}
+
+	/**
+	 * a variable representing the time needed to finish the current activity of
+	 * this object
+	 */
+	private double busyTime;
 
 }

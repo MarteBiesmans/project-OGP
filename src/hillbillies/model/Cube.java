@@ -14,7 +14,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar x, y and z are always positive integers
  */
 @Value
-public class Cube {
+public class Cube  {
 
 	/**
 	 * constant registering the side length of one cube
