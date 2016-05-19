@@ -14,7 +14,7 @@ import ogp.framework.util.Util;
 public class UnitTest {
 
 	@Test
-	public void constructorUnit_LegalCase() {
+	public void constructor_LegalCase() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertTrue(Util.fuzzyEquals(3.2, testUnit.getPosition().getRealX()));
 		assertTrue(Util.fuzzyEquals(1.3, testUnit.getPosition().getRealY()));
@@ -237,27 +237,6 @@ public class UnitTest {
 	}
 
 	@Test
-	public void getWeight() {
-		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		assertEquals(testUnit.getWeight(), 55);
-	}
-	
-	@Test
-	public void setWeight_IllegalHitpoints() {
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		//na setWeight(50) is hitpoints = 28 illegal, hitpoints moet 25 worden
-		testUnit.setWeight(50);
-		assertEquals((int) testUnit.getHitpoints(), 25);
-	}
-
-	@Test
-	public void setWeight_IllegalStaminaPoints() {
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		testUnit.setWeight(50);
-		assertEquals((int) testUnit.getStaminaPoints(), 25);
-	}
-	
-	@Test
 	public void getToughness_() {
 		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals(testUnit.getToughness(), 25);
@@ -279,13 +258,34 @@ public class UnitTest {
 	}
 
 	@Test
+	public void getWeight() {
+		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		assertEquals(testUnit.getWeight(), 55);
+	}
+	
+	@Test
+	public void setWeight_IllegalHitpoints() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		//na setWeight(50) is hitpoints = 28 illegal, hitpoints moet 25 worden
+		testUnit.setWeight(50);
+		assertEquals((int) testUnit.getHitpoints(), 25);
+	}
+
+	@Test
+	public void setWeight_IllegalStaminaPoints() {
+		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
+		testUnit.setWeight(50);
+		assertEquals((int) testUnit.getStaminaPoints(), 25);
+	}
+	
+	@Test
 	public void getHitpoints() {
 		Unit testUnit = new Unit(3.1, 1.1, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals((int)testUnit.getHitpoints(), 28);
 	}
 	
 	@Test
-	public void getMaxHitpoints_Test() {
+	public void getMaxHitpoints() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals(testUnit.getMaxHitpoints(), 28);
 		testUnit.setToughness(30);
@@ -299,7 +299,7 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void getMaxStaminaPoints_() {
+	public void getMaxStaminaPoints() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertEquals(testUnit.getMaxStaminaPoints(), 28);
 		testUnit.setToughness(30);
@@ -307,18 +307,9 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void getOrientation_() {
+	public void getOrientation() {
 		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
 		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), Math.PI/2));
-	}
-	
-	@Test
-	public void setOrientation_() {
-		Unit testUnit = new Unit(3.2, 1.3, 5.9, "James O'Hara", 50, 50, 25, 55, true);
-		testUnit.setOrientation(-Math.PI);
-		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), Math.PI));
-		testUnit.setOrientation(4*Math.PI);
-		assertTrue(Util.fuzzyEquals(testUnit.getOrientation(), 0.0));
 	}
 	
 	@Test
@@ -328,7 +319,254 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void advanceTime_() {
+	public void getWorld() {
+		Unit testUnit = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		testWorld.addUnit(testUnit);
+		assertEquals(testUnit.getWorld(), testWorld);
+	}
+
+	@Test
+	public void getFaction() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit1 = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit1);
+		
+		for (int i=1; i<World.MAX_FACTIONS; i++) {
+			Unit testUnit = new Unit(4.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+			testWorld.addUnit(testUnit);
+		}
+		Unit testUnit6 = new Unit(3.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit6);
+		
+		//get faction with two units
+		Faction testFaction = null;
+		for (Faction faction : testWorld.getAllActiveFactions()) {
+			if (faction.getNbUnits() == 2)
+				testFaction = faction;
+		}
+
+		Unit testUnitFromFaction1 = testFaction.getAllUnits().iterator().next();
+		Unit testUnitFromFaction2 = testFaction.getAllUnits().iterator().next();
+		assertEquals(testUnitFromFaction1.getFaction(), testUnitFromFaction2.getFaction());	
+	}
+
+	@Test
+	public void hasLog() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Log testLog = new Log();
+		testWorld.addMaterial(testLog, new Position(0.1,0.1,0.1));
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		testUnit.workAt(new Cube(0,0,0));
+		
+		//na 10 seconden (50*0.2) moet de work order klaar zijn
+		for (int i=0; i<50; i++) {
+			testWorld.advanceTime((float)0.2);
+		}
+		
+		assertTrue(testUnit.hasLog());
+	}
+
+	@Test
+	public void hasBoulder() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Boulder testBoulder = new Boulder();
+		testWorld.addMaterial(testBoulder, new Position(0.1,0.1,0.1));
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		testUnit.workAt(new Cube(0,0,0));
+		
+		//na 10 seconden (50*0.2) moet de work order klaar zijn
+		for (int i=0; i<50; i++) {
+			testWorld.advanceTime((float)0.2);
+		}
+		
+		assertTrue(testUnit.hasBoulder());	}
+
+	@Test
+	public void getNbMaterials() {
+		
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		Boulder testBoulder = new Boulder();
+		testWorld.addMaterial(testBoulder, new Position(0.1,0.1,0.1));
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		testUnit.workAt(new Cube(0,0,0));
+		
+		assertTrue(testUnit.getNbMaterials()==0);
+		
+		//na 10 seconden (50*0.2) moet de work order klaar zijn
+		for (int i=0; i<50; i++) {
+			testWorld.advanceTime((float)0.2);
+		}
+		
+		assertTrue(testUnit.getNbMaterials()==1);
+	}
+
+	@Test
+	public void isAttacking() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit1 = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit1);
+		Unit testUnit2 = new Unit(1.2, 1.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit2);
+		
+		testUnit1.attack(testUnit2);
+		assertTrue(testUnit1.isAttacking());
+	}
+
+	@Test
+	public void isMoving() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.moveToAdjacent(1, 0, 0);
+		assertTrue(testUnit.isMoving());
+	}
+
+	@Test
+	public void isWalking_() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.moveToAdjacent(1, 0, 0);
+		assertTrue(testUnit.isWalking());
+	}
+
+	@Test
+	public void isSprinting_() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.moveToAdjacent(1, 0, 0);
+		testUnit.startSprinting();
+		assertTrue(testUnit.isSprinting());
+	}
+
+	@Test
+	public void isWorking_() {
+		int[][][] terrainTypes = new int[5][5][5];
+		terrainTypes[0][0][0] = 1;
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.workAt(new Cube(0,0,0));
+		assertTrue(testUnit.isWorking());
+	}
+
+	@Test
+	public void isResting() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(1.2, 0.3, 0.9, "James O'Hara", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.rest();
+		assertTrue(testUnit.isResting());
+	}
+
+	@Test
+	public void advanceTime_attacking() {
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit1 = new Unit(0.2, 0.3, 0.9, "Ellen", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit1);
+		Unit testUnit2 = new Unit(1.2, 0.3, 0.9, "Marte", 50, 50, 25, 55, true);
+		testWorld.addUnit(testUnit2);
+		
+		testUnit1.attack(testUnit2);
+		
+		//na 1s (0.2*5) moet het vechten gedaan zijn
+		for (int i=0;i<5;i++)
+		testWorld.advanceTime((float)0.2);
+		
+		//als de busyTime op is, moet de volgende activity in gang gezet worden
+		assertTrue(testUnit1.isBeingUseless());
+	}
+	
+	@Test
+	public void advanceTime_falling() {
+		int[][][] terrainTypes = new int[5][5][5];
+		terrainTypes[0][0][0] = 1;
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit worker = new Unit(1.2, 0.3, 0.9, "Ellen", 50, 50, 25, 55, false);
+		testWorld.addUnit(worker);
+		Unit faller = new Unit(0.2, 0.3, 1.9, "Marte", 50, 50, 25, 55, false);
+		testWorld.addUnit(faller);
+		
+		worker.workAt(new Cube(0,0,0));
+		
+		//na 10s (0.2*50) moet het werken gedaan zijn
+		for (int i=0;i<50;i++)
+			testWorld.advanceTime((float)0.2);
+		
+		//als het werken gedaan is, collapset de cube en valt de andere unit
+		testWorld.advanceTime((float)0.000001);
+		assertTrue(faller.isFalling());
+		testWorld.advanceTime((float)0.2);
+		testWorld.advanceTime((float)0.2);
+		assertTrue(Util.fuzzyEquals(faller.getPosition().getRealZ(), 0.7, 1e-5));
+		assertTrue(faller.getHitpoints() == 18);
+	}
+	
+	@Test
+	public void advanceTime_moving() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_working() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_resting() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_actingDefault() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_initiateFalling() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_levelUp() {
+		//TODO
+	}
+	
+	@Test
+	public void advanceTime_die() {
 		//TODO
 	}
 	
@@ -375,47 +613,12 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void isAttacking_() {
-		//TODO
-	}
-	
-	@Test
-	public void isMoving_() {
-		//TODO
-	}
-	
-	@Test
-	public void isWalking_() {
-		//TODO
-	}
-	
-	@Test
-	public void isSprinting_() {
-		//TODO
-	}
-	
-	@Test
 	public void startSprinting_() {
 		//TODO
 	}
 	
 	@Test
 	public void stopSprinting_() {
-		//TODO
-	}
-	
-	@Test
-	public void isWorking_() {
-		//TODO
-	}
-	
-	@Test
-	public void isResting() {
-		//TODO
-	}
-	
-	@Test
-	public void isFalling() {
 		//TODO
 	}
 	
@@ -456,31 +659,6 @@ public class UnitTest {
 	
 	@Test
 	public void defend_() {
-		//TODO
-	}
-	
-	@Test
-	public void getWorld_() {
-		//TODO
-	}
-	
-	@Test
-	public void getFaction_() {
-		//TODO
-	}
-	
-	@Test
-	public void hasLog_() {
-		//TODO
-	}
-	
-	@Test
-	public void hasBoulder_() {
-		//TODO
-	}
-	
-	@Test
-	public void getNbMaterials_() {
 		//TODO
 	}
 	

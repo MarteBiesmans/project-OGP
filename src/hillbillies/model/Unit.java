@@ -32,8 +32,8 @@ import ogp.framework.util.Util;
  */
 
 /**
- * A class of units involving a position, name, strength, agility, toughness, weight and
- * default behaviour.
+ * A class of units involving a position, name, strength, agility, toughness, 
+ * weight and default behaviour.
  * 
  * TODO mss zijn dit er meer?
  * 
@@ -156,8 +156,10 @@ public class Unit extends TimeVariableObject {
 	 * @invar The task of each unit must be a valid task for any unit. |
 	 *        isValidTask(getTask())
 	 */
-	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
-			boolean enableDefaultBehaviour) throws IllegalArgumentException {
+	public Unit(double x, double y, double z, String name, 
+				int strength, int agility, int toughness, int weight, 
+				boolean enableDefaultBehaviour) 
+		throws IllegalArgumentException {
 
 		// name
 		this.setName(name);
@@ -240,10 +242,14 @@ public class Unit extends TimeVariableObject {
 	 *         != null && this.getWorld() != null
 	 */
 	boolean isValidUnit() {
-		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
-				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
-				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
-				&& isValidOrientation(this.getOrientation()) && this.getFaction() != null && this.getWorld() != null);
+		return (canHaveAsPosition(this.getPosition()) && 
+				isValidName(this.getName()) && 
+				isValidStrength(this.getStrength()) && 
+				isValidAgility(this.getAgility()) && 
+				canHaveAsWeight(this.getWeight()) && 
+				isValidToughness(this.getToughness()) && 
+				isValidOrientation(this.getOrientation()) && 
+				this.getFaction() != null && this.getWorld() != null);
 	}
 
 	/**
@@ -298,13 +304,16 @@ public class Unit extends TimeVariableObject {
 	 *             |(!this.canHaveAsPosition(new Position(x,y,z)))
 	 */
 	@Raw
-	private void setPosition(Position position) throws IllegalArgumentException {
+	private void setPosition(Position position) 
+			throws IllegalArgumentException {
 		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
-		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
+		if (this.getCurrentActivity() != Activity.FALLING && 
+				this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
 		}
-		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
+		if (this.getCurrentActivity() == Activity.FALLING && 
+				position.isStableForUnitIn(world)) {
 			this.nextActivity();
 		}
 		this.position = position;
@@ -416,7 +425,8 @@ public class Unit extends TimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidStrength(int strength) {
-		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
+				(strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -472,7 +482,8 @@ public class Unit extends TimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidAgility(int agility) {
-		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
+				(agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -530,7 +541,8 @@ public class Unit extends TimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidToughness(int toughness) {
-		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
+				(toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -609,7 +621,8 @@ public class Unit extends TimeVariableObject {
 	 *         MIN_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumWeight() {
-		int minimumWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
+		int minimumWeight = 
+			(int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
 		return Math.max(minimumWeight, MIN_VAL_PRIMARY_ATTRIBUTE);
 	}
 
@@ -622,7 +635,8 @@ public class Unit extends TimeVariableObject {
 	 *         MIN_INIT_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumInitValWeight() {
-		int minimumInitValWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
+		int minimumInitValWeight = 
+			(int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
 		return Math.max(minimumInitValWeight, MIN_INIT_VAL_PRIMARY_ATTRIBUTE);
 	}
 
@@ -637,7 +651,8 @@ public class Unit extends TimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private boolean canHaveAsWeight(int weight) {
-		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((weight >= this.getMinimumWeight()) && 
+				(weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -767,7 +782,8 @@ public class Unit extends TimeVariableObject {
 	 *         <= this.getMaxHitpoints()) )
 	 */
 	private boolean canHaveAsStaminaPoints(double staminaPoints) {
-		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
+		return ((staminaPoints >= 0) && 
+				(staminaPoints <= this.getMaxStaminaPoints()));
 	}
 
 	/**
@@ -824,7 +840,7 @@ public class Unit extends TimeVariableObject {
 	 *       and cosinus. |result == Math.abs(theta % (2.0 * Math.PI))
 	 */
 	@Raw
-	void setOrientation(double theta) {
+	private void setOrientation(double theta) {
 		this.orientation = Math.abs(theta % (2.0 * Math.PI));
 	}
 
@@ -926,9 +942,11 @@ public class Unit extends TimeVariableObject {
 	 * check whether the world of this unit can be set to the given world
 	 * @param 	world
 	 * 			the world to check
-	 * @return	true if all these are true: the given world is not null, this unit already belongs 
-	 * 			to the given world, the current world of this unit equals null
-	 * 			| result == (world != null && world.hasAsUnit(this) && this.getWorld() == null)
+	 * @return	true if all these are true: the given world is not null, 
+	 * 			this unit already belongs to the given world, 
+	 * 			the current world of this unit equals null
+	 * 			| result == (world != null && world.hasAsUnit(this) 
+	 * 			|				&& this.getWorld() == null)
 	 */
 	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
@@ -941,7 +959,8 @@ public class Unit extends TimeVariableObject {
 	 * @post	world of this unit equals the given world
 	 * 			|new.getWorld() == world
 	 * @throws	IllegalArgumentException
-	 * 			the world of this unit cannot be set to the given world except if it equals null
+	 * 			the world of this unit cannot be set to the given world 
+	 * 			except if it equals null
 	 * 			| (world != null && !canHaveAsWorld(world))
 	 * @throws	IllegalArgumentException
 	 * 			this unit already has a recorded world and already belongs to it
@@ -974,12 +993,16 @@ public class Unit extends TimeVariableObject {
 	 * check whether this unit can belong to the given faction
 	 * @param 	faction
 	 * 			the faction to check
-	 * @return	true if al these are true: the given faction is not null, the given faction
-	 * 			contains this unit, the current faction of this unit equals null
-	 * 			| (faction != null && faction.hasAsUnit(this) && this.getFaction() == null)
+	 * @return	true if al these are true: the given faction is not null, 
+	 * 			the given faction contains this unit, the current faction 
+	 * 			of this unit equals null
+	 * 			| (faction != null && faction.hasAsUnit(this) && 
+	 * 						this.getFaction() == null)
 	 */
 	private boolean canHaveAsFaction(Faction faction) {
-		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
+		return (faction != null && 
+				faction.hasAsUnit(this) && 
+				this.getFaction() == null);
 	}
 
 	/**
@@ -989,7 +1012,8 @@ public class Unit extends TimeVariableObject {
 	 * @post	the faction of this unit equals the given faction
 	 * 			|new.getFaction() == faction
 	 * @throws 	IllegalArgumentException
-	 * 			the faction of this unit cannot be set to the given faction except if it equals null
+	 * 			the faction of this unit cannot be set to the given faction 
+	 * 			except if it equals null
 	 * 			|  ((faction != null) && (!canHaveAsFaction(faction)))
 	 */
 	void setFaction(Faction faction) throws IllegalArgumentException {
@@ -1062,7 +1086,8 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether this unit has proper materials attached to it.
 	 * 
-	 * @return	false if at least one material is not valid or has not this unit as owner
+	 * @return	false if at least one material is not valid 
+	 * 			or has not this unit as owner
 	 * 			| if (for some material in materials 
 	 * 			|		(!this.canHaveAsMaterial(material) || material.getOwner() != this))
 	 * 			|	then result == false
@@ -1145,8 +1170,6 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering all the materials carried by this unit.
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
-
-	// TODO vanaf hier comments checken
 	
 	// ACTIVITY//
 
@@ -1158,7 +1181,15 @@ public class Unit extends TimeVariableObject {
 		return this.activityQueue;
 	}
 
-	private Activity getCurrentActivity() {
+	/**
+	 * return the current activity of this unit
+	 * @return	the current activity of this unit
+	 * 			| if (!this.getActivityQueue().isEmpty())
+	 * 			| then result == this.activityQueue.get(0)
+	 * 			| else result == Activity.NONE
+	 */
+	//TODO terug private zetten
+	Activity getCurrentActivity() {
 		if (!this.getActivityQueue().isEmpty())
 			return this.activityQueue.get(0);
 		else
@@ -1166,11 +1197,27 @@ public class Unit extends TimeVariableObject {
 	}
 
 	/**
-	 * sets the activity of this unit to the given activity.
+	 * replace the first activity in the activity queue of this unit by the given activity, if possible
 	 * 
-	 * @param activity
-	 * @return
+	 * @param	activity
+	 * 			the activity to set
+	 * @post	do nothing in these cases: unit is resting and cannot stop 
+	 * 			resting, unit is attacking and busyTime>0, unit is falling 
+	 * 			and cannot stop falling
+	 * 			|new.getActivityQueue() == this.getActivityQueue()
+	 * @post	if the activityQueue is not empty, remove the activity on position 0
+	 * 			and add activity on position 0 and set the busyTime right
+	 * 			|if (!this.getActivityQueue().isEmpty())
+	 * 			|	then new.getActivityQueue() == [activity] + this.getActivityQueue().subList(1,end)
+	 * 			|			&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
+	 * @post	if the activityQueue is empty, add activity on position 0 and
+	 * 			set the busyTime right
+	 * 			|if (this.getActivityQueue().isEmpty())
+	 * 			|	then new.getActivityQueue == [activity] 
+	 * 			|			&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
 	 */
+	//TODO ik snap het nut niet van de eerste if (add-remove-add)
+	//TODO waarom 1 keer else if?
 	private void setActivity(Activity activity) {
 		if (this.getWorld() == null && activity == Activity.NONE)
 			this.activityQueue.add(0, activity);
@@ -1186,6 +1233,22 @@ public class Unit extends TimeVariableObject {
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
+	/**
+	 * add a new activity in the first place of the activity queue of this unit, if possible
+	 * @param	activity
+	 * 			the activity to insert
+	 * @post	do nothing in these cases: unit is resting and cannot stop 
+	 * 			resting, unit is attacking and busyTime>0, unit is falling 
+	 * 			and cannot stop falling
+	 * 			|if ((this.isResting() && !this.canStopResting) ||
+	 * 			|	 (this.isAttacking() && this.getBusyTime() > 0) ||
+	 * 			|	 (this.isFalling() && !this.canStopFalling()) )
+	 * 			|then new.getActivityQueue() == this.getActivityQueue()
+	 * @post	else add activity on position 0 and set the busyTime right
+	 * 			|else
+	 * 			|new.getActivityQueue() == [activity] + this.getActivityQueue()
+	 * 			|	&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
+	 */
 	private void insertActivity(Activity activity) {
 		if (this.isResting() && !this.canStopResting)
 			return;
@@ -1197,6 +1260,30 @@ public class Unit extends TimeVariableObject {
 		this.setBusyTime(this.getBusyTimeFor(this.getCurrentActivity()));
 	}
 
+	/**
+	 * start a new activity, resetting all parameters if necessary
+	 * @effect	if the activity queue is empty, NONE is included
+	 * 			|if (this.getActivityQueue().isEmpty())
+	 * 			|	then this.setActivity(Activity.NONE)
+	 * @effect	if the unit is working, set workAtCube to null
+	 * 			if the unit is moving, set moveToCube en moveToAdjacent to null
+	 * 			|if (this.isWorking())
+	 * 			|	then this.setWorkAtCube(null)
+	 * 			|if (this.isMoving())
+	 * 			|	then this.setMoveToCube(null), this.setMoveToAdjacent(null)
+	 * @effect	if the activity queue consists of one activity, replace it 
+	 * 			by NONE (also resets busyTime)
+	 * 			|if (this.getActivityQueue().length() == 1)
+	 * 			|	then this.activityQueue.remove(0), 
+	 * 			|			this.setActivity(Activity.NONE)
+	 * @effect	if the activity queue consists of more than one activity, 
+	 * 			remove the first activity and set the busyTime for the next 
+	 * 			not-NONE activity
+	 * 			|if (this.getActivityQueue().length() > 1)
+	 * 			|	then this.activityQueue.remove(0), 
+	 * 			|			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
+	 */
+	//TODO mooiere notatie met backtracking
 	private void nextActivity() {
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
@@ -1223,6 +1310,25 @@ public class Unit extends TimeVariableObject {
 
 	}
 
+	/**
+	 * return the busyTime for a given activity
+	 * @param	activity
+	 * 			the activity to calculate the busyTime
+	 * @return	if the given activity equals working, return 500/strength
+	 * 			|if (activity == Activity.WORKING)
+	 * 			|	then result == (500 / this.getStrength())
+	 * @return	if the given activity equals resting, return time to recover one hitpoint
+	 * 			|if (activity == Activity.RESTING)
+	 * 			|	then result == Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness())
+	 * @return	if the given activity equals attacking, return 1.0
+	 * 			|if (activity == Activity.ATTACKING)
+	 * 			|	then result == 1.0
+	 * @return	if the given activity equals none of the above, return 0
+	 * 			|if (activity != Activity.WORKING) && 
+	 * 			|	(activity != Activity.RESTING) && 
+	 * 			|	(activity != Activity.ATTACKING)
+	 * 			|	then result == 0.0
+	 */
 	private double getBusyTimeFor(Activity activity) {
 		if (activity == Activity.WORKING)
 			return (500 / this.getStrength());
@@ -1234,38 +1340,75 @@ public class Unit extends TimeVariableObject {
 			return 0;
 	}
 
+	
+	/**
+	 * a variable to store the activity queue of a unit
+	 */
 	private final List<Activity> activityQueue = new ArrayList<Activity>();
 
 	/**
 	 * returns whether this unit is defending or not.
-	 *
-	 * public boolean isDefending() { return (this.getActivity().get(0) ==
-	 * Activity.DEFENDING); }
+	 * @result	whether this unit is defending or not
+	 * 			| result == (this.getCurrentActivity() == Activity.DEFENDING)
+	 */
+	@SuppressWarnings("unused")
+	private boolean isDefending() {
+		return (this.getCurrentActivity() == Activity.DEFENDING);
+	}
+	
+	/**
+	 * returns whether this unit is attacking or not.
+	 * @result	whether this unit is attacking or not
+	 * 			| result == (this.getCurrentActivity() == Activity.ATTACKING)
 	 */
 	public boolean isAttacking() {
 		return (this.getCurrentActivity() == Activity.ATTACKING);
 	}
 
 	/**
-	 * returns wheter this unit is moving or not.
+	 * returns whether this unit is moving or not.
+	 * @result	whether this unit is moving or not
+	 * 			| result == (this.getCurrentActivity() == Activity.WALKING) ||
+	 *		   	|			(this.getCurrentActivity() == Activity.SPRINTING) ||
+	 *		    |			(this.getCurrentActivity() == Activity.FALLING)
 	 */
 	public boolean isMoving() {
-		return (this.getCurrentActivity() == Activity.WALKING) || (this.getCurrentActivity() == Activity.SPRINTING);
+		return (this.getCurrentActivity() == Activity.WALKING) ||
+			   (this.getCurrentActivity() == Activity.SPRINTING) ||
+			   (this.getCurrentActivity() == Activity.FALLING);
 	}
 
+	/**
+	 * returns whether this unit is walking or not.
+	 * @result	whether this unit is walking or not
+	 * 			| result == (this.getCurrentActivity() == Activity.WALKING)
+	 */
 	public boolean isWalking() {
 		return (this.getCurrentActivity() == Activity.WALKING);
 	}
 
 	/**
-	 * returns wheter this unit is sprinting or not.
+	 * returns whether this unit is sprinting or not.
+	 * @result	whether this unit is sprinting or not
+	 * 			| result == (this.getCurrentActivity() == Activity.SPRINTING)
 	 */
 	public boolean isSprinting() {
 		return (this.getCurrentActivity() == Activity.SPRINTING);
 	}
 
 	/**
+	 * returns whether this unit is falling or not.
+	 * @result	whether this unit is falling or not
+	 * 			| result == (this.getCurrentActivity() == Activity.FALLING)
+	 */
+	boolean isFalling() {
+		return (this.getCurrentActivity() == Activity.FALLING);
+	}
+	
+	/**
 	 * returns whether this unit is working or not.
+	 * @result	whether this unit is working or not
+	 * 			| result == (this.getCurrentActivity() == Activity.WORKING)
 	 */
 	public boolean isWorking() {
 		return (this.getCurrentActivity() == Activity.WORKING);
@@ -1273,22 +1416,23 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * returns whether this unit is resting or not.
+	 * @result	whether this unit is resting or not
+	 * 			| result == (this.getCurrentActivity() == Activity.RESTING)
 	 */
 	public boolean isResting() {
 		return (this.getCurrentActivity() == Activity.RESTING);
 	}
 
 	/**
-	 * returns if this unit is doing anything at all.
+	 * returns whether this unit is doing nothing
+	 * @result	whether this unit is doing nothing
+	 * 			| result == (this.getCurrentActivity() == Activity.NONE)
 	 */
-	private boolean isBeingUseless() {
+	boolean isBeingUseless() {
 		return (this.getCurrentActivity() == Activity.NONE);
 	}
 
-	private boolean isFalling() {
-		return (this.getCurrentActivity() == Activity.FALLING);
-	}
-
+	
 	// ADVANCE TIME en helper methods
 
 	/**
@@ -1299,24 +1443,34 @@ public class Unit extends TimeVariableObject {
 	 *          the amount of seconds to advance time
 	 * @effect	reduce the busyTime of the unit with the given seconds if it is
 	 * 			not moving, doing nothing or falling
-	 * @effect	attack for the given seconds if this unit is attacking
-	 * @effect	fall for the given seconds if this unit is falling
-	 * @effect	move for the given seconds if this unit is moving and getMoveToAdjacent does not equal null
-	 * @effect	work for the given seconds if this unit is working
-	 * @effect	rest for the given seconds if this unit is resting
-	 * @effect	start default behaviour if current activity is NONE and default behaviour is enabled
-	 * @effect	TODO shouldFall
-	 * @effect	level up if experiencePoints - 10 * level > 10
+	 * @effect	execute the helper method attacking for the given seconds 
+	 * 			if this unit is attacking
+	 * @effect	execute the helper method falling for the given seconds if 
+	 * 			this unit is falling
+	 * @effect	execute the helper method moving for the given seconds if this 
+	 * 			unit is moving and getMoveToAdjacent does not equal null
+	 * @effect	execute the helper method working for the given seconds if this 
+	 * 			unit is working
+	 * @effect	execute the helper method resting for the given seconds if this 
+	 * 			unit is resting
+	 * @effect	execute the helper method actingDefault if current activity is 
+	 * 			NONE and default behaviour is enabled
+	 * @effect	if the unit should fall, insert the activity falling when 
+	 * 			already moving (must be resumed afterwards) or replace the 
+	 * 			current activity by falling when not moving
+	 * @effect	level up untill experiencePoints - 10 * level <= 10
 	 * @effect	die if hitpoints equal zero
 	 * @throws 	IllegalArgumentException
 	 *          the seconds are not in the interval [0, 0.2]
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
+		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && 
+			   Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
 			throw new IllegalArgumentException();
 
-		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling()))
+		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling())) {
 			this.busyTimeMin(seconds);
+		}
 
 		if (this.isAttacking())
 			attacking(seconds);
@@ -1324,17 +1478,19 @@ public class Unit extends TimeVariableObject {
 		if (this.isFalling())
 			falling(seconds);
 
-		if (this.isMoving() && this.getMoveToAdjacent() != null)
+		if (this.isMoving() && this.getMoveToAdjacent() != null) {
 			moving(seconds);
+		}
 
-		else if (this.isWorking())
+		else if (this.isWorking()) {
 			working(seconds);
+		}
 
 		else if (this.isResting())
 			resting(seconds);
 
 		if (this.isBeingUseless() && this.defaultBehaviour)
-			beingUseless(seconds);
+			actingDefault(seconds);
 
 		if (this.shouldFall()) {
 			if (this.isMoving())
@@ -1352,26 +1508,44 @@ public class Unit extends TimeVariableObject {
 
 	
 	/**
+	 * helper method for advance time
 	 * 
+	 * @note	this helper method is only used in advance time and seperately 
+	 * 			defined because of readability
+	 * 			therefore it does not contain formal documentation
 	 * @param 	seconds
-	 * 			the seconds to attack
+	 * 			the seconds to advance time
+	 * @effect	if busyTime equals zero, initiate the next activity
 	 */
 	private void attacking(float seconds) {
 		if (this.getBusyTime() == 0)
 			this.nextActivity();
 	}
+	
+	//TODO vanaf hier comments checken
 
 	/**
+	 * helper method for advance time
 	 * 
+	 * @note	this helper method is only used in advance time and seperately 
+	 * 			defined because of readability
+	 * 			therefore it does not contain formal documentation
+	 * @note	next is a position defined as
+	 * 			new Position(this.getPosition().getRealX(), 
+							 this.getPosition().getRealY(),
+				   Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.))
 	 * @param 	seconds
-	 * 			the seconds to fall
+	 * 			the seconds to advance time
+	 * @effect	lose 10 hitpoints when falling into a new cube (cannot become
+	 * 			negative)
+	 * @effect	set the position to next if possible, otherwise a fraction of this change
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), 
 									 this.getPosition().getRealY(),
 									 Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
-			this.setHitpoints(Math.min(0, this.getHitpoints() - 10));
+			this.setHitpoints(Math.max(0, this.getHitpoints() - 10));
 		try {
 			this.setPosition(next);
 		} catch (IllegalArgumentException e) {
@@ -1390,12 +1564,30 @@ public class Unit extends TimeVariableObject {
 	}
 
 	/**
+	 * helper method for advance time
 	 * 
+	 * @note	this helper method is only used in advance time and seperately 
+	 * 			defined because of readability
+	 * 			therefore it does not contain formal documentation
 	 * @param 	seconds
-	 * 			the seconds to move
-	 * @effect	reduce stamina points with 10*seconds while sprinting if this results in a positive number
-	 * @effect	while sprinting, set stamina points to zero and stop sprinting if currenct value reduced
-	 * 			with 10*seconds results in a negative number
+	 * 			the seconds to advance time
+	 * @effect	reduce stamina points with 10*seconds while sprinting if this 
+	 * 			results in a positive number
+	 * @effect	while sprinting, set stamina points to zero and stop sprinting 
+	 * 			if current value reduced with 10*seconds results in a negative 
+	 * 			number
+	 * @effect	set the orientation of the unit in the movement direction
+	 * @effect	if the centre of the next cube is reached, do these things:
+	 * 			set the position to the centre of this target cube, set the 
+	 * 			target cube to null, increment the experience points with 1,
+	 * 			find next cube in path if moving to a cube further away,
+	 * 			stop moving when not pathfinding
+	 * @effect	if the centre of the next cube is not reached yet, set the
+	 * 			position to next if possible, otherwise a fraction of this change
+	 * @note	next is a position defined as
+	 * 			new Position(this.getPosition().getRealX() + xVelocity * seconds,
+	 *						 this.getPosition().getRealY() + yVelocity * seconds,
+	 *						 this.getPosition().getRealZ() + zVelocity * seconds)
 	 */
 	private void moving(float seconds) {
 		if (this.isSprinting()) {
@@ -1436,15 +1628,13 @@ public class Unit extends TimeVariableObject {
 			this.setExperiencePoints(this.getExperiencePoints() + 1);
 
 			// Check whether the unit is moving to a cube far away (not
-			// an
-			// adjacent cube)
+			// an adjacent cube)
 			if (this.getMoveToCube() != null) {
 				findNextCubeInPath();
 			}
 
 			// Check whether the unit is not pathfinding. If this is
-			// true,
-			// it stops moving.
+			// true, it stops moving.
 			if (this.getMoveToCube() == null) {
 				this.nextActivity();
 			}
@@ -1468,6 +1658,32 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * helper method for advance time
+	 * 
+	 * @note	this helper method is only used in advance time and seperately defined because of readability
+	 * 			therefore it does not contain formal documentation
+	 * @param 	seconds
+	 * 			the seconds to advance time
+	 * @effect	do nothing if busyTime is not yet zero
+	 * @effect	if busyTime equals zero do one of the following effects, 
+	 * 			initiate the next activity and increase the experience points
+	 * 			by ten points
+	 * @note	in the following 6 effects only the first case for which all 
+	 * 			conditions are met shall be executed (i.e., switch-case semantics)
+	 * @effect	if busyTime equals zero and the unit carries a material that
+	 * 			can be dropped on the workAtCube, add it to the world at the
+	 * 			centre of that cube
+	 * @effect	if busyTime equals zero and the workAtCube is a workshop and at
+	 * 			least one boulder and one log are available on that cube, weight
+	 * 			and toughness increase while consuming these two materials
+	 * @effect	if busyTime equals zero and a boulder is present on the 
+	 * 			workAtCube, pick up the boulder
+	 * @effect	if busyTime equals zero and a log is present on the workAtCube, 
+	 * 			pick up the log
+	 * @effect	if busyTime equals zero and the workAtCube is wood it collapses
+	 * @effect	if busyTime equals zero and the workAtCube is a rock it collapses
+	 */
 	private void working(float seconds) {
 		if (this.getBusyTime() == 0) {
 
@@ -1483,8 +1699,12 @@ public class Unit extends TimeVariableObject {
 				Boulder boulder = (Boulder) iterBoulder.next();
 				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getWorkAtCube()).iterator();
 				Log log = (Log) iterLog.next();
-				this.addMaterial(boulder);
-				this.addMaterial(log);
+				int extraWeight = (log.getWeight() + boulder.getWeight())/2;
+				int extraToughness = extraWeight/10;
+				this.setToughness(this.getToughness() + extraToughness);
+				this.setWeight(this.getWeight() + extraWeight);
+				this.getWorld().removeMaterial(boulder);
+				this.getWorld().removeMaterial(log);
 
 			} else if (this.getWorld().getBouldersIn(this.getWorkAtCube()).size() > 0) {
 				Iterator<Boulder> iterBoulder = this.getWorld().getBouldersIn(this.getWorkAtCube()).iterator();
@@ -1506,12 +1726,28 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
+	/**
+	 * helper method for advance time
+	 * 
+	 * @note	this helper method is only used in advance time and seperately defined because of readability
+	 * 			therefore it does not contain formal documentation
+	 * @param 	seconds
+	 * 			the seconds to advance time
+	 * @effect	if the maximum number of hitpoints is not yet reached, increase 
+	 * 			it by seconds * this.getToughness() / (200 * 0.2)
+	 * @effect	if the maximum number of hitpoints is reached and the maximum
+	 * 			number of stamina points is not yet reached, increase it by
+	 * 			seconds * this.getToughness() / (100 * 0.2)
+	 * @effect	if the maximum numbers of both hitpoints and stamina points are
+	 * 			reached, initiate the next activity
+	 * @post	if busyTime equals zero, new.canStopResting equals true
+	 */
 	private void resting(float seconds) {
 		if (this.getHitpoints() != this.getMaxHitpoints()) {
-			double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (200 * 0.2);
+			double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (40);
 			this.setHitpoints(Math.min(hitpoints, this.getMaxHitpoints()));
 		} else if (this.getStaminaPoints() != this.getMaxStaminaPoints()) {
-			double stamina = this.getStaminaPoints() + seconds * this.getToughness() / (100 * 0.2);
+			double stamina = this.getStaminaPoints() + seconds * this.getToughness() / (20);
 			this.setStaminaPoints(Math.min(stamina, this.getMaxStaminaPoints()));
 		} else {
 			this.nextActivity();
@@ -1522,7 +1758,16 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
-	private void beingUseless(float seconds) {
+	/**
+	 * helper method for advance time
+	 * 
+	 * @note	this helper method is only used in advance time and seperately defined because of readability
+	 * 			therefore it does not contain formal documentation
+	 * @param 	seconds
+	 * 			the seconds to advance time
+	 * TODO
+	 */
+	private void actingDefault(float seconds) {
 
 		int randomFight = RANDOM_GEN.nextInt(4);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
@@ -2000,6 +2245,8 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering whether this unit is terminated.
 	 */
 	private boolean isDead = false;
+	
+	//TODO vanaf hier accessrights checken
 
 	/**
 	 * Return the task of this unit.
