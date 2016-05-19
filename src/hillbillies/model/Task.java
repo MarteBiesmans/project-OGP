@@ -1,6 +1,11 @@
 //TODO	comments (formal!)
 package hillbillies.model;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.programs.statements.Statement;
 
@@ -13,13 +18,14 @@ import hillbillies.model.programs.statements.Statement;
  * @invar Each task can have its cube as cube. | canHaveAsCube(this.getCube())
  * @invar The unit of each task must be a valid unit for any task. |
  *        isValidUnit(getUnit())
+ * @invar Each task must have proper schedulers. | hasProperSchedulers()
  */
-public class Task {
+public class Task implements Comparable<Task> {
 
 	/**
 	 * Initialize this new task with given name, priority, activities and cube.
 	 * This new task will be intitialized as a non-terminated task with no unit
-	 * yet.
+	 * yet and with no schedulers yet.
 	 *
 	 * @param name
 	 *            The name for this new task.
@@ -46,6 +52,7 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *             This new task cannot have the given cube as its cube. | !
 	 *             canHaveAsCube(this.getCube())
+	 * @post This new task has no schedulers yet. | new.getNbSchedulers() == 0
 	 */
 	public Task(String name, int priority, Statement activities, Cube cube) throws IllegalArgumentException {
 		if (!canHaveAsName(name))
@@ -59,6 +66,15 @@ public class Task {
 			throw new IllegalArgumentException();
 		this.cube = cube;
 		this.setUnit(null);
+	}
+
+	public boolean isWellFormed() {
+		return getActivities().isWellFormed() && getActivities().containsActionStatement();
+	}
+
+	@Override
+	public int compareTo(Task other) {
+		return Integer.compare(other.getPriority(), this.getPriority());
 	}
 
 	/**
@@ -80,7 +96,7 @@ public class Task {
 	 */
 	@Raw
 	public boolean canHaveAsName(String name) {
-		return true;
+		return (name != null);
 	}
 
 	/**
@@ -151,6 +167,10 @@ public class Task {
 	@Raw
 	public boolean canHaveAsActivities(Statement activities) {
 		return (activities != null);
+	}
+
+	public boolean isCompleted() {
+		return activities.hasBeenFullyExecuted();
 	}
 
 	/**
@@ -226,9 +246,15 @@ public class Task {
 	 */
 	@Raw
 	public void setUnit(Unit unit) throws IllegalArgumentException {
-		if (!isValidUnit(unit))
-			throw new IllegalArgumentException();
+		if (unit != null) {
+			if (!isValidUnit(unit))
+				throw new IllegalArgumentException();
+		}
 		this.unit = unit;
+	}
+
+	public boolean isBeingExecuted() {
+		return (this.getUnit() != null);
 	}
 
 	/**
@@ -236,4 +262,186 @@ public class Task {
 	 */
 	private Unit unit;
 
+	/**
+	 * Check whether this task has the given scheduler as one of its schedulers.
+	 * 
+	 * @param scheduler
+	 *            The scheduler to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsScheduler(@Raw Scheduler scheduler) {
+		return schedulers.contains(scheduler);
+	}
+
+	/**
+	 * Check whether this task can have the given scheduler as one of its
+	 * schedulers.
+	 * 
+	 * @param scheduler
+	 *            The scheduler to check.
+	 * @return True if and only if the given scheduler is effective and that
+	 *         scheduler is a valid scheduler for a task. | result == |
+	 *         (scheduler != null) && | Scheduler.isValidTask(this)
+	 */
+	@Raw
+	public boolean canHaveAsScheduler(Scheduler scheduler) {
+		return (scheduler != null);
+	}
+
+	/**
+	 * Check whether this task has proper schedulers attached to it.
+	 * 
+	 * @return True if and only if this task can have each of the schedulers
+	 *         attached to it as one of its schedulers, and if each of these
+	 *         schedulers references this task as the task to which they are
+	 *         attached. | for each scheduler in Scheduler: | if
+	 *         (hasAsScheduler(scheduler)) | then canHaveAsScheduler(scheduler)
+	 *         && | (scheduler.getTask() == this)
+	 */
+	public boolean hasProperSchedulers() {
+		for (Scheduler scheduler : schedulers) {
+			if (!canHaveAsScheduler(scheduler))
+				return false;
+			if (scheduler.hasAsTask(this))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of schedulers associated with this task.
+	 *
+	 * @return The total number of schedulers collected in this task. | result
+	 *         == | card({scheduler:Scheduler | hasAsScheduler({scheduler)})
+	 */
+	public int getNbSchedulers() {
+		return schedulers.size();
+	}
+
+	/**
+	 * Add the given scheduler to the set of schedulers of this task.
+	 * 
+	 * @param scheduler
+	 *            The scheduler to be added.
+	 * @pre The given scheduler is effective and already references this task. |
+	 *      (scheduler != null) && (scheduler.getTask() == this)
+	 * @post This task has the given scheduler as one of its schedulers. |
+	 *       new.hasAsScheduler(scheduler)
+	 */
+	public void addScheduler(@Raw Scheduler scheduler) {
+		assert canHaveAsScheduler(scheduler);
+		schedulers.add(scheduler);
+		scheduler.getAllTasks().add(this);
+	}
+
+	/**
+	 * Remove the given scheduler from the set of schedulers of this task.
+	 * 
+	 * @param scheduler
+	 *            The scheduler to be removed.
+	 * @pre This task has the given scheduler as one of its schedulers, and the
+	 *      given scheduler does not reference any task. |
+	 *      this.hasAsScheduler(scheduler) && | (scheduler.getTask() == null)
+	 * @post This task no longer has the given scheduler as one of its
+	 *       schedulers. | ! new.hasAsScheduler(scheduler)
+	 */
+	@Raw
+	public void removeScheduler(Scheduler scheduler) {
+		assert this.hasAsScheduler(scheduler);
+		schedulers.remove(scheduler);
+		scheduler.getAllTasks().remove(this);
+		if (this.getUnit().getFaction() == scheduler.getFaction())
+			;
+		// TODO: stop met uitvoeren van deze task
+	}
+
+	public Set<Scheduler> getAllSchedulers() {
+		return this.schedulers;
+	}
+
+	/**
+	 * Variable referencing a set collecting all the schedulers of this task.
+	 * 
+	 * @invar The referenced set is effective. | schedulers != null
+	 * @invar Each scheduler registered in the referenced list is effective and
+	 *        not yet terminated. | for each scheduler in schedulers: | (
+	 *        (scheduler != null) && | (! scheduler.isTerminated()) )
+	 */
+	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
+
+	/**
+	 * Set a global variable of this program referenced by a given name to a
+	 * given basic expression.
+	 * 
+	 * @param name
+	 *            The name to reference the (new) global variable by.
+	 * @param value
+	 *            The value to set the (new) global value to in the form of a
+	 *            basic expression.
+	 */
+	public void setGlobalVariable(String name, Object value) {
+		this.getGlobalVariables().put(name, value);
+	}
+
+	public void removeGlobalVariable(String name) {
+		if (!hasGlobalVariable(name)) {
+			System.err.println("Variable with the name '" + name + "' doesn't exist!");
+		}
+		this.getGlobalVariables().remove(name);
+	}
+
+	/**
+	 * Get the basic expression containing the value of a global variable of
+	 * this program by name.
+	 * 
+	 * @param name
+	 *            The name of the global variable.
+	 * @return The basic expression containing the value of the global variable.
+	 */
+	// Public for the purpose of testing. Otherwise protected.
+	public Object getGlobalVariable(String name) {
+		if (!hasGlobalVariable(name)) {
+			System.err.println("Variable with the name '" + name + "' doesn't exist!");
+		}
+		return getGlobalVariables().get(name);
+	}
+
+	/**
+	 * Check if there exists a global variable in this program with the given
+	 * name.
+	 * 
+	 * @param name
+	 *            The name to check on.
+	 * @return True if such a variable exists, false otherwise.
+	 */
+	protected boolean hasGlobalVariable(String name) {
+		return getGlobalVariables().containsKey(name);
+	}
+
+	/**
+	 * Return the map referencing the names and respective basic expressions
+	 * containing the values of the global variables of this program.
+	 */
+	private Map<String, Object> getGlobalVariables() {
+		return globalVariables;
+	}
+
+	/**
+	 * A map referencing the names and respective basic expressions containing
+	 * the values of the global variables of this program.
+	 */
+	private final Map<String, Object> globalVariables = new HashMap<String, Object>();
+
+	public void execute(Counter counter) {
+		// TODO: moet dit wel hier gecheckt worden?
+		if (getActivities().hasBeenFullyExecuted()) {
+			getUnit().getFaction().getScheduler().removeTask(this);
+			this.setUnit(null);
+			while (getActivities().canExecute(this, counter) && !getUnit().isDead()) {
+				getActivities().execute(this, counter);
+			}
+		}
+
+	}
 }

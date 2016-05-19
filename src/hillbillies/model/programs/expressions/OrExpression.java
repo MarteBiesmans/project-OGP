@@ -1,39 +1,39 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.type.BooleanType;
 
 public class OrExpression extends BooleanExpression {
 
-	public OrExpression(BooleanExpression e1, BooleanExpression e2) {
+	public OrExpression(IBooleanExpression e1, IBooleanExpression e2) {
 		expression1 = e1;
 		expression2 = e2;
 	}
 	
-	public BooleanExpression getFirstExpression() {
+	public IBooleanExpression getFirstExpression() {
 		return expression1;
 	}
 	
-	public BooleanExpression getSecondExpression() {
+	public IBooleanExpression getSecondExpression() {
 		return expression2;
 	}
 	
-	public BooleanType getSecondExpressionEvaluate(Unit unit, Cube cube) {
-		return getSecondExpression().evaluate(unit, cube);
+	private final IBooleanExpression expression1;
+	
+	public BooleanType getFirstExpressionEvaluate(Task task) {
+		return getFirstExpression().evaluate(task);
 	}
 	
-	public BooleanType getFirstExpressionEvaluate(Unit unit, Cube cube) {
-		return getFirstExpression().evaluate(unit, cube);
+	public BooleanType getSecondExpressionEvaluate(Task task) {
+		return getSecondExpression().evaluate(task);
 	}
 	
-	private final BooleanExpression expression1;
-	private final BooleanExpression expression2;
+	private final IBooleanExpression expression2;
 
 	@Override
-	public BooleanType evaluate(Unit unit, Cube cube) {
-		return new BooleanType((boolean) getFirstExpressionEvaluate(unit, cube).getValue() || 
-				(boolean) getSecondExpressionEvaluate(unit, cube).getValue());
+	public BooleanType evaluate(Task task) {
+		return new BooleanType((boolean) getFirstExpressionEvaluate(task).getValue() || 
+				(boolean) getSecondExpressionEvaluate(task).getValue());
 	}
 
 	@Override

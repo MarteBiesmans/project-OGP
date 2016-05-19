@@ -1,7 +1,7 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.type.CubeType;
 
 public class XYZExpression extends CubeExpression {
@@ -16,12 +16,8 @@ public class XYZExpression extends CubeExpression {
 		return cube;
 	}
 	
-	public CubeType evaluate() {
-		return evaluate(null, null);
-	}
-	
 	@Override
-	public CubeType evaluate(Unit unit, Cube cube) {
+	public CubeType evaluate(Task task) {
 		return new CubeType(getCube());
 	}
 	

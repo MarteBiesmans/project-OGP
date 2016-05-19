@@ -1,6 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.UnitType;
 
@@ -8,19 +8,15 @@ public class EnemyExpression extends UnitExpression {
 
 	public EnemyExpression() {
 	}
-	
-	public UnitType evaluate(Unit unit) {
-		return evaluate(unit, null);
-	}
 
 	@Override
-	public UnitType evaluate(Unit unit, Cube cube) {
+	public UnitType evaluate(Task task) {
 		Unit nearestEnemySoFar = null;
-		for (Unit other : unit.getWorld().getAllUnits()) {
-			if (other != unit && unit.getFaction() != other.getFaction()) {
+		for (Unit other : task.getUnit().getWorld().getAllUnits()) {
+			if (other != task.getUnit() && task.getUnit().getFaction() != other.getFaction()) {
 				if (nearestEnemySoFar == null)
 					nearestEnemySoFar = other;
-				else if (unit.getPosition().getDistanceSquare(other.getPosition()) < unit.getPosition()
+				else if (task.getUnit().getPosition().getDistanceSquare(other.getPosition()) < task.getUnit().getPosition()
 						.getDistanceSquare(nearestEnemySoFar.getPosition()))
 					nearestEnemySoFar = other;
 			}

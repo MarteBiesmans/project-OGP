@@ -13,6 +13,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
+import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
 
 /**
@@ -208,9 +210,10 @@ public class Unit extends TimeVariableObject {
 		// behaviour
 		this.defaultBehaviour = enableDefaultBehaviour;
 
-		// moveTo and moveToAdjacent, workAtCube
+		// moveTo and moveToAdjacent, followUnit, workAtCube
 		this.setMoveToCube(null);
 		this.setMoveToAdjacent(null);
+		this.setFollowUnit(null);
 		this.setWorkAtCube(null);
 
 		// world, faction, experience points and level
@@ -218,7 +221,7 @@ public class Unit extends TimeVariableObject {
 		this.faction = null;
 		this.setExperiencePoints(0);
 		this.setLevel(0);
-		
+
 		// task
 		this.setTask(null);
 	}
@@ -519,8 +522,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private int agility;
 
-	
-
 	/**
 	 * Return the toughness of this unit.
 	 */
@@ -586,7 +587,7 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering the toughness of this unit.
 	 */
 	private int toughness;
-	
+
 	/**
 	 * Return the weight of this unit.
 	 */
@@ -849,7 +850,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private double orientation;
 
-	
 	/**
 	 * return the experience points of this unit
 	 */
@@ -926,8 +926,7 @@ public class Unit extends TimeVariableObject {
 	 * a variable to register the level of this unit
 	 */
 	private int level;
-	
-	
+
 	// RELATIONS with world, faction and material
 
 	/**
@@ -980,7 +979,6 @@ public class Unit extends TimeVariableObject {
 	 */
 	private World world;
 
-	
 	/**
 	 * return the faction this unit belongs to
 	 */
@@ -1031,10 +1029,10 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Check whether this unit has the given material as one of its materials.
 	 * 
-	 * @param 	material
-	 *          The material to check.
-	 * @return	true if the variable materials contains the given material
-	 * 			|result == materials.contains(material)
+	 * @param material
+	 *            The material to check.
+	 * @return true if the variable materials contains the given material
+	 *         |result == materials.contains(material)
 	 */
 	@Raw
 	boolean hasAsMaterial(@Raw Material material) {
@@ -1043,9 +1041,10 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether this unit carries at least one log
-	 * @return	true if at least one material of this unit is a log
-	 * 			|if (for some material in this.materials (material instanceof Log))
-	 * 			|	result == true
+	 * 
+	 * @return true if at least one material of this unit is a log |if (for some
+	 *         material in this.materials (material instanceof Log)) | result ==
+	 *         true
 	 */
 	public boolean hasLog() {
 		for (Material material : this.materials) {
@@ -1057,9 +1056,10 @@ public class Unit extends TimeVariableObject {
 
 	/**
 	 * check whether this unit carries at least one boulder
-	 * @return	true if at least one material of this unit is a boulder
-	 * 			|if (for some material in this.materials (material instanceof Boulder))
-	 * 			|	result == true
+	 * 
+	 * @return true if at least one material of this unit is a boulder |if (for
+	 *         some material in this.materials (material instanceof Boulder)) |
+	 *         result == true
 	 */
 	public boolean hasBoulder() {
 		for (Material material : this.materials) {
@@ -1073,10 +1073,10 @@ public class Unit extends TimeVariableObject {
 	 * Check whether this unit can have the given material as one of its
 	 * materials.
 	 * 
-	 * @param 	material
-	 *        	The material to check.
-	 * @return	true if the given material does not equal null
-	 * 			|result == (material != null)
+	 * @param material
+	 *            The material to check.
+	 * @return true if the given material does not equal null |result ==
+	 *         (material != null)
 	 */
 	@Raw
 	private boolean canHaveAsMaterial(Material material) {
@@ -1106,8 +1106,8 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Return the number of materials associated with this unit.
 	 *
-	 * @return	the number of materials carried by this unit
-	 * 			|result == materials.size()
+	 * @return the number of materials carried by this unit |result ==
+	 *         materials.size()
 	 */
 	public int getNbMaterials() {
 		return materials.size();
@@ -1116,16 +1116,16 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Add the given material to the set of materials of this unit.
 	 * 
-	 * @param	material
-	 *          The material to be added.
-	 * @post 	This unit has the given material as one of its materials if possible
-	 * 			|new.hasAsMaterial(material)
-	 * @throws	IllegalArgumentException
-	 * 			the material cannot be carried by this unit
-	 * 			| (!canHaveAsMaterial(material))
-	 * @throws	IllegalArgumentException
-	 * 			the unit cannot be the owner of this material
-	 * 			| (!material.canHaveAsOwner(owner))
+	 * @param material
+	 *            The material to be added.
+	 * @post This unit has the given material as one of its materials if
+	 *       possible |new.hasAsMaterial(material)
+	 * @throws IllegalArgumentException
+	 *             the material cannot be carried by this unit |
+	 *             (!canHaveAsMaterial(material))
+	 * @throws IllegalArgumentException
+	 *             the unit cannot be the owner of this material |
+	 *             (!material.canHaveAsOwner(owner))
 	 */
 	void addMaterial(@Raw Material material) throws IllegalArgumentException {
 		if (!canHaveAsMaterial(material)) {
@@ -1144,13 +1144,13 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * Remove the given material from the set of materials of this unit.
 	 * 
-	 * @param	material
-	 *          The material to be removed.
-	 * @post	This unit no longer has the given material as one of its materials.
-	 *       	| ! new.hasAsMaterial(material)
-	 * @throws	IllegalArgumentException
-	 * 			the given material is not carried by this unit
-	 * 			| (!this.hasAsMaterial(material))
+	 * @param material
+	 *            The material to be removed.
+	 * @post This unit no longer has the given material as one of its materials.
+	 *       | ! new.hasAsMaterial(material)
+	 * @throws IllegalArgumentException
+	 *             the given material is not carried by this unit |
+	 *             (!this.hasAsMaterial(material))
 	 */
 	@Raw
 	void removeMaterial(Material material) throws IllegalArgumentException {
@@ -1170,7 +1170,7 @@ public class Unit extends TimeVariableObject {
 	 * Variable registering all the materials carried by this unit.
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
-	
+
 	// ACTIVITY//
 
 	/**
@@ -1284,7 +1284,13 @@ public class Unit extends TimeVariableObject {
 	 * 			|			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
 	 */
 	//TODO mooiere notatie met backtracking
-	private void nextActivity() {
+	//TODO tests als hier nog tijd voor is :(
+	//TODO comments checken
+	public void nextActivity() {
+		if (this.getTask() != null) {
+			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
+				getTask().getActivities().getExecutingStatement().setCompleted(true);
+		}
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);
@@ -1296,6 +1302,8 @@ public class Unit extends TimeVariableObject {
 					this.setMoveToCube(null);
 					this.setMoveToAdjacent(null);
 				}
+				if (this.isFollowing())
+					this.setFollowUnit(null);
 				this.activityQueue.remove(0);
 				if (!this.getActivityQueue().isEmpty()) {
 					if (this.getActivityQueue().get(0) == Activity.NONE)
@@ -1370,12 +1378,12 @@ public class Unit extends TimeVariableObject {
 	 * @result	whether this unit is moving or not
 	 * 			| result == (this.getCurrentActivity() == Activity.WALKING) ||
 	 *		   	|			(this.getCurrentActivity() == Activity.SPRINTING) ||
-	 *		    |			(this.getCurrentActivity() == Activity.FALLING)
+	 *		    |			(this.getCurrentActivity() == Activity.FOLLOWING)
 	 */
 	public boolean isMoving() {
 		return (this.getCurrentActivity() == Activity.WALKING) ||
 			   (this.getCurrentActivity() == Activity.SPRINTING) ||
-			   (this.getCurrentActivity() == Activity.FALLING);
+			   (this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	/**
@@ -1394,6 +1402,10 @@ public class Unit extends TimeVariableObject {
 	 */
 	public boolean isSprinting() {
 		return (this.getCurrentActivity() == Activity.SPRINTING);
+	}
+	
+	public boolean isFollowing() {
+		return (this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	/**
@@ -1472,11 +1484,11 @@ public class Unit extends TimeVariableObject {
 			this.busyTimeMin(seconds);
 		}
 
-		if (this.isAttacking())
-			attacking(seconds);
-
 		if (this.isFalling())
 			falling(seconds);
+		
+		if (this.isAttacking())
+			attacking(seconds);
 
 		if (this.isMoving() && this.getMoveToAdjacent() != null) {
 			moving(seconds);
@@ -1506,7 +1518,6 @@ public class Unit extends TimeVariableObject {
 			this.die();
 	}
 
-	
 	/**
 	 * helper method for advance time
 	 * 
@@ -1532,8 +1543,8 @@ public class Unit extends TimeVariableObject {
 	 * 			therefore it does not contain formal documentation
 	 * @note	next is a position defined as
 	 * 			new Position(this.getPosition().getRealX(), 
-							 this.getPosition().getRealY(),
-				   Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.))
+	 *						 this.getPosition().getRealY(),
+	 *			   Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.))
 	 * @param 	seconds
 	 * 			the seconds to advance time
 	 * @effect	lose 10 hitpoints when falling into a new cube (cannot become
@@ -1541,9 +1552,8 @@ public class Unit extends TimeVariableObject {
 	 * @effect	set the position to next if possible, otherwise a fraction of this change
 	 */
 	private void falling(float seconds) {
-		Position next = new Position(this.getPosition().getRealX(), 
-									 this.getPosition().getRealY(),
-									 Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
+		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
+				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
 			this.setHitpoints(Math.max(0, this.getHitpoints() - 10));
 		try {
@@ -1555,12 +1565,15 @@ public class Unit extends TimeVariableObject {
 							next.getRealZ() - (World.FALLING_VELOCITY * seconds / 10));
 					try {
 						this.setPosition(next);
+						break;
 					} catch (IllegalArgumentException r) {
 						continue;
 					}
 				}
 			}
 		}
+		if (this.canStopFalling())
+			this.nextActivity();
 	}
 
 	/**
@@ -1590,6 +1603,7 @@ public class Unit extends TimeVariableObject {
 	 *						 this.getPosition().getRealZ() + zVelocity * seconds)
 	 */
 	private void moving(float seconds) {
+		
 		if (this.isSprinting()) {
 			double stamina = this.getStaminaPoints() - seconds * 10;
 			if (stamina > 0)
@@ -1649,6 +1663,7 @@ public class Unit extends TimeVariableObject {
 								next.getRealZ() + (zVelocity * seconds / 10));
 						try {
 							this.setPosition(next);
+							break;
 						} catch (IllegalArgumentException r) {
 							continue;
 						}
@@ -1656,6 +1671,14 @@ public class Unit extends TimeVariableObject {
 				}
 			}
 		}
+		
+		if (this.isFollowing()) {
+			if (this.getFollowUnit() == null || this.getFollowUnit().isDead()) {
+				nextActivity();
+			} else
+				this.setMoveToCube(this.getFollowUnit().getCube());
+		}
+		
 	}
 
 	/**
@@ -1769,6 +1792,25 @@ public class Unit extends TimeVariableObject {
 	 */
 	private void actingDefault(float seconds) {
 
+		if (getFaction().getScheduler().getHighestPriorityTaskNotExecuted() != null) {
+			nextTask();
+		}
+
+		else
+			doRandomBehaviour();
+	}
+	
+	private void nextTask() {
+		if (getTask().isCompleted()) {
+			getFaction().getScheduler().removeTask(getTask());
+		} else {
+			getTask().setPriority(getTask().getPriority() - 1);
+		}
+		setTask(getFaction().getScheduler().getHighestPriorityTaskNotExecuted());
+		getTask().setUnit(this);
+	}
+
+	private void doRandomBehaviour() {
 		int randomFight = RANDOM_GEN.nextInt(4);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
 			Set<Unit> potentialEnemies = this.getPotentialEnemies();
@@ -1851,8 +1893,8 @@ public class Unit extends TimeVariableObject {
 		}
 		this.setLevel(this.getLevel() + 1);
 	}
-	
-	//MOVING AND PATH FINDING//
+
+	// MOVING AND PATH FINDING//
 
 	/**
 	 * Moves this unit to an adjacent cube.
@@ -1879,7 +1921,7 @@ public class Unit extends TimeVariableObject {
 				this.getPosition().getCube().getZ() + z);
 
 		if (moveToAdjacent.getCenter().isStableForUnitIn(this.getWorld())) {
-			if (!(this.getCurrentActivity() == Activity.WALKING || this.getCurrentActivity() == Activity.SPRINTING)) {
+			if (!(this.isMoving())) {
 				this.setActivity(Activity.WALKING);
 			}
 
@@ -2024,6 +2066,13 @@ public class Unit extends TimeVariableObject {
 		public int compareTo(CubeDistPair other) {
 			return this.getDistance().compareTo(other.getDistance());
 		}
+		
+		private CubeDistPair getMinimum(CubeDistPair other) {
+			if (this.getDistance() <= other.getDistance())
+				return this;
+			else
+				return other;
+		}
 
 	}
 
@@ -2043,8 +2092,8 @@ public class Unit extends TimeVariableObject {
 	}
 
 	private Cube moveToCube;
-	
-	//SPECIAL FORMS OF MOVING: sprinting and falling//
+
+	// SPECIAL FORMS OF MOVING: sprinting, falling and following//
 
 	/**
 	 * if the unit is sprinting, it will start walking. If the unit is walking,
@@ -2081,9 +2130,34 @@ public class Unit extends TimeVariableObject {
 		return false;
 	}
 	
-
-	//DEFAULT BEHAVIOUR//
+	/**
+	 * this unit will start following the other unit.
+	 * @param other		the other unit that will be followed by this unit.
+	 */
+	public void follow(Unit other) {
+		this.setFollowUnit(other);
+		this.setActivity(Activity.FOLLOWING);
+		moveTo(getFollowUnit().getCube());
+	}
 	
+	/**
+	 * returns the cube far away where this unit is going.
+	 * 
+	 * @return
+	 */
+	private Unit getFollowUnit() {
+		return this.followUnit;
+	}
+
+	private void setFollowUnit(Unit other) {
+		this.followUnit = other;
+	}
+
+	private Unit followUnit;
+	
+
+	// DEFAULT BEHAVIOUR//
+
 	/**
 	 * starts the default behaviour of this unit
 	 */
@@ -2107,7 +2181,7 @@ public class Unit extends TimeVariableObject {
 
 	private boolean defaultBehaviour;
 
-	//WORKING//
+	// WORKING//
 
 	/**
 	 * this unit starts working.
@@ -2143,28 +2217,28 @@ public class Unit extends TimeVariableObject {
 	/**
 	 * get this unit working
 	 * 
-	 * @effect	set activity of this unit to working
+	 * @effect set activity of this unit to working
 	 */
 	public void work() {
 		this.setActivity(Activity.WORKING);
 	}
-	
-	//RESTING//
+
+	// RESTING//
 
 	/**
 	 * get this unit resting
-	 * @effect	set activity of this unit to resting
+	 * 
+	 * @effect set activity of this unit to resting
 	 */
 	public void rest() {
 		this.setActivity(Activity.RESTING);
 		if (this.isResting())
 			this.canStopResting = false;
 	}
-	
+
 	private boolean canStopResting;
 
-	
-	//ATTACK AND DEFEND//
+	// ATTACK AND DEFEND//
 
 	/**
 	 * 

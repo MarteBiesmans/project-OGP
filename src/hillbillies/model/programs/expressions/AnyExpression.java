@@ -1,6 +1,6 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.UnitType;
 
@@ -9,23 +9,42 @@ public class AnyExpression extends UnitExpression {
 	public AnyExpression() {
 	}
 
-	public UnitType evaluate(Unit unit) {
-		return evaluate(unit, null);
+	@Override
+	public UnitType evaluate(Task task) {		
+		try {
+			return new UnitType((Unit) task.getUnit().getWorld().getAllUnits().stream()
+					.map(unit -> new UnitDistPair((Unit) unit, task.getUnit()))
+					.reduce((x,y) -> x.getMinimum(y)).get().getUnit());
+		} catch (NullPointerException exc) {
+			return null;
+		}
+	}
+	
+	private class UnitDistPair {
+
+		private final Double distance;
+		private Unit unit;
+
+		private UnitDistPair(Unit other, Unit self) {
+			this.unit = other;
+			this.distance = self.getPosition().getDistanceSquare(other.getPosition());
 		}
 
-	@Override
-	public UnitType evaluate(Unit unit, Cube cube) {
-		Unit nearestUnitSoFar = null;
-		for (Unit other : unit.getWorld().getAllUnits()) {
-			if (other != unit) {
-				if (nearestUnitSoFar == null)
-					nearestUnitSoFar = other;
-				else if (unit.getPosition().getDistanceSquare(other.getPosition()) < unit.getPosition()
-						.getDistanceSquare(nearestUnitSoFar.getPosition()))
-					nearestUnitSoFar = other;
-			}
+		private Double getDistance() {
+			return distance;
 		}
-		return new UnitType(nearestUnitSoFar);
+
+		private Unit getUnit() {
+			return unit;
+		}
+
+		private UnitDistPair getMinimum(UnitDistPair other) {
+			if (this.getDistance() <= other.getDistance())
+				return this;
+			else
+				return other;
+		}
+
 	}
 
 	@Override

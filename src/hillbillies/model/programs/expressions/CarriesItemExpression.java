@@ -1,33 +1,30 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.UnitType;
 
 public class CarriesItemExpression extends BooleanExpression {
 
-	public CarriesItemExpression(UnitExpression e) {
+	public CarriesItemExpression(IUnitExpression e) {
 		expression = e;
 	}
 
-	public UnitExpression getExpression() {
+	public IUnitExpression getExpression() {
 		return expression;
 	}
 
-	public UnitType getExpressionEvaluate(Unit unit, Cube cube) {
-		return getExpression().evaluate(unit, cube);
+	public UnitType getExpressionEvaluate(Task task) {
+		return getExpression().evaluate(task);
 	}
 
-	private final UnitExpression expression;
+	private final IUnitExpression expression;
 	
-	public BooleanType evaluate() {
-		return evaluate(null, null);
-	}
 
 	@Override
-	public BooleanType evaluate(Unit unit, Cube cube) {
-		return new BooleanType(((Unit) getExpressionEvaluate(unit, cube).getValue()).getNbMaterials() != 0);
+	public BooleanType evaluate(Task task) {
+		return new BooleanType(((Unit) getExpressionEvaluate(task).getValue()).getNbMaterials() != 0);
 	}
 
 	@Override

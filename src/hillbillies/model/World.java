@@ -781,7 +781,8 @@ public class World extends TimeVariableObject {
 	/**
 	 * return a set containing all the materials in this world
 	 */
-	private Set<Material> getAllMaterials() {
+	//TODO: tests! (deze is nodig voor de expressions.. sorry :(
+	public Set<Material> getAllMaterials() {
 		return this.materials;
 	}
 

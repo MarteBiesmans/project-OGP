@@ -26,7 +26,7 @@ public class Faction {
 	 */
 	public Faction() {
 		this.units = new HashSet<Unit>();
-		this.scheduler = new Scheduler();
+		this.scheduler = new Scheduler(this); //TODO: kan dit? -> eclipse klaagt niet..
 	}
 
 	/**

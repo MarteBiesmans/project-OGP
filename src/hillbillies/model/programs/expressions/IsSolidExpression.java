@@ -1,29 +1,29 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Unit;
 import hillbillies.model.programs.type.BooleanType;
 import hillbillies.model.programs.type.CubeType;
 import hillbillies.model.Cube;
+import hillbillies.model.Task;
 
 public class IsSolidExpression extends BooleanExpression {
 
-	public IsSolidExpression(CubeExpression e) {
+	public IsSolidExpression(ICubeExpression e) {
 		expression = e;
 	}
 	
-	public CubeExpression getExpression() {
+	public ICubeExpression getExpression() {
 		return expression;
 	}
 	
-	public CubeType getExpressionEvaluate(Unit unit, Cube cube) {
-		return getExpression().evaluate(unit, cube);
+	public CubeType getExpressionEvaluate(Task task) {
+		return getExpression().evaluate(task);
 	}
 	
-	private final CubeExpression expression;
+	private final ICubeExpression expression;
 	
 	@Override
-	public BooleanType evaluate(Unit unit, Cube cube) {
-		return new BooleanType(!((Cube) getExpressionEvaluate(unit, cube).getValue()).isPassableIn(unit.getWorld()));
+	public BooleanType evaluate(Task task) {
+		return new BooleanType(!((Cube) getExpressionEvaluate(task).getValue()).isPassableIn(task.getUnit().getWorld()));
 	}
 	
 	@Override

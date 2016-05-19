@@ -2,28 +2,56 @@ package hillbillies.model.programs.statements;
 
 import hillbillies.model.Counter;
 import hillbillies.model.Cube;
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 import hillbillies.model.programs.expressions.CubeExpression;
-import hillbillies.model.programs.expressions.UnitExpression;
 
 public class MoveToStatement extends ActionStatement {
 	
-	public MoveToStatement(CubeExpression c) {
-		this.cube = c;
+	private MoveToStatement(boolean hasBeenFullyExecuted) {
+		super(hasBeenFullyExecuted, false);
 	}
 	
-	public CubeExpression getCube() {
-		return cube;
+	public MoveToStatement() {
+		this(false);
 	}
-	
-	private CubeExpression cube;
 
-	public void execute() {
-		if(getTask().getUnit() == null){
-			throw new NullPointerException("this task has no unit");
-		}
-		getTask().getUnit().moveTo(getCube().evaluate().getValue());
-		this.setCompleted(true);
+	@Override
+	public void execute(Task task, Counter counter) {
+		counter.increment();
+//		TODO: getActionHandler().move(worm);
+		SetHasFullyExecutedToTrue();
 	}
+
+	@Override
+	public boolean canExecute(Task task, Counter counter) {
+		counter.increment();
+		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
+			return false;
+		}
+		return true;
+//		TODO: weghalen return worm.canMove();
+	}
+
+	@Override
+	public MoveToStatement clone() {
+		return new MoveToStatement(hasBeenFullyExecuted());
+	}
+
+//	public MoveToStatement(CubeExpression c) {
+//		this.cube = c;
+//	}
+//
+//	public CubeExpression getCube() {
+//		return cube;
+//	}
+//
+//	private CubeExpression cube;
+//
+//	public void execute() {
+//		if (getTask().getUnit() == null) {
+//			throw new NullPointerException("this task has no unit");
+//		}
+//		getTask().getUnit().moveTo((Cube) getCube().evaluate(getTask()).getValue());
+//	}
 
 }

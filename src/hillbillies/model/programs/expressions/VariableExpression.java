@@ -1,10 +1,9 @@
 package hillbillies.model.programs.expressions;
 
-import hillbillies.model.Cube;
-import hillbillies.model.Unit;
-import worms.model.Worm;
+import hillbillies.model.Task;
+import hillbillies.model.programs.type.Type;
 
-public class VariableExpression extends Expression<Object> {
+public class VariableExpression<T extends Type> extends Expression<T> {
 
 	public VariableExpression(String name) {
 		variableName = name;
@@ -13,8 +12,8 @@ public class VariableExpression extends Expression<Object> {
 	private String variableName;	
 
 	@Override
-	public Object evaluate(Unit unit, Cube cube) {
-		return getGlobal(variableName).getValue();
+	public T evaluate(Task task) {
+		return (T) task.getGlobalVariable(variableName);
 	}
 	
 	@Override
