@@ -11,6 +11,7 @@ public class VariableExpression<T extends Type> extends Expression<T> {
 	
 	private String variableName;	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T evaluate(Task task) {
 		return (T) task.getGlobalVariable(variableName);

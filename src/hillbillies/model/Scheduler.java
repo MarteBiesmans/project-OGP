@@ -3,10 +3,8 @@ package hillbillies.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -14,6 +12,8 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * @invar Each scheduler must have proper tasks. | hasProperTasks()
+ * @invar Each scheduler can have its faction as faction. |
+ *        canHaveAsFaction(this.getFaction()
  */
 public class Scheduler {
 
@@ -26,7 +26,7 @@ public class Scheduler {
 	 *       new.getFaction() == faction
 	 * @throws IllegalArgumentException
 	 *             This new scheduler cannot have the given faction as its
-	 *             faction. | ! canHaveAsFaction(this.getFaction())
+	 *             faction. | ! canHaveAsFaction(this.getFaction()))
 	 */
 	public Scheduler(Faction faction) throws IllegalArgumentException {
 		if (!canHaveAsFaction(faction))
@@ -159,7 +159,7 @@ public class Scheduler {
 			}
 
 			private ArrayList<Task> sortedTasks = getSortedTasks();
-			private int index = 0;
+			private int index = -1;
 		};
 	}
 
@@ -168,18 +168,18 @@ public class Scheduler {
 		result.sort((a, b) -> a.compareTo(b));
 		return result;
 	}
-	
+
 	public Task getHighestPriorityTaskNotExecuted() {
-		for (Task task: getSortedTasks()) {
+		for (Task task : getSortedTasks()) {
 			if (!task.isBeingExecuted())
 				return task;
 		}
 		return null;
 	}
-	
+
 	public void assignTaskToUnit(Task task, Unit unit) {
 		if (task.isBeingExecuted() && task.getUnit() != unit) {
-			//TODO: stop executing task
+			// TODO: stop executing task
 		}
 		if (unit.getTask() != null) {
 			this.addTask(unit.getTask());
@@ -187,14 +187,14 @@ public class Scheduler {
 		unit.setTask(task);
 		task.setUnit(unit);
 	}
-	
+
 	public void resetTaskToUnit(Task task, Unit unit) throws IllegalStateException {
 		if (task.getUnit() != unit || unit.getTask() != task)
 			throw new IllegalStateException();
-		unit.setTask(null); //TODO: of unit.nextTask ofzo?
+		unit.setTask(null); // TODO: of unit.nextTask ofzo?
 		task.setUnit(null);
 	}
-	
+
 	public Set<Task> getAllTasksThatSatisfy(Predicate<Task> condition) {
 		Set<Task> tasksSoFar = new HashSet<Task>(getAllTasks());
 		tasksSoFar.stream().filter(condition);
@@ -212,13 +212,6 @@ public class Scheduler {
 	private final Set<Task> tasks = new HashSet<Task>();
 
 	/**
-	 * TODO
-	 * TO BE ADDED TO CLASS HEADING
-	 * @invar Each scheduler can have its faction as faction. |
-	 *        canHaveAsFaction(this.getFaction())
-	 */
-
-	/**
 	 * Return the faction of this scheduler.
 	 */
 	@Basic
@@ -233,12 +226,11 @@ public class Scheduler {
 	 * 
 	 * @param faction
 	 *            The faction to check.
-	 * @return | result ==
+	 * @return | result == (faction != null)
 	 */
 	@Raw
 	public boolean canHaveAsFaction(Faction faction) {
-		//TODO
-		return true;
+		return faction != null;
 	}
 
 	/**

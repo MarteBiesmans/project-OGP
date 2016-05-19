@@ -3,7 +3,6 @@ package hillbillies.model.programs.statements;
 import hillbillies.model.Counter;
 import hillbillies.model.Cube;
 import hillbillies.model.Task;
-import hillbillies.model.programs.expressions.CubeExpression;
 import hillbillies.model.programs.expressions.ICubeExpression;
 
 public class WorkStatement extends ActionStatement {

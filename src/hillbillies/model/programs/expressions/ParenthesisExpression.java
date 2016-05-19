@@ -13,6 +13,7 @@ public class ParenthesisExpression<T extends Type> extends Expression<T> {
 		return expression;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public T getExpressionEvaluate(Task task) {
 		return (T) getExpression().evaluate(task);
 	}

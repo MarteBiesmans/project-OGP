@@ -5,7 +5,6 @@ import java.util.List;
 
 import hillbillies.model.programs.expressions.*;
 import hillbillies.model.programs.statements.*;
-import hillbillies.model.programs.type.*;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -74,6 +73,7 @@ public class TaskFactory implements ITaskFactory<IExpression<?>, Statement, Task
 		return new AttackStatement((IUnitExpression) unit);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public  VariableExpression<?> createReadVariable(String variableName, SourceLocation sourceLocation) {
 		return new VariableExpression(variableName);
