@@ -63,7 +63,7 @@ import ogp.framework.util.Util;
  * 
  * @author Ellen & Marte
  */
-public class Unit extends TimeVariableObject {
+public class Unit implements ITimeVariableObject {
 
 	/**
 	 * constant necessary to create random numbers
@@ -1352,7 +1352,37 @@ public class Unit extends TimeVariableObject {
 	 * a variable to store the activity queue of a unit
 	 */
 	private final List<Activity> activityQueue = new ArrayList<Activity>();
+	
+	/**
+	 * sets the busytime of this time variable object to the given seconds
+	 * 
+	 * @post	busyTime of this time variable object will equal the given seconds if it is a positive value,
+	 * 			 else busyTime will equal 0 
+	 * @param busyTime
+	 */
+	public void setBusyTime(double busyTime) {
+		this.busyTime = Math.max(busyTime, 0);
+	}
 
+	
+	/**
+	 * returns the busytime of this time variable object
+	 */
+	public double getBusyTime() {
+		return this.busyTime;
+	}
+
+	/**
+	 * substracts the given seconds off of the busytime of this time variable object.
+	 * 
+	 * @param seconds
+	 */
+	public void busyTimeMin(double seconds) {
+		this.setBusyTime(this.getBusyTime() - seconds);
+	}
+
+	private double busyTime;
+	
 	/**
 	 * returns whether this unit is defending or not.
 	 * @result	whether this unit is defending or not
