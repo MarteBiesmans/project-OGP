@@ -62,7 +62,6 @@ public class Task implements Comparable<Task> {
 		if (!canHaveAsActivities(activities))
 			throw new IllegalArgumentException();
 		this.activities = activities;
-		this.getActivities().setTask(this);
 		if (!canHaveAsCube(cube))
 			throw new IllegalArgumentException();
 		this.cube = cube;
@@ -70,16 +69,12 @@ public class Task implements Comparable<Task> {
 	}
 
 	public boolean isWellFormed() {
-		return activities.isWellFormed();
+		return getActivities().isWellFormed() && getActivities().containsActionStatement();
 	}
 
 	@Override
 	public int compareTo(Task other) {
 		return Integer.compare(other.getPriority(), this.getPriority());
-	}
-
-	public void reset() {
-		getActivities().reset();
 	}
 
 	/**
@@ -175,7 +170,7 @@ public class Task implements Comparable<Task> {
 	}
 
 	public boolean isCompleted() {
-		return activities.isCompleted();
+		return activities.hasBeenFullyExecuted();
 	}
 
 	/**
@@ -251,8 +246,10 @@ public class Task implements Comparable<Task> {
 	 */
 	@Raw
 	public void setUnit(Unit unit) throws IllegalArgumentException {
-		if (!isValidUnit(unit))
-			throw new IllegalArgumentException();
+		if (unit != null) {
+			if (!isValidUnit(unit))
+				throw new IllegalArgumentException();
+		}
 		this.unit = unit;
 	}
 
@@ -438,12 +435,13 @@ public class Task implements Comparable<Task> {
 
 	public void execute(Counter counter) {
 		// TODO: moet dit wel hier gecheckt worden?
-		if (getActivities().isCompleted()) {
+		if (getActivities().hasBeenFullyExecuted()) {
 			getUnit().getFaction().getScheduler().removeTask(this);
 			this.setUnit(null);
-		while (getActivities().canExecute(counter) && !getUnit().isDead()) {
-			getActivities().execute(counter);
+			while (getActivities().canExecute(this, counter) && !getUnit().isDead()) {
+				getActivities().execute(this, counter);
+			}
 		}
-	}
 
+	}
 }

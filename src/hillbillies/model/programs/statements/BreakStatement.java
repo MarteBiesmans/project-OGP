@@ -1,24 +1,50 @@
 package hillbillies.model.programs.statements;
 
+import hillbillies.model.Counter;
+import hillbillies.model.Task;
+
 public class BreakStatement extends Statement {
 	
+	public BreakStatement(boolean hasBeenFullyExecuted) {
+		super(hasBeenFullyExecuted);
+	}
+	
 	public BreakStatement() {
+		this(false);
 	}
 	
 	@Override
-	public void execute() {
+	public void execute(Task task, Counter counter) {
+		counter.increment();
 		Statement whileStatement = getWhileStatement();
 		if(whileStatement == null){
 			throw new IllegalStateException("This break is not in a while loop.");
 		}
-		whileStatement.setCompleted(true);
+		whileStatement.SetHasFullyExecutedToTrue();
+		this.SetHasFullyExecutedToTrue();
+	}
+
+	@Override
+	public boolean canExecute(Task task, Counter counter) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isWellFormed(){
+		return getWhileStatement() != null;
+	}
+
+	@Override
+	public BreakStatement clone() {
+		return new BreakStatement();
+	}
+
+	@Override
+	public boolean containsActionStatement() {
+		return false;
 	}
 	
-	/**
-	 * Return the most inner while or for loop that is a parent of this
-	 * break statement.
-	 * @return
-	 */
 	private Statement getWhileStatement(){
 		Statement upperStatement = getParentStatement();
 		while(!(upperStatement instanceof WhileStatement)){
@@ -31,14 +57,23 @@ public class BreakStatement extends Statement {
 		return upperStatement;
 	}
 	
-	@Override
-	public boolean isMutable() {
-		return false;
-	}
 	
-	@Override
-	public boolean isWellFormed(){
-		return getWhileStatement() != null;
-	}
+	
+//	public BreakStatement() {
+//	}
+//	
+//	
+//	/**
+//	 * Return the most inner while or for loop that is a parent of this
+//	 * break statement.
+//	 * @return
+//	 */
+//
+//	
+//	@Override
+//	public boolean isMutable() {
+//		return false;
+//	}
+//	
 
 }

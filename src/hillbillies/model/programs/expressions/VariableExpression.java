@@ -1,8 +1,9 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Task;
+import hillbillies.model.programs.type.Type;
 
-public class VariableExpression extends Expression<Object> {
+public class VariableExpression<T extends Type> extends Expression<T> {
 
 	public VariableExpression(String name) {
 		variableName = name;
@@ -11,8 +12,8 @@ public class VariableExpression extends Expression<Object> {
 	private String variableName;	
 
 	@Override
-	public Object evaluate(Task task) {
-		return task.getGlobalVariable(variableName);
+	public T evaluate(Task task) {
+		return (T) task.getGlobalVariable(variableName);
 	}
 	
 	@Override

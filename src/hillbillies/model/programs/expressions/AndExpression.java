@@ -5,16 +5,22 @@ import hillbillies.model.programs.type.BooleanType;
 
 public class AndExpression extends BooleanExpression {
 
-	public AndExpression(BooleanExpression e1, BooleanExpression e2) {
+	public AndExpression(IBooleanExpression e1, IBooleanExpression e2) {
 		expression1 = e1;
 		expression2 = e2;
 	}
 	
-	public BooleanExpression getFirstExpression() {
+	public IBooleanExpression getFirstExpression() {
 		return expression1;
 	}
 	
-	public BooleanExpression getSecondExpression() {
+	public BooleanType getFirstExpressionEvaluate(Task task) {
+		return getFirstExpression().evaluate(task);
+	}
+	
+	private final IBooleanExpression expression1;
+	
+	public IBooleanExpression getSecondExpression() {
 		return expression2;
 	}
 	
@@ -22,12 +28,7 @@ public class AndExpression extends BooleanExpression {
 		return getSecondExpression().evaluate(task);
 	}
 	
-	public BooleanType getFirstExpressionEvaluate(Task task) {
-		return getFirstExpression().evaluate(task);
-	}
-	
-	private final BooleanExpression expression1;
-	private final BooleanExpression expression2;
+	private final IBooleanExpression expression2;
 
 	@Override
 	public BooleanType evaluate(Task task) {

@@ -1,8 +1,9 @@
 package hillbillies.model.programs.expressions;
 
 import hillbillies.model.Task;
+import hillbillies.model.programs.type.Type;
 
-public class ParenthesisExpression extends Expression<Object> {
+public class ParenthesisExpression<T extends Type> extends Expression<T> {
 
 	public ParenthesisExpression(Expression<?> e) {
 		expression = e;
@@ -12,14 +13,14 @@ public class ParenthesisExpression extends Expression<Object> {
 		return expression;
 	}
 	
-	public Object getExpressionEvaluate(Task task) {
-		return getExpression().evaluate(task);
+	public T getExpressionEvaluate(Task task) {
+		return (T) getExpression().evaluate(task);
 	}
 	
 	private final Expression<?> expression;
 	
 	@Override
-	public Object evaluate(Task task) {
+	public T evaluate(Task task) {
 		return getExpressionEvaluate(task);
 	}
 	

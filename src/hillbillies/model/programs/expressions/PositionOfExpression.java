@@ -7,11 +7,11 @@ import hillbillies.model.programs.type.UnitType;
 
 public class PositionOfExpression extends CubeExpression {
 
-	public PositionOfExpression(UnitExpression e) {
+	public PositionOfExpression(IUnitExpression e) {
 		expression = e;
 	}
 	
-	public UnitExpression getExpression() {
+	public IUnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -19,7 +19,7 @@ public class PositionOfExpression extends CubeExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final UnitExpression expression;
+	private final IUnitExpression expression;
 	
 	@Override
 	public CubeType evaluate(Task task) {

@@ -6,11 +6,11 @@ import hillbillies.model.programs.type.CubeType;
 
 public class NextToExpression extends CubeExpression {
 
-	public NextToExpression(CubeExpression e) {
+	public NextToExpression(ICubeExpression e) {
 		expression = e;
 	}
 	
-	public CubeExpression getExpression() {
+	public ICubeExpression getExpression() {
 		return expression;
 	}
 	
@@ -18,7 +18,7 @@ public class NextToExpression extends CubeExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final CubeExpression expression;
+	private final ICubeExpression expression;
 	
 	@Override
 	public CubeType evaluate(Task task) {

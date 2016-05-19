@@ -7,11 +7,11 @@ import hillbillies.model.programs.type.CubeType;
 
 public class IsPassableExpression extends BooleanExpression {
 
-	public IsPassableExpression(CubeExpression e) {
+	public IsPassableExpression(ICubeExpression e) {
 		expression = e;
 	}
 	
-	public CubeExpression getExpression() {
+	public ICubeExpression getExpression() {
 		return expression;
 	}
 	
@@ -19,7 +19,7 @@ public class IsPassableExpression extends BooleanExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final CubeExpression expression;
+	private final ICubeExpression expression;
 	
 	@Override
 	public BooleanType evaluate(Task task) {

@@ -7,11 +7,11 @@ import hillbillies.model.Task;
 
 public class IsSolidExpression extends BooleanExpression {
 
-	public IsSolidExpression(CubeExpression e) {
+	public IsSolidExpression(ICubeExpression e) {
 		expression = e;
 	}
 	
-	public CubeExpression getExpression() {
+	public ICubeExpression getExpression() {
 		return expression;
 	}
 	
@@ -19,7 +19,7 @@ public class IsSolidExpression extends BooleanExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final CubeExpression expression;
+	private final ICubeExpression expression;
 	
 	@Override
 	public BooleanType evaluate(Task task) {

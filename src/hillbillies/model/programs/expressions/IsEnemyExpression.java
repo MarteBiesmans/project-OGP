@@ -7,11 +7,11 @@ import hillbillies.model.programs.type.Type;
 
 public class IsEnemyExpression extends BooleanExpression {
 
-	public IsEnemyExpression(UnitExpression e) {
+	public IsEnemyExpression(IUnitExpression e) {
 		expression = e;
 	}
 	
-	public UnitExpression getExpression() {
+	public IUnitExpression getExpression() {
 		return expression;
 	}
 	
@@ -19,7 +19,7 @@ public class IsEnemyExpression extends BooleanExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final UnitExpression expression;
+	private final IUnitExpression expression;
 
 	@Override
 	public BooleanType evaluate(Task task) {

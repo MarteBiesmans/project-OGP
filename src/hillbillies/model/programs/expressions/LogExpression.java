@@ -10,28 +10,17 @@ public class LogExpression extends CubeExpression {
 
 	public LogExpression() {
 	}
-	
+
 	@Override
 	public CubeType evaluate(Task task) {
-		Log nearestLogSoFar = null;
-		for (Log log : task.getUnit().getWorld().getAllLogs()) {
-				if (nearestLogSoFar == null)
-					nearestLogSoFar = log;
-				else if (task.getUnit().getPosition().getDistanceSquare(log.getPosition()) < task.getUnit().getPosition()
-						.getDistanceSquare(nearestLogSoFar.getPosition()))
-					nearestLogSoFar = log;
-		}
-		if (nearestLogSoFar == null)
+		try {
+			return new CubeType((Cube) task.getUnit().getWorld().getAllMaterials().stream()
+					.filter(material -> material instanceof Log)
+					.map(log -> new LogDistPair((Log) log, task.getUnit()))
+					.reduce((x, y) -> x.getMinimum(y)).get().getLog().getPosition().getCube());
+		} catch (NullPointerException exc) {
 			return null;
-		return new CubeType(nearestLogSoFar.getPosition().getCube());
-	}
-	
-	public CubeType testEvaluate(Task task) {
-		return new CubeType((Cube) task.getUnit().getWorld().getAllMaterials().stream().
-				filter(material -> material instanceof Log).
-				map(log -> new LogDistPair((Log) log, task.getUnit())).
-				reduce((x, y) -> x.getMinimum(y)).
-				get().getLog().getPosition().getCube());
+		}
 	}
 
 	private class LogDistPair {
@@ -51,7 +40,7 @@ public class LogExpression extends CubeExpression {
 		private Log getLog() {
 			return log;
 		}
-		
+
 		private LogDistPair getMinimum(LogDistPair other) {
 			if (this.getDistance() <= other.getDistance())
 				return this;

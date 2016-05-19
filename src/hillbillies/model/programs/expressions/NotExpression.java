@@ -5,11 +5,11 @@ import hillbillies.model.programs.type.BooleanType;
 
 public class NotExpression extends BooleanExpression {
 
-	public NotExpression(BooleanExpression e) {
+	public NotExpression(IBooleanExpression e) {
 		expression = e;
 	}
 	
-	public BooleanExpression getExpression() {
+	public IBooleanExpression getExpression() {
 		return expression;
 	}
 	
@@ -17,7 +17,7 @@ public class NotExpression extends BooleanExpression {
 		return getExpression().evaluate(task);
 	}
 	
-	private final BooleanExpression expression;
+	private final IBooleanExpression expression;
 	
 	@Override
 	public BooleanType evaluate(Task task) {

@@ -13,6 +13,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
 import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
 
@@ -1830,6 +1831,13 @@ public class Unit extends TimeVariableObject {
 		@Override
 		public int compareTo(CubeDistPair other) {
 			return this.getDistance().compareTo(other.getDistance());
+		}
+		
+		private CubeDistPair getMinimum(CubeDistPair other) {
+			if (this.getDistance() <= other.getDistance())
+				return this;
+			else
+				return other;
 		}
 
 	}

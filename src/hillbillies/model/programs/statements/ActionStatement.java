@@ -1,10 +1,41 @@
 package hillbillies.model.programs.statements;
 
+import hillbillies.model.programs.expressions.BooleanExpression;
+
 public abstract class ActionStatement extends Statement {
 	
-	@Override
-	public boolean isMutable() {
-		return false;
+	protected ActionStatement(boolean hasBeenExecutedOnce, boolean hasBeenFullyExecuted) {
+		super(hasBeenFullyExecuted);
+		this.setHasBeenExecutedOnce(hasBeenExecutedOnce);
 	}
+
+	public ActionStatement() {
+		this(false, false);
+	}
+	
+	boolean getHasBeenExecutedOnce() {
+		return this.hasBeenExecutedOnce;
+	}
+	
+	void setHasBeenExecutedOnce(boolean executedOnce) {
+		this.hasBeenExecutedOnce = executedOnce;
+	}
+	
+	private boolean hasBeenExecutedOnce;
+
+	@Override
+	public boolean isWellFormed() {
+		return true;
+	}
+
+	@Override
+	public boolean containsActionStatement() {
+		return true;
+	}
+	
+//	@Override
+//	public boolean isMutable() {
+//		return false;
+//	}
 	
 }

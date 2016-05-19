@@ -10,18 +10,41 @@ public class AnyExpression extends UnitExpression {
 	}
 
 	@Override
-	public UnitType evaluate(Task task) {
-		Unit nearestUnitSoFar = null;
-		for (Unit other : task.getUnit().getWorld().getAllUnits()) {
-			if (other != task.getUnit()) {
-				if (nearestUnitSoFar == null)
-					nearestUnitSoFar = other;
-				else if (task.getUnit().getPosition().getDistanceSquare(other.getPosition()) < task.getUnit().getPosition()
-						.getDistanceSquare(nearestUnitSoFar.getPosition()))
-					nearestUnitSoFar = other;
-			}
+	public UnitType evaluate(Task task) {		
+		try {
+			return new UnitType((Unit) task.getUnit().getWorld().getAllUnits().stream()
+					.map(unit -> new UnitDistPair((Unit) unit, task.getUnit()))
+					.reduce((x,y) -> x.getMinimum(y)).get().getUnit());
+		} catch (NullPointerException exc) {
+			return null;
 		}
-		return new UnitType(nearestUnitSoFar);
+	}
+	
+	private class UnitDistPair {
+
+		private final Double distance;
+		private Unit unit;
+
+		private UnitDistPair(Unit other, Unit self) {
+			this.unit = other;
+			this.distance = self.getPosition().getDistanceSquare(other.getPosition());
+		}
+
+		private Double getDistance() {
+			return distance;
+		}
+
+		private Unit getUnit() {
+			return unit;
+		}
+
+		private UnitDistPair getMinimum(UnitDistPair other) {
+			if (this.getDistance() <= other.getDistance())
+				return this;
+			else
+				return other;
+		}
+
 	}
 
 	@Override
