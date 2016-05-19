@@ -16,7 +16,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @author Ellen & Marte
  *
  */
-public abstract class Material extends TimeVariableObject {
+public abstract class Material implements ITimeVariableObject {
 
 	/**
 	 * instance of the class Random, necessary to create random numbers
@@ -263,7 +263,7 @@ public abstract class Material extends TimeVariableObject {
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.0));
+				Math.max(this.getPosition().getRealZ() + ITimeVariableObject.FALLING_VELOCITY * seconds, 0.0));
 		this.setPosition(next);
 	}
 }
