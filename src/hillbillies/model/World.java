@@ -20,7 +20,7 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @author Ellen & Marte
  */
-public class World extends TimeVariableObject {
+public class World implements ITimeVariableObject {
 
 	private static final Random RANDOM_GEN = new Random();
 	/**
