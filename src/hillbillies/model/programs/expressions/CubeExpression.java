@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expressions;
 
-public abstract class CubeExpression implements ICubeExpression {
+import hillbillies.model.programs.type.CubeType;
+
+public abstract class CubeExpression extends Expression<CubeType> implements ICubeExpression {
 
 }

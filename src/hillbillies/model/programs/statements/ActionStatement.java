@@ -1,7 +1,5 @@
 package hillbillies.model.programs.statements;
 
-import hillbillies.model.programs.expressions.BooleanExpression;
-
 public abstract class ActionStatement extends Statement {
 	
 	protected ActionStatement(boolean hasBeenExecutedOnce, boolean hasBeenFullyExecuted) {

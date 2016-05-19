@@ -70,12 +70,20 @@ kunnen we een default methode aanmaken voor advanceTime.
 
 ************************************ PART III ******************************************
 
-- opmerkingen bestand uit project halen bij inleveren!
+- TODO's en opmerkingen bestand uit project halen bij inleveren!
 
 - task en scheduler nog in de package programs + naam package progams veranderen in tasks
 
 - een unit moet elke 3min rusten -> nog niet gebruikt
 
-- voor statements -> nu kan bv enkel een unitexpression meegegeven worden, maar dit moet ook een variableexpression kunnen zijn!
+OK - voor statements -> nu kan bv enkel een unitexpression meegegeven worden, maar dit moet ook een variableexpression kunnen zijn!
 
 - activity geïnterrupt -> task terug vrijgeven of verder doen? (opgave onduidelijk)
+
+OK - expressions functioneel maken
+
++- OK - statements tellen
+
+- waar statements precies uitvoeren (over loopen)?
+
+- action statements -> hasBeenExecutedOnce

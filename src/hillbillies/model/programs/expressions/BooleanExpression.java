@@ -1,6 +1,8 @@
 package hillbillies.model.programs.expressions;
 
-public abstract class BooleanExpression implements IBooleanExpression {
+import hillbillies.model.programs.type.BooleanType;
+
+public abstract class BooleanExpression extends Expression<BooleanType> implements IBooleanExpression {
 
 }
 

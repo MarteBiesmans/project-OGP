@@ -2,18 +2,18 @@ package hillbillies.model.programs.statements;
 
 import hillbillies.model.Counter;
 import hillbillies.model.Task;
-import hillbillies.model.programs.expressions.Expression;
+import hillbillies.model.programs.expressions.IExpression;
 import hillbillies.model.programs.type.Type;
 
 public class AssignmentStatement extends Statement {
 	
-	private AssignmentStatement(String variableName, Expression<?> value, boolean hasBeenFullyExecuted) {
+	private AssignmentStatement(String variableName, IExpression<?> value, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.variableName = variableName;
 		this.expression = value;	
 	}
 
-	public AssignmentStatement(String variableName, Expression<?> value) {
+	public AssignmentStatement(String variableName, IExpression<?> value) {
 		this(variableName, value, false);
 	}
 
@@ -38,11 +38,11 @@ public class AssignmentStatement extends Statement {
 
 	private final String variableName;
 
-	public Expression<?> getExpression() {
+	public IExpression<?> getExpression() {
 		return expression;
 	}
 
-	private final Expression<?> expression;
+	private final IExpression<?> expression;
 
 	@Override
 	public boolean isWellFormed() {
