@@ -412,6 +412,11 @@ public class UnitTest {
 		
 		assertTrue(testUnit.getNbMaterials()==1);
 	}
+	
+	@Test
+	public void nextActivity_() {
+		//TODO
+	}
 
 	@Test
 	public void isAttacking() {
@@ -533,6 +538,26 @@ public class UnitTest {
 		testWorld.advanceTime((float)0.2);
 		assertTrue(Util.fuzzyEquals(faller.getPosition().getRealZ(), 0.7, 1e-5));
 		assertTrue(faller.getHitpoints() == 18);
+	}
+	
+	@Test
+	public void advanceTime_moving_sprinting() {
+		//TODO
+		int[][][] terrainTypes = new int[5][5][5];
+		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
+		
+		Unit testUnit = new Unit(0.2, 0.3, 0.9, "Ellen", 50, 50, 25, 55, false);
+		testWorld.addUnit(testUnit);
+		
+		testUnit.moveTo(new Cube(1,0,0));
+		testUnit.startSprinting();
+		System.out.println(testUnit.getMovementSpeed());
+		testWorld.advanceTime((float)0.2);
+	}
+	
+	@Test
+	public void advanceTime_moving_sprintingNegativeStamina() {
+		//TODO
 	}
 	
 	@Test

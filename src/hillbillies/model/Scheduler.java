@@ -237,7 +237,8 @@ public class Scheduler {
 	 */
 	@Raw
 	public boolean canHaveAsFaction(Faction faction) {
-		return false;
+		//TODO
+		return true;
 	}
 
 	/**

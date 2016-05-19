@@ -13,8 +13,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
-import hillbillies.model.programs.statements.ActionStatement;
+//import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
+//import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
 
 /**
@@ -1284,13 +1284,12 @@ public class Unit extends TimeVariableObject {
 	 * 			|			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
 	 */
 	//TODO mooiere notatie met backtracking
-	//TODO tests als hier nog tijd voor is :(
 	//TODO comments checken
 	public void nextActivity() {
-		if (this.getTask() != null) {
-			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
-				getTask().getActivities().getExecutingStatement().setCompleted(true);
-		}
+//		if (this.getTask() != null) {
+//			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
+//				getTask().getActivities().getExecutingStatement().setCompleted(true);
+//		}
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);
@@ -1533,7 +1532,6 @@ public class Unit extends TimeVariableObject {
 			this.nextActivity();
 	}
 	
-	//TODO vanaf hier comments checken
 
 	/**
 	 * helper method for advance time
@@ -1781,6 +1779,8 @@ public class Unit extends TimeVariableObject {
 		}
 	}
 
+	//TODO vanaf hier comments checken
+	
 	/**
 	 * helper method for advance time
 	 * 
@@ -2067,6 +2067,7 @@ public class Unit extends TimeVariableObject {
 			return this.getDistance().compareTo(other.getDistance());
 		}
 		
+		@SuppressWarnings("unused")
 		private CubeDistPair getMinimum(CubeDistPair other) {
 			if (this.getDistance() <= other.getDistance())
 				return this;
