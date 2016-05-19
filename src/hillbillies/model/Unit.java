@@ -25,7 +25,7 @@ import ogp.framework.util.Util;
  *  				hitpoints, stamina points, orientation, 
  *  				experience points, level
  *  - relations with other classes: world, faction, materials
- *  - activities
+ *  - activities and busy time
  *  - advance time and helper functions
  *  - moving and pathfinding: normal moving, sprinting, falling
  *  - other behaviour: default behaviour, working, resting, fighting
@@ -1171,7 +1171,7 @@ public class Unit implements ITimeVariableObject {
 	 */
 	private final Set<Material> materials = new HashSet<Material>();
 
-	// ACTIVITY//
+	// ACTIVITY & BUSY TIME//
 
 	/**
 	 * return the activity queue of this unit.
@@ -1360,7 +1360,7 @@ public class Unit implements ITimeVariableObject {
 	 * 			 else busyTime will equal 0 
 	 * @param busyTime
 	 */
-	public void setBusyTime(double busyTime) {
+	private void setBusyTime(double busyTime) {
 		this.busyTime = Math.max(busyTime, 0);
 	}
 
@@ -1368,7 +1368,7 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * returns the busytime of this time variable object
 	 */
-	public double getBusyTime() {
+	private double getBusyTime() {
 		return this.busyTime;
 	}
 
@@ -1377,7 +1377,7 @@ public class Unit implements ITimeVariableObject {
 	 * 
 	 * @param seconds
 	 */
-	public void busyTimeMin(double seconds) {
+	private void busyTimeMin(double seconds) {
 		this.setBusyTime(this.getBusyTime() - seconds);
 	}
 
@@ -1581,7 +1581,7 @@ public class Unit implements ITimeVariableObject {
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
-				Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.));
+				Math.max(this.getPosition().getRealZ() + ITimeVariableObject.FALLING_VELOCITY * seconds, 0.));
 		if (!this.getCube().equals(next.getCube()))
 			this.setHitpoints(Math.max(0, this.getHitpoints() - 10));
 		try {
@@ -1590,7 +1590,7 @@ public class Unit implements ITimeVariableObject {
 			if (!next.getCube().equals(this.getCube()) && !next.getCube().equals(this.getMoveToAdjacent())) {
 				while (!next.getCube().equals(this.getMoveToAdjacent())) {
 					next = new Position(next.getRealX(), next.getRealY(),
-							next.getRealZ() - (World.FALLING_VELOCITY * seconds / 10));
+							next.getRealZ() - (ITimeVariableObject.FALLING_VELOCITY * seconds / 10));
 					try {
 						this.setPosition(next);
 						break;
@@ -1830,6 +1830,9 @@ public class Unit implements ITimeVariableObject {
 			doRandomBehaviour();
 	}
 	
+	/**
+	 * TODO
+	 */
 	private void nextTask() {
 		if (getTask().isCompleted()) {
 			getFaction().getScheduler().removeTask(getTask());
@@ -1840,6 +1843,9 @@ public class Unit implements ITimeVariableObject {
 		getTask().setUnit(this);
 	}
 
+	/**
+	 * choose a random activity for this unit
+	 */
 	private void doRandomBehaviour() {
 		int randomFight = RANDOM_GEN.nextInt(4);
 		if (randomFight == 0 && this.getPotentialEnemies().size() != 0) {
@@ -1883,6 +1889,11 @@ public class Unit implements ITimeVariableObject {
 		}
 	}
 
+	/**
+	 * collect a set of all potential enemies for this unit
+	 * @return	a set of all non-falling units from another faction in same 
+	 * 			or adjacent cubes
+	 */
 	private Set<Unit> getPotentialEnemies() {
 		Set<Cube> sameOrAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
 		sameOrAdjacentCubes.add(this.getCube());
@@ -1897,6 +1908,9 @@ public class Unit implements ITimeVariableObject {
 		return enemiesSoFar;
 	}
 
+	/**
+	 * 
+	 */
 	private void levelUp() {
 		if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE || this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE
 				|| this.getToughness() != MAX_VAL_PRIMARY_ATTRIBUTE) {
