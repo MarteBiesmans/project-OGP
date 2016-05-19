@@ -1,21 +1,19 @@
 package hillbillies.model.programs.statements;
 
-import java.util.HashSet;
-
 import hillbillies.model.Counter;
 import hillbillies.model.Task;
-import hillbillies.model.programs.expressions.BooleanExpression;
+import hillbillies.model.programs.expressions.IBooleanExpression;
 
 public class WhileStatement extends Statement {
 	
-	private WhileStatement(Statement body, Statement bodyCopy, BooleanExpression condition, boolean hasBeenFullyExecuted) {
+	private WhileStatement(Statement body, Statement bodyCopy, IBooleanExpression condition, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.condition = condition;
 		this.bodyCopy = bodyCopy.clone();
 		this.setBody(body.clone());
 	}	
 	
-	public WhileStatement(Statement statement, BooleanExpression condition) {
+	public WhileStatement(IBooleanExpression condition, Statement statement) {
 		this(statement, statement, condition, false);
 		this.body.SetHasFullyExecutedToTrue();
 	}
@@ -37,11 +35,11 @@ public class WhileStatement extends Statement {
 	
 	private final Statement bodyCopy;
 	
-	private BooleanExpression getCondition() {
+	private IBooleanExpression getCondition() {
 		return this.condition;
 	}
 	
-	private final BooleanExpression condition;
+	private final IBooleanExpression condition;
 	
 	@Override
 	public void execute(Task task, Counter counter) {

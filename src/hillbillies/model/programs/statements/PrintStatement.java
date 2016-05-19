@@ -1,25 +1,25 @@
 package hillbillies.model.programs.statements;
 
 import hillbillies.model.Task;
-import hillbillies.model.programs.expressions.Expression;
+import hillbillies.model.programs.expressions.IExpression;
 import hillbillies.model.Counter;
 
 public class PrintStatement extends Statement {
 	
-	private PrintStatement(Expression<?> expression, boolean hasBeenFullyExecuted) {
+	private PrintStatement(IExpression<?> expression, boolean hasBeenFullyExecuted) {
 		super(hasBeenFullyExecuted);
 		this.expression = expression;
 	}
 
-	public PrintStatement(Expression<?> expression) {
+	public PrintStatement(IExpression<?> expression) {
 		this(expression, false);
 	}
 	
-	public Expression<?> getExpression() {
+	public IExpression<?> getExpression() {
 		return expression;
 	}
 	
-	private final Expression<?> expression;
+	private final IExpression<?> expression;
 
 	@Override
 	public void execute(Task task, Counter counter) {

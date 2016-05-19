@@ -11,7 +11,7 @@ public class FollowStatement extends ActionStatement {
 		super(false, hasBeenFullyExecuted);
 	}
 	
-	public FollowStatement() {
+	public FollowStatement(IUnitExpression unit) {
 		this(false);
 	}
 

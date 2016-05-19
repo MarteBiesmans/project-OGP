@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expressions;
 
-public abstract class UnitExpression implements IUnitExpression {
+import hillbillies.model.programs.type.UnitType;
+
+public abstract class UnitExpression extends Expression<UnitType> implements IUnitExpression {
 
 }

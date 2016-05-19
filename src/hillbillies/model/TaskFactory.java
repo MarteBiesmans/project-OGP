@@ -9,10 +9,9 @@ import hillbillies.model.programs.type.*;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
-public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task> {
+public class TaskFactory implements ITaskFactory<IExpression<?>, Statement, Task> {
 
 	public TaskFactory() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -25,174 +24,173 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	}
 
 	@Override
-	public Statement createAssignment(String variableName, Expression<?> value, SourceLocation sourceLocation) {
+	public AssignmentStatement createAssignment(String variableName, IExpression<?> value, SourceLocation sourceLocation) {
 		return new AssignmentStatement(variableName, value);
 	}
 
 	@Override
-	public Statement createWhile(Expression<?> condition, Statement body, SourceLocation sourceLocation) {
-		return new WhileStatement((BooleanExpression) condition, body);
+	public WhileStatement createWhile(IExpression<?> condition, Statement body, SourceLocation sourceLocation) {
+		return new WhileStatement((IBooleanExpression) condition, body);
 	}
 
 	@Override
-	public Statement createIf(Expression<?> condition, Statement ifBody, Statement elseBody,
+	public IfStatement createIf(IExpression<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		return new IfStatement((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override
-	public Statement createBreak(SourceLocation sourceLocation) {
+	public BreakStatement createBreak(SourceLocation sourceLocation) {
 		return new BreakStatement();
 	}
 
 	@Override
-	public Statement createPrint(Expression<?> value, SourceLocation sourceLocation) {
+	public PrintStatement createPrint(IExpression<?> value, SourceLocation sourceLocation) {
 		return new PrintStatement(value);
 	}
 
 	@Override
-	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
+	public SequenceOfStatements createSequence(List<Statement> statements, SourceLocation sourceLocation) {
 		return new SequenceOfStatements(statements);
 	}
 
 	@Override
-	public Statement createMoveTo(Expression<?> position, SourceLocation sourceLocation) {
-		return new MoveToStatement((CubeExpression) position);
+	public MoveToStatement createMoveTo(IExpression<?> position, SourceLocation sourceLocation) {
+		return new MoveToStatement((ICubeExpression) position);
 	}
 
 	@Override
-	public Statement createWork(Expression<?> position, SourceLocation sourceLocation) {
-		return new WorkStatement((CubeExpression) position);
+	public WorkStatement createWork(IExpression<?> position, SourceLocation sourceLocation) {
+		return new WorkStatement((ICubeExpression) position);
 	}
 
 	@Override
-	public Statement createFollow(Expression<?> unit, SourceLocation sourceLocation) {
-		return new FollowStatement((UnitExpression) unit);
+	public FollowStatement createFollow(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new FollowStatement((IUnitExpression) unit);
 	}
 
 	@Override
-	public Statement createAttack(Expression<?> unit, SourceLocation sourceLocation) {
-		return new AttackStatement((UnitExpression) unit);
+	public AttackStatement createAttack(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new AttackStatement((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<?> createReadVariable(String variableName, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public  VariableExpression<?> createReadVariable(String variableName, SourceLocation sourceLocation) {
+		return new VariableExpression(variableName);
 	}
 
 	@Override
-	public Expression<BooleanType> createIsSolid(Expression<?> position, SourceLocation sourceLocation) {
-		return new IsSolidExpression((CubeExpression) position);
+	public IsSolidExpression createIsSolid(IExpression<?> position, SourceLocation sourceLocation) {
+		return new IsSolidExpression((ICubeExpression) position);
 	}
 
 	@Override
-	public Expression<BooleanType> createIsPassable(Expression<?> position, SourceLocation sourceLocation) {
-		return new IsPassableExpression((CubeExpression) position);
+	public IsPassableExpression createIsPassable(IExpression<?> position, SourceLocation sourceLocation) {
+		return new IsPassableExpression((ICubeExpression) position);
 	}
 
 	@Override
-	public Expression<BooleanType> createIsFriend(Expression<?> unit, SourceLocation sourceLocation) {
-		return new IsFriendExpression((UnitExpression) unit);
+	public IsFriendExpression createIsFriend(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new IsFriendExpression((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<BooleanType> createIsEnemy(Expression<?> unit, SourceLocation sourceLocation) {
-		return new IsEnemyExpression((UnitExpression) unit);
+	public IsEnemyExpression createIsEnemy(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new IsEnemyExpression((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<BooleanType> createIsAlive(Expression<?> unit, SourceLocation sourceLocation) {
-		return new IsAliveExpression((UnitExpression) unit);
+	public IsAliveExpression createIsAlive(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new IsAliveExpression((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<BooleanType> createCarriesItem(Expression<?> unit, SourceLocation sourceLocation) {
-		return new CarriesItemExpression((UnitExpression) unit);
+	public CarriesItemExpression createCarriesItem(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new CarriesItemExpression((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<BooleanType> createNot(Expression<?> expression, SourceLocation sourceLocation) {
-		return new NotExpression((BooleanExpression) expression);
+	public NotExpression createNot(IExpression<?> expression, SourceLocation sourceLocation) {
+		return new NotExpression((IBooleanExpression) expression);
 	}
 
 	@Override
-	public Expression<BooleanType> createAnd(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
-		return new AndExpression((BooleanExpression) left, (BooleanExpression) right);
+	public AndExpression createAnd(IExpression<?> left, IExpression<?> right, SourceLocation sourceLocation) {
+		return new AndExpression((IBooleanExpression) left, (BooleanExpression) right);
 	}
 
 	@Override
-	public Expression<BooleanType> createOr(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
-		return new OrExpression((BooleanExpression) left, (BooleanExpression) right);
+	public OrExpression createOr(IExpression<?> left, IExpression<?> right, SourceLocation sourceLocation) {
+		return new OrExpression((IBooleanExpression) left, (BooleanExpression) right);
 	}
 
 	@Override
-	public Expression<CubeType> createHerePosition(SourceLocation sourceLocation) {
+	public HereExpression createHerePosition(SourceLocation sourceLocation) {
 		return new HereExpression();
 	}
 
 	@Override
-	public Expression<CubeType> createLogPosition(SourceLocation sourceLocation) {
+	public LogExpression createLogPosition(SourceLocation sourceLocation) {
 		return new LogExpression();
 	}
 
 	@Override
-	public Expression<CubeType> createBoulderPosition(SourceLocation sourceLocation) {
+	public BoulderExpression createBoulderPosition(SourceLocation sourceLocation) {
 		return new BoulderExpression();
 	}
 
 	@Override
-	public Expression<CubeType> createWorkshopPosition(SourceLocation sourceLocation) {
+	public WorkshopExpression createWorkshopPosition(SourceLocation sourceLocation) {
 		return new WorkshopExpression();
 	}
 
 	@Override
-	public Expression<CubeType> createSelectedPosition(SourceLocation sourceLocation) {
+	public SelectedExpression createSelectedPosition(SourceLocation sourceLocation) {
 		return new SelectedExpression();
 	}
 
 	@Override
-	public Expression<CubeType> createNextToPosition(Expression<?> position, SourceLocation sourceLocation) {
-		return new NextToExpression((CubeExpression) position);
+	public NextToExpression createNextToPosition(IExpression<?> position, SourceLocation sourceLocation) {
+		return new NextToExpression((ICubeExpression) position);
 	}
 
 	@Override
-	public Expression<CubeType> createPositionOf(Expression<?> unit, SourceLocation sourceLocation) {
-		return new PositionOfExpression((UnitExpression) unit);
+	public PositionOfExpression createPositionOf(IExpression<?> unit, SourceLocation sourceLocation) {
+		return new PositionOfExpression((IUnitExpression) unit);
 	}
 
 	@Override
-	public Expression<CubeType> createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
+	public XYZExpression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
 		return new XYZExpression(x, y, z);
 	}
 
 	@Override
-	public Expression<UnitType> createThis(SourceLocation sourceLocation) {
+	public ThisExpression createThis(SourceLocation sourceLocation) {
 		return new ThisExpression();
 	}
 
 	@Override
-	public Expression<UnitType> createFriend(SourceLocation sourceLocation) {
+	public FriendExpression createFriend(SourceLocation sourceLocation) {
 		return new FriendExpression();
 	}
 
 	@Override
-	public Expression<UnitType> createEnemy(SourceLocation sourceLocation) {
+	public EnemyExpression createEnemy(SourceLocation sourceLocation) {
 		return new EnemyExpression();
 	}
 
 	@Override
-	public Expression<UnitType> createAny(SourceLocation sourceLocation) {
+	public AnyExpression createAny(SourceLocation sourceLocation) {
 		return new AnyExpression();
 	}
 
 	@Override
-	public Expression<BooleanType> createTrue(SourceLocation sourceLocation) {
+	public TrueExpression createTrue(SourceLocation sourceLocation) {
 		return new TrueExpression();
 	}
 
 	@Override
-	public Expression<BooleanType> createFalse(SourceLocation sourceLocation) {
+	public FalseExpression createFalse(SourceLocation sourceLocation) {
 		return new FalseExpression();
 	}
 
