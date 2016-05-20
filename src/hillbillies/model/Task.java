@@ -328,9 +328,13 @@ public class Task implements Comparable<Task> {
 	 *      (scheduler != null) && (scheduler.getTask() == this)
 	 * @post This task has the given scheduler as one of its schedulers. |
 	 *       new.hasAsScheduler(scheduler)
+	 * @throws IllegalArgumentException
+	 * 			if this task can't have this scheduler as scheduler
+	 * 			| !canHaveAsScheduler(scheduler)
 	 */
-	public void addScheduler(@Raw Scheduler scheduler) {
-		assert canHaveAsScheduler(scheduler);
+	public void addScheduler(@Raw Scheduler scheduler) throws IllegalArgumentException {
+		if (!canHaveAsScheduler(scheduler))
+			throw new IllegalArgumentException();
 		schedulers.add(scheduler);
 		scheduler.getAllTasks().add(this);
 	}
@@ -345,10 +349,14 @@ public class Task implements Comparable<Task> {
 	 *      this.hasAsScheduler(scheduler) && | (scheduler.getTask() == null)
 	 * @post This task no longer has the given scheduler as one of its
 	 *       schedulers. | ! new.hasAsScheduler(scheduler)
+	 * @throws IllegalStateException
+	 * 				if this task doesn't have this scheduler
+	 * 			| (!this.hasAsScheduler(scheduler)
 	 */
 	@Raw
-	public void removeScheduler(Scheduler scheduler) {
-		assert this.hasAsScheduler(scheduler);
+	public void removeScheduler(Scheduler scheduler) throws IllegalStateException {
+		if (!this.hasAsScheduler(scheduler))
+			throw new IllegalStateException();
 		schedulers.remove(scheduler);
 		scheduler.getAllTasks().remove(this);
 		if (this.getUnit().getFaction() == scheduler.getFaction())

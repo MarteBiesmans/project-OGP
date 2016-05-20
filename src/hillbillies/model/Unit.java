@@ -1825,7 +1825,7 @@ public class Unit implements ITimeVariableObject {
 	 * TODO
 	 */
 	private void nextTask() {
-		if (getTask().hasBeenFullyExecuted()) {
+		if (getTask() != null && getTask().hasBeenFullyExecuted()) {
 			getTask().reset();
 			getFaction().getScheduler().removeTask(getTask());
 		} else {
