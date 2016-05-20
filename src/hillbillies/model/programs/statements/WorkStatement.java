@@ -29,35 +29,8 @@ public class WorkStatement extends ActionStatement {
 	}
 
 	@Override
-	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
-			return false;
-		}
-		return true;
-//		TODO: weghalen return worm.canMove();
-	}
-
-	@Override
 	public WorkStatement clone() {
 		return new WorkStatement(getCube(), hasBeenFullyExecuted());
 	}
-	
-//	public WorkStatement(CubeExpression expression) {
-//		this.cube = expression;
-//	}
-//	
-//	public CubeExpression getCube() {
-//		return cube;
-//	}
-//
-//	private CubeExpression cube;
-//
-//	public void execute() {
-//		if(getTask().getUnit() == null){
-//			throw new NullPointerException("this task has no unit");
-//		}
-//		getTask().getUnit().workAt((Cube) getCube().evaluate(getTask()).getValue());
-//	}
 
 }

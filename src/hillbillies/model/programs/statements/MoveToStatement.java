@@ -29,35 +29,8 @@ public class MoveToStatement extends ActionStatement {
 	}
 
 	@Override
-	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
-			return false;
-		}
-		return true;
-//		TODO: weghalen return worm.canMove();
-	}
-
-	@Override
 	public MoveToStatement clone() {
 		return new MoveToStatement(getCube(), hasBeenFullyExecuted());
 	}
-
-//	public MoveToStatement(CubeExpression c) {
-//		this.cube = c;
-//	}
-//
-//	public CubeExpression getCube() {
-//		return cube;
-//	}
-//
-//	private CubeExpression cube;
-//
-//	public void execute() {
-//		if (getTask().getUnit() == null) {
-//			throw new NullPointerException("this task has no unit");
-//		}
-//		getTask().getUnit().moveTo((Cube) getCube().evaluate(getTask()).getValue());
-//	}
 
 }

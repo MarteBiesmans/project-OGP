@@ -42,6 +42,14 @@ public class WhileStatement extends Statement {
 	private final IBooleanExpression condition;
 	
 	@Override
+	public Statement getExecutingStatement() {
+		if (!getBody().hasBeenFullyExecuted())
+			return getBody().getExecutingStatement();
+		else
+			return this;
+	}
+	
+	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
 		if (!getBody().hasBeenFullyExecuted()) {
@@ -87,83 +95,12 @@ public class WhileStatement extends Statement {
 	public WhileStatement clone() {
 		return new WhileStatement(getBody().clone(), getBodyCopy().clone(), condition, hasBeenFullyExecuted());
 	}
-
-//	public WhileStatement(BooleanExpression condition, Statement body) {
-//		setCondition(condition);
-//		setBody(body);
-//	}
-//	
-//	@Override
-//	public Statement getExecutingStatement() {
-//		return getBody().getExecutingStatement();
-//	}
-//	
-//	public BooleanExpression getCondition() {
-//		return condition;
-//	}
-//	
-//	public void setCondition(BooleanExpression condition) {
-//		this.condition = condition;
-//	}
-//	
-//	private BooleanExpression condition;
-//	
-//	private boolean isConditionChecked() {
-//		return conditionChecked;
-//	}
-//	
-//	private void setConditionChecked(boolean conditionChecked) {
-//		this.conditionChecked = conditionChecked;
-//	}
-//	
-//	private boolean conditionChecked;
-//	
-//	public Statement getBody() {
-//		return body;
-//	}
-//	
-//	public void setBody(Statement body) {
-//		this.body = body;
-//		body.setParentStatement(this);
-//	}
-//
-//	private Statement body;
-//	
-//	@Override
-//	public void execute() {
-//		if(!isConditionChecked()){
-//			if((boolean) getCondition().evaluate(getTask()).getValue()){
-//				setConditionChecked(true);
-//			}else{
-//				setCompleted(true);
-//			}
-//		}else{
-//			getBody().execute();
-//			if(getBody().isCompleted()){
-//				reset();
-//			}
-//		}
-//	}
-//	
-//	@Override
-//	public void reset() {
-//		setConditionChecked(false);
-//		super.reset();
-//	}
-//	
-//	public HashSet<Statement> getDirectChildStatements() {
-//		HashSet<Statement> children = new HashSet<Statement>();
-//		children.add(getBody());
-//		return children;
-//	}
-//
-//	@Override
-//	public boolean isMutable() {
-//		return true;
-//	}
-//	
-//	public boolean isWellFormed(){
-//		return getBody().isWellFormed();
-//	}
+	
+	@Override
+	public void reset(Task task) {
+		this.setBody(this.getBodyCopy());
+		this.getBody().SetHasFullyExecutedToTrue();
+		super.reset(task);
+	}
 
 }

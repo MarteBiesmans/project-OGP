@@ -880,7 +880,10 @@ public class World implements ITimeVariableObject {
 	public void advanceTime(float seconds) throws IllegalArgumentException {
 		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
 			throw new IllegalArgumentException();
-
+		
+		this.setCounter(new Counter());
+		this.getCounter().setMaxValue((int) (seconds/0.001));
+		
 		// advanceTime voor elke unit
 		for (Unit unit : this.getAllUnits())
 			unit.advanceTime(seconds);
@@ -889,4 +892,15 @@ public class World implements ITimeVariableObject {
 		for (Material material : this.getAllMaterials())
 			material.advanceTime(seconds);
 	}
+	
+	public Counter getCounter() {
+		return this.counter;
+	}
+	
+	public void setCounter(Counter counter) {
+		this.counter = counter;
+	}
+	
+	private Counter counter;
+	
 }

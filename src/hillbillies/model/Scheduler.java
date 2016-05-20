@@ -113,14 +113,14 @@ public class Scheduler {
 	 *      (task.getScheduler() == null)
 	 * @post This scheduler no longer has the given task as one of its tasks. |
 	 *       ! new.hasAsTask(task)
+	 * @throws IllegalStateException
+	 * 			if this scheduler doesn't have the given task
+	 * 			| !hasAsTask(task)
 	 */
 	@Raw
-	public void removeTask(Task task) {
-		assert this.hasAsTask(task);
-		if (task.isBeingExecuted())
-			// TODO: unit begint aan volgende task
-			System.out.println(); // lijn code zodat eclipse niet moeilijk gaat
-									// doen over if
+	public void removeTask(Task task) throws IllegalStateException {
+		if (this.hasAsTask(task))
+			throw new IllegalStateException();
 		tasks.remove(task);
 		task.getAllSchedulers().remove(this);
 	}
@@ -128,17 +128,43 @@ public class Scheduler {
 	public Set<Task> getAllTasks() {
 		return this.tasks;
 	}
-
-	public void replaceTask(Task original, Task replacement) {
-		if (original.isBeingExecuted())
-			// TODO: unit begint aan volgende task
-			System.out.println(); // lijn code zodat eclipse niet moeilijk gaat
-									// doen over if
+	
+	/**
+	 * Replace the original task by the replacement task
+	 * @param original
+	 * 		the task to replace
+	 * @param replacement
+	 * 		the task that replaces the other task
+	 * @throws IllegalStateException
+	 * 			if this scheduler doesn't have the original task as task
+	 * 			| !hasAsTask(original)
+	 * @effect if the original task is being executed, it will be stopped
+	 * 		| if (original.isBeingExecuted()
+	 * 		|	then original.getUnit().setTask(null) && original.getUnit().nextActivity()
+	 * @effect the original task is removed and the replacement task is placed in this scheduler
+	 * 		| removeTask(original) && addTask(replacement)
+	 */
+	public void replaceTask(Task original, Task replacement) throws IllegalStateException {
+		if (!this.hasAsTask(original))
+			throw new IllegalStateException();
+		if (original.isBeingExecuted()) {
+			original.getUnit().setTask(null);
+			original.getUnit().nextActivity();
+		}
 		this.removeTask(original);
 		this.addTask(replacement);
 
 	}
 
+	/**
+	 * checks whether all the given tasks are part of this scheduler
+	 * @param tasks
+	 * 			the tasks to check to be in this scheduler
+	 * @return true if all tasks are part of this scheduler
+	 * 			| for each task in tasks
+	 * 			|	hasAsTask(task)
+	 * @return false if there is at least one task that is not part of this scheduler
+	 */
 	public boolean areTasksPartOf(Collection<Task> tasks) {
 		for (Task task : tasks) {
 			if (!this.hasAsTask(task))
@@ -147,6 +173,10 @@ public class Scheduler {
 		return true;
 	}
 
+	/**
+	 * returns an iterator over the tasks of this scheduler sorted by descending priority
+	 * @return
+	 */
 	public Iterator<Task> getAllTasksIterator() {
 		return new Iterator<Task>() {
 			public boolean hasNext() {
@@ -163,12 +193,20 @@ public class Scheduler {
 		};
 	}
 
+	/**
+	 * returns a list of sorted tasks descending by priority
+	 * @return
+	 */
 	public ArrayList<Task> getSortedTasks() {
 		ArrayList<Task> result = new ArrayList<Task>(this.tasks);
 		result.sort((a, b) -> a.compareTo(b));
 		return result;
 	}
 
+	/**
+	 * returns the task in this scheduler with the highest priority that is not being executed
+	 * @return
+	 */
 	public Task getHighestPriorityTaskNotExecuted() {
 		for (Task task : getSortedTasks()) {
 			if (!task.isBeingExecuted())
@@ -177,24 +215,59 @@ public class Scheduler {
 		return null;
 	}
 
+	/**
+	 * assign the given task to the given unit.
+	 * @param task
+	 * 			the task to assign to the unit
+	 * @param unit
+	 * 			the unit the task will be assigned to
+	 * @effect if the task is being executed, it will be stopped
+	 * @effect if the unit is executing a task, it will be stopped
+	 * @effect the unit and task will be assigned to eachother
+	 * 		|unit.setTask(task)
+	 * 		|task.setUnit(unit)
+	 */
 	public void assignTaskToUnit(Task task, Unit unit) {
 		if (task.isBeingExecuted() && task.getUnit() != unit) {
-			// TODO: stop executing task
+			task.getUnit().setTask(null);
+			task.getUnit().nextActivity();
 		}
 		if (unit.getTask() != null) {
-			this.addTask(unit.getTask());
+			unit.getTask().setPriority(unit.getTask().getPriority() - 1);
+			unit.setTask(null);
 		}
 		unit.setTask(task);
 		task.setUnit(unit);
 	}
 
+	/**
+	 * the given unit will stop doing the given task
+	 * @param task
+	 * 			the task the unit should stop doing
+	 * @param unit
+	 * 			the unit that should stop doing the task
+	 * @throws IllegalStateException
+	 * 			if the given task is not assigned to the given unit
+	 * 			| (task.getUnit() != unit || unit.getTask() != task)
+	 * @effect the unit will be doing the next activity and the task will be in this scheduler
+	 * 			the priority of the task will be lowered.
+	 * 			| unit.setTask(null) && unit.nextActivity() && task.setUnit(null) && task.setPriority(task.getPriority - 1)
+	 */
 	public void resetTaskToUnit(Task task, Unit unit) throws IllegalStateException {
 		if (task.getUnit() != unit || unit.getTask() != task)
 			throw new IllegalStateException();
-		unit.setTask(null); // TODO: of unit.nextTask ofzo?
+		unit.setTask(null);
+		unit.nextActivity();
 		task.setUnit(null);
+		task.setPriority(task.getPriority() - 1);
 	}
 
+	/**
+	 * return all tasks that satisfy the given condition
+	 * @param condition
+	 * 			the condition all returned tasks should satisfy
+	 * @return all tasks that satisfy the given condition
+	 */
 	public Set<Task> getAllTasksThatSatisfy(Predicate<Task> condition) {
 		Set<Task> tasksSoFar = new HashSet<Task>(getAllTasks());
 		tasksSoFar.stream().filter(condition);

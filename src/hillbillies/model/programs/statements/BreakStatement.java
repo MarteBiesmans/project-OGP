@@ -26,8 +26,10 @@ public class BreakStatement extends Statement {
 
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
-		// TODO Auto-generated method stub
-		return false;
+		if (counter.getCount() + 1 > counter.getMaxValue() || hasBeenFullyExecuted()) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -55,25 +57,6 @@ public class BreakStatement extends Statement {
 			}
 		}
 		return upperStatement;
-	}
-	
-	
-	
-//	public BreakStatement() {
-//	}
-//	
-//	
-//	/**
-//	 * Return the most inner while or for loop that is a parent of this
-//	 * break statement.
-//	 * @return
-//	 */
-//
-//	
-//	@Override
-//	public boolean isMutable() {
-//		return false;
-//	}
-//	
+	}	
 
 }

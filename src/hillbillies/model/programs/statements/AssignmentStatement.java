@@ -26,8 +26,7 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();		
-		if (hasBeenFullyExecuted() || counter.getCount()>1000)
+		if (hasBeenFullyExecuted() || counter.getCount() + 1 > counter.getMaxValue())
 			return false;
 		return true;
 	}
@@ -58,58 +57,11 @@ public class AssignmentStatement extends Statement {
 	public AssignmentStatement clone() {
 		return new AssignmentStatement(variableName, expression, hasBeenFullyExecuted());
 	}
-
-//	public AssignmentStatement(String variableName, Expression<?> valueExpression) {
-//		setVariableName(variableName);
-//		setVariableType(valueExpression.evaluate(getTask()).getClass());
-//		setValueExpression(valueExpression);
-//	}
-//	
-//	@Override
-//	public void reset() {
-//		getTask().removeGlobalVariable(getVariableName());
-//		super.reset();
-//	}
-//
-//	@Override
-//	public void execute() {
-//		getTask().setGlobalVariable(getVariableName(), getValueExpression().evaluate(getTask()));
-//		setCompleted(true);
-//	}
-//
-//	private String getVariableName() {
-//		return variableName;
-//	}
-//
-//	private void setVariableName(String variableName) {
-//		this.variableName = variableName;
-//	}
-//
-//	private String variableName;
-//
-//	private Object getVariableType() {
-//		return variableType;
-//	}
-//
-//	private void setVariableType(Object variableType) {
-//		this.variableType = variableType;
-//	}
-//
-//	private Object variableType;
-//
-//	private Expression<?> getValueExpression() {
-//		return valueExpression;
-//	}
-//
-//	public void setValueExpression(Expression<?> valueExpression) {
-//		this.valueExpression = valueExpression;
-//	}
-//
-//	private Expression<?> valueExpression;
-//
-//	@Override
-//	public boolean isMutable() {
-//		return true;
-//	}
+	
+	@Override
+	public void reset(Task task) {
+		task.removeGlobalVariable(getVariableName());
+		super.reset(task);
+	}
 
 }

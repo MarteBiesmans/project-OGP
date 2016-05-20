@@ -23,6 +23,16 @@ public class Counter {
 		return count;
 	}
 	
+	public int getMaxValue() {
+		return this.max_value;
+	}
+	
+	public void setMaxValue(int max) {
+		this.max_value = max;
+	}
+	
+	private int max_value;
+	
 	@Override
 	public Counter clone() {
 		return new Counter(getCount());

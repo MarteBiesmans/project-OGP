@@ -31,7 +31,7 @@ public class PrintStatement extends Statement {
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
 		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
+		if (counter.getCount() + 1 > counter.getMaxValue() || hasBeenFullyExecuted()) {
 			return false;
 		}
 		return true;
@@ -51,27 +51,5 @@ public class PrintStatement extends Statement {
 	public PrintStatement clone() {
 		return new PrintStatement(getExpression(), hasBeenFullyExecuted());
 	}
-
-	
-//	public PrintStatement(Expression<?> value) {
-//		this.message = value;
-//	}
-//	
-//	public final Expression<?> getMessage() {
-//		return this.message;
-//	}
-//	
-//	final Expression<?> message;
-//	
-//	@Override
-//	public void execute() {
-//		System.out.println(this.getMessage().evaluate(getTask()).toString());
-//		this.setCompleted(true);
-//	}
-//
-//	@Override
-//	public boolean isMutable() {
-//		return true;
-//	}
 	
 }

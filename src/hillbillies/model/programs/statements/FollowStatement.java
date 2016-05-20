@@ -30,35 +30,8 @@ public class FollowStatement extends ActionStatement {
 	}
 
 	@Override
-	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public FollowStatement clone() {
 		return new FollowStatement(getUnit(), hasBeenFullyExecuted());
 	}
-
-//	public FollowStatement(UnitExpression expression) {
-//		this.unit = expression;
-//	}
-//	
-//	public UnitExpression getUnit() {
-//		return unit;
-//	}
-//	
-//	private UnitExpression unit;
-//	
-//	@Override
-//	public void execute() {
-//		if(getTask().getUnit() == null){
-//			throw new NullPointerException("this task has no unit");
-//		}
-//		getTask().getUnit().follow(((Unit) getUnit().evaluate(getTask()).getValue()));
-//	}
 	
 }
