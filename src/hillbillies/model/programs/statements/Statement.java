@@ -35,13 +35,7 @@ public abstract class Statement implements Cloneable {
 
 	public abstract void execute(Task task, Counter counter);
 
-	public abstract boolean canExecute(Task task, Counter counter); // TODO:
-																	// rekening
-																	// houden
-																	// met
-																	// coutner
-																	// max value
-																	// ofzo
+	public abstract boolean canExecute(Task task, Counter counter);
 
 	public abstract boolean isWellFormed();
 
