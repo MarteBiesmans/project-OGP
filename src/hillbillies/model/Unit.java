@@ -165,15 +165,9 @@ public class Unit implements ITimeVariableObject {
 		this.setName(name);
 
 		// position and orientation
-<<<<<<< HEAD
-		
 		if (!this.canHaveAsPosition(new Position(x,y,z)))
 			throw new IllegalArgumentException();
 		this.position = ((new Cube((int)x, (int)y, (int)z)).getCenter());
-=======
-
-		this.setPosition((new Cube((int) x, (int) y, (int) z)).getCenter());
->>>>>>> origin/master
 		this.setOrientation((float) (Math.PI / 2.0));
 
 		// primary attributes
@@ -314,21 +308,11 @@ public class Unit implements ITimeVariableObject {
 	private void setPosition(Position position) throws IllegalArgumentException {
 		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
-<<<<<<< HEAD
-		if (this.getCurrentActivity() != Activity.FALLING && 
-				this.shouldStartFallingAt(position.getCube())) {
-			System.out.println("falling is set in setPosition");
-			this.insertActivity(Activity.FALLING);
-		}
-		if (this.getCurrentActivity() == Activity.FALLING && 
-				position.isStableForUnitIn(world)) {
-			position = position.getCube().getCenter();
-=======
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
 		}
 		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
->>>>>>> origin/master
+			position = position.getCube().getCenter();
 			this.nextActivity();
 		}
 		this.position = position;
@@ -1354,14 +1338,8 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * a variable to store the activity queue of a unit
 	 */
-<<<<<<< HEAD
-	//TODO terug private zetten
-	final List<Activity> activityQueue = new ArrayList<Activity>();
-	
-=======
 	private final List<Activity> activityQueue = new ArrayList<Activity>();
 
->>>>>>> origin/master
 	/**
 	 * sets the busytime of this time variable object to the given seconds
 	 * 
@@ -1831,13 +1809,7 @@ public class Unit implements ITimeVariableObject {
 			this.canStopResting = true;
 		}
 	}
-<<<<<<< HEAD
-	
-=======
 
-	// TODO vanaf hier comments checken
-
->>>>>>> origin/master
 	/**
 	 * helper method for advance time
 	 * 
@@ -2258,10 +2230,6 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * check whether this unit can stop falling TODO
 	 */
-<<<<<<< HEAD
-=======
-	// TODO is dit niet gewoon het tegengestelde van shouldFall?
->>>>>>> origin/master
 	private boolean canStopFalling() {
 		if (this.isFalling()) {
 			if (this.getCube().getZ() == 0) {
