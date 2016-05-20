@@ -84,8 +84,8 @@ public class Unit implements ITimeVariableObject {
 	 * 
 	 * @effect sets the name of this new unit to the given name |setName(name)
 	 * 
-	 * @effect sets the position of this new unit to the given position.
-	 *         |setPosition(new Position(x, y, z))
+	 * @post	the position of this new unit equals the given position.
+	 *         |new.getPosition == new Position(x, y, z)
 	 * @effect sets the orientation of this new unit to the default value PI/2
 	 *         |setOrientation((float) Math.PI/2)
 	 * 
@@ -167,7 +167,9 @@ public class Unit implements ITimeVariableObject {
 
 		// position and orientation
 		
-		this.setPosition((new Cube((int)x, (int)y, (int)z)).getCenter());
+		if (!this.canHaveAsPosition(new Position(x,y,z)))
+			throw new IllegalArgumentException();
+		this.position = ((new Cube((int)x, (int)y, (int)z)).getCenter());
 		this.setOrientation((float) (Math.PI / 2.0));
 
 		// primary attributes
@@ -299,8 +301,10 @@ public class Unit implements ITimeVariableObject {
 	 *         this.shouldStartFallingAt(position.getCube())) | then
 	 *         insertActivity(Activity.FALLING)
 	 * @effect if this unit was falling and reached a stable position, go to the
-	 *         next activity |if (this.getCurrentActivity() == Activity.FALLING
-	 *         && position.isStableForUnitIn(world)) | then nextActivity()
+	 *         next activity and set the position the the centre of its current
+	 *         cube |if (this.getCurrentActivity() == Activity.FALLING
+	 *         && position.isStableForUnitIn(world)) | then nextActivity(), 
+	 *         this.setPosition(this.getPosition().getCube().getCenter())
 	 * 
 	 * @throws IllegalArgumentException
 	 *             the given coordinates are not valid for this unit
@@ -313,10 +317,12 @@ public class Unit implements ITimeVariableObject {
 			throw new IllegalArgumentException();
 		if (this.getCurrentActivity() != Activity.FALLING && 
 				this.shouldStartFallingAt(position.getCube())) {
+			System.out.println("falling is set in setPosition");
 			this.insertActivity(Activity.FALLING);
 		}
 		if (this.getCurrentActivity() == Activity.FALLING && 
 				position.isStableForUnitIn(world)) {
+			position = position.getCube().getCenter();
 			this.nextActivity();
 		}
 		this.position = position;
@@ -1188,7 +1194,8 @@ public class Unit implements ITimeVariableObject {
 	 * 			| then result == this.activityQueue.get(0)
 	 * 			| else result == Activity.NONE
 	 */
-	private Activity getCurrentActivity() {
+	//TODO terug private zetten
+	Activity getCurrentActivity() {
 		if (!this.getActivityQueue().isEmpty())
 			return this.activityQueue.get(0);
 		else
@@ -1350,7 +1357,8 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * a variable to store the activity queue of a unit
 	 */
-	private final List<Activity> activityQueue = new ArrayList<Activity>();
+	//TODO terug private zetten
+	final List<Activity> activityQueue = new ArrayList<Activity>();
 	
 	/**
 	 * sets the busytime of this time variable object to the given seconds
@@ -1557,8 +1565,10 @@ public class Unit implements ITimeVariableObject {
 	 * @effect	if busyTime equals zero, initiate the next activity
 	 */
 	private void attacking(float seconds) {
-		if (this.getBusyTime() == 0)
+		if (this.getBusyTime() == 0) {
 			this.nextActivity();
+			System.out.println("after attacking: " + this.getCurrentActivity());
+		}
 	}
 	
 
@@ -1599,8 +1609,11 @@ public class Unit implements ITimeVariableObject {
 				}
 			}
 		}
-		if (this.canStopFalling())
+		//TODO zit deze if niet al in setPosition?
+		if (this.canStopFalling()) {
+			this.setPosition(this.getPosition().getCube().getCenter());
 			this.nextActivity();
+		}
 	}
 
 	/**
@@ -1807,8 +1820,6 @@ public class Unit implements ITimeVariableObject {
 			this.canStopResting = true;
 		}
 	}
-
-	//TODO vanaf hier comments checken
 	
 	/**
 	 * helper method for advance time
@@ -2250,7 +2261,6 @@ public class Unit implements ITimeVariableObject {
 	 * check whether this unit can stop falling
 	 * TODO
 	 */
-	//TODO is dit niet gewoon het tegengestelde van shouldFall?
 	private boolean canStopFalling() {
 		if (this.isFalling()) {
 			if (this.getCube().getZ() == 0) {
