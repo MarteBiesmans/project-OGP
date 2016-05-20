@@ -117,10 +117,6 @@ public class Scheduler {
 	@Raw
 	public void removeTask(Task task) {
 		assert this.hasAsTask(task);
-		if (task.isBeingExecuted())
-			// TODO: unit begint aan volgende task
-			System.out.println(); // lijn code zodat eclipse niet moeilijk gaat
-									// doen over if
 		tasks.remove(task);
 		task.getAllSchedulers().remove(this);
 	}

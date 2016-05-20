@@ -169,7 +169,7 @@ public class Task implements Comparable<Task> {
 		return (activities != null);
 	}
 
-	public boolean isCompleted() {
+	public boolean hasBeenFullyExecuted() {
 		return activities.hasBeenFullyExecuted();
 	}
 
@@ -434,14 +434,13 @@ public class Task implements Comparable<Task> {
 	private final Map<String, Object> globalVariables = new HashMap<String, Object>();
 
 	public void execute(Counter counter) {
-		// TODO: moet dit wel hier gecheckt worden?
 		if (getActivities().hasBeenFullyExecuted()) {
 			getUnit().getFaction().getScheduler().removeTask(this);
 			this.setUnit(null);
+		} else {
 			while (getActivities().canExecute(this, counter) && !getUnit().isDead()) {
 				getActivities().execute(this, counter);
 			}
 		}
-
 	}
 }

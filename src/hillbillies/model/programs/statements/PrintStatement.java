@@ -31,7 +31,7 @@ public class PrintStatement extends Statement {
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
 		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
+		if (counter.getCount() + 1 > counter.getMaxValue() || hasBeenFullyExecuted()) {
 			return false;
 		}
 		return true;

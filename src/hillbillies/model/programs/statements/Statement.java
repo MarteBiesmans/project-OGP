@@ -28,6 +28,10 @@ public abstract class Statement implements Cloneable {
 	public void SetHasFullyExecutedToTrue() {
 		hasFullyExecuted = true;
 	}
+	
+	public Statement getExecutingStatement() {
+		return this;
+	}
 
 	public abstract void execute(Task task, Counter counter);
 	
@@ -65,9 +69,6 @@ public abstract class Statement implements Cloneable {
 //		return true;
 //	}
 //	
-//	public Statement getExecutingStatement() {
-//		return this;
-//	}
 //	
 //	@Override
 //	public Statement clone() {

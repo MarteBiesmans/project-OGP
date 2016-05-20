@@ -42,6 +42,14 @@ public class WhileStatement extends Statement {
 	private final IBooleanExpression condition;
 	
 	@Override
+	public Statement getExecutingStatement() {
+		if (!getBody().hasBeenFullyExecuted())
+			return getBody().getExecutingStatement();
+		else
+			return this;
+	}
+	
+	@Override
 	public void execute(Task task, Counter counter) {
 		counter.increment();
 		if (!getBody().hasBeenFullyExecuted()) {
@@ -93,10 +101,6 @@ public class WhileStatement extends Statement {
 //		setBody(body);
 //	}
 //	
-//	@Override
-//	public Statement getExecutingStatement() {
-//		return getBody().getExecutingStatement();
-//	}
 //	
 //	public BooleanExpression getCondition() {
 //		return condition;

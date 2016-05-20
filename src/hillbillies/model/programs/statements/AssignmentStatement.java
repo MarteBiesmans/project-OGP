@@ -26,8 +26,7 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();		
-		if (hasBeenFullyExecuted() || counter.getCount()>1000)
+		if (hasBeenFullyExecuted() || counter.getCount() + 1 > counter.getMaxValue())
 			return false;
 		return true;
 	}

@@ -29,16 +29,6 @@ public class WorkStatement extends ActionStatement {
 	}
 
 	@Override
-	public boolean canExecute(Task task, Counter counter) {
-		counter.increment();
-		if (counter.getCount() > 1000 || hasBeenFullyExecuted()) {
-			return false;
-		}
-		return true;
-//		TODO: weghalen return worm.canMove();
-	}
-
-	@Override
 	public WorkStatement clone() {
 		return new WorkStatement(getCube(), hasBeenFullyExecuted());
 	}

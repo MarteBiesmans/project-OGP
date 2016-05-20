@@ -12,6 +12,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.programs.statements.ActionStatement;
 //import hillbillies.model.programs.expressions.LogExpression.LogDistPair;
 //import hillbillies.model.programs.statements.ActionStatement;
 import ogp.framework.util.Util;
@@ -33,7 +34,7 @@ import ogp.framework.util.Util;
  */
 
 /**
- * A class of units involving a position, name, strength, agility, toughness, 
+ * A class of units involving a position, name, strength, agility, toughness,
  * weight and default behaviour.
  * 
  * TODO mss zijn dit er meer?
@@ -157,17 +158,15 @@ public class Unit implements ITimeVariableObject {
 	 * @invar The task of each unit must be a valid task for any unit. |
 	 *        isValidTask(getTask())
 	 */
-	public Unit(double x, double y, double z, String name, 
-				int strength, int agility, int toughness, int weight, 
-				boolean enableDefaultBehaviour) 
-		throws IllegalArgumentException {
+	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
+			boolean enableDefaultBehaviour) throws IllegalArgumentException {
 
 		// name
 		this.setName(name);
 
 		// position and orientation
-		
-		this.setPosition((new Cube((int)x, (int)y, (int)z)).getCenter());
+
+		this.setPosition((new Cube((int) x, (int) y, (int) z)).getCenter());
 		this.setOrientation((float) (Math.PI / 2.0));
 
 		// primary attributes
@@ -245,14 +244,10 @@ public class Unit implements ITimeVariableObject {
 	 *         != null && this.getWorld() != null
 	 */
 	boolean isValidUnit() {
-		return (canHaveAsPosition(this.getPosition()) && 
-				isValidName(this.getName()) && 
-				isValidStrength(this.getStrength()) && 
-				isValidAgility(this.getAgility()) && 
-				canHaveAsWeight(this.getWeight()) && 
-				isValidToughness(this.getToughness()) && 
-				isValidOrientation(this.getOrientation()) && 
-				this.getFaction() != null && this.getWorld() != null);
+		return (canHaveAsPosition(this.getPosition()) && isValidName(this.getName())
+				&& isValidStrength(this.getStrength()) && isValidAgility(this.getAgility())
+				&& canHaveAsWeight(this.getWeight()) && isValidToughness(this.getToughness())
+				&& isValidOrientation(this.getOrientation()) && this.getFaction() != null && this.getWorld() != null);
 	}
 
 	/**
@@ -307,16 +302,13 @@ public class Unit implements ITimeVariableObject {
 	 *             |(!this.canHaveAsPosition(new Position(x,y,z)))
 	 */
 	@Raw
-	private void setPosition(Position position) 
-			throws IllegalArgumentException {
+	private void setPosition(Position position) throws IllegalArgumentException {
 		if (!this.canHaveAsPosition(position))
 			throw new IllegalArgumentException();
-		if (this.getCurrentActivity() != Activity.FALLING && 
-				this.shouldStartFallingAt(position.getCube())) {
+		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
 		}
-		if (this.getCurrentActivity() == Activity.FALLING && 
-				position.isStableForUnitIn(world)) {
+		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
 			this.nextActivity();
 		}
 		this.position = position;
@@ -428,8 +420,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidStrength(int strength) {
-		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
-				(strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((strength >= MIN_VAL_PRIMARY_ATTRIBUTE) && (strength <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -485,8 +476,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidAgility(int agility) {
-		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
-				(agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((agility >= MIN_VAL_PRIMARY_ATTRIBUTE) && (agility <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -542,8 +532,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private static boolean isValidToughness(int toughness) {
-		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && 
-				(toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((toughness >= MIN_VAL_PRIMARY_ATTRIBUTE) && (toughness <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -622,8 +611,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MIN_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumWeight() {
-		int minimumWeight = 
-			(int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
+		int minimumWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
 		return Math.max(minimumWeight, MIN_VAL_PRIMARY_ATTRIBUTE);
 	}
 
@@ -636,8 +624,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MIN_INIT_VAL_PRIMARY_ATTRIBUTE )
 	 */
 	private int getMinimumInitValWeight() {
-		int minimumInitValWeight = 
-			(int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
+		int minimumInitValWeight = (int) Math.ceil((double) ((this.strength + this.agility) / 2.0));
 		return Math.max(minimumInitValWeight, MIN_INIT_VAL_PRIMARY_ATTRIBUTE);
 	}
 
@@ -652,8 +639,7 @@ public class Unit implements ITimeVariableObject {
 	 *         MAX_VAL_PRIMARY_ATTRIBUTE))
 	 */
 	private boolean canHaveAsWeight(int weight) {
-		return ((weight >= this.getMinimumWeight()) && 
-				(weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
+		return ((weight >= this.getMinimumWeight()) && (weight <= MAX_VAL_PRIMARY_ATTRIBUTE));
 	}
 
 	/**
@@ -783,8 +769,7 @@ public class Unit implements ITimeVariableObject {
 	 *         <= this.getMaxHitpoints()) )
 	 */
 	private boolean canHaveAsStaminaPoints(double staminaPoints) {
-		return ((staminaPoints >= 0) && 
-				(staminaPoints <= this.getMaxStaminaPoints()));
+		return ((staminaPoints >= 0) && (staminaPoints <= this.getMaxStaminaPoints()));
 	}
 
 	/**
@@ -939,13 +924,13 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * check whether the world of this unit can be set to the given world
-	 * @param 	world
-	 * 			the world to check
-	 * @return	true if all these are true: the given world is not null, 
-	 * 			this unit already belongs to the given world, 
-	 * 			the current world of this unit equals null
-	 * 			| result == (world != null && world.hasAsUnit(this) 
-	 * 			|				&& this.getWorld() == null)
+	 * 
+	 * @param world
+	 *            the world to check
+	 * @return true if all these are true: the given world is not null, this
+	 *         unit already belongs to the given world, the current world of
+	 *         this unit equals null | result == (world != null &&
+	 *         world.hasAsUnit(this) | && this.getWorld() == null)
 	 */
 	private boolean canHaveAsWorld(World world) {
 		return (world != null && world.hasAsUnit(this) && this.getWorld() == null);
@@ -953,17 +938,18 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * set the world of this unit to the given world
-	 * @param 	world
-	 * 			the world to set to (can be null)
-	 * @post	world of this unit equals the given world
-	 * 			|new.getWorld() == world
-	 * @throws	IllegalArgumentException
-	 * 			the world of this unit cannot be set to the given world 
-	 * 			except if it equals null
-	 * 			| (world != null && !canHaveAsWorld(world))
-	 * @throws	IllegalArgumentException
-	 * 			this unit already has a recorded world and already belongs to it
-	 * 			| ((this.getWorld() != null) && (this.getWorld().hasAsUnit(this)))
+	 * 
+	 * @param world
+	 *            the world to set to (can be null)
+	 * @post world of this unit equals the given world |new.getWorld() == world
+	 * @throws IllegalArgumentException
+	 *             the world of this unit cannot be set to the given world
+	 *             except if it equals null | (world != null &&
+	 *             !canHaveAsWorld(world))
+	 * @throws IllegalArgumentException
+	 *             this unit already has a recorded world and already belongs to
+	 *             it | ((this.getWorld() != null) &&
+	 *             (this.getWorld().hasAsUnit(this)))
 	 */
 	void setWorld(World world) throws IllegalArgumentException {
 		if (world != null) {
@@ -989,30 +975,29 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * check whether this unit can belong to the given faction
-	 * @param 	faction
-	 * 			the faction to check
-	 * @return	true if al these are true: the given faction is not null, 
-	 * 			the given faction contains this unit, the current faction 
-	 * 			of this unit equals null
-	 * 			| (faction != null && faction.hasAsUnit(this) && 
-	 * 						this.getFaction() == null)
+	 * 
+	 * @param faction
+	 *            the faction to check
+	 * @return true if al these are true: the given faction is not null, the
+	 *         given faction contains this unit, the current faction of this
+	 *         unit equals null | (faction != null && faction.hasAsUnit(this) &&
+	 *         this.getFaction() == null)
 	 */
 	private boolean canHaveAsFaction(Faction faction) {
-		return (faction != null && 
-				faction.hasAsUnit(this) && 
-				this.getFaction() == null);
+		return (faction != null && faction.hasAsUnit(this) && this.getFaction() == null);
 	}
 
 	/**
 	 * set the faction of this unit to the given faction
-	 * @param 	faction
-	 * 			the faction to set to (can be null)
-	 * @post	the faction of this unit equals the given faction
-	 * 			|new.getFaction() == faction
-	 * @throws 	IllegalArgumentException
-	 * 			the faction of this unit cannot be set to the given faction 
-	 * 			except if it equals null
-	 * 			|  ((faction != null) && (!canHaveAsFaction(faction)))
+	 * 
+	 * @param faction
+	 *            the faction to set to (can be null)
+	 * @post the faction of this unit equals the given faction |new.getFaction()
+	 *       == faction
+	 * @throws IllegalArgumentException
+	 *             the faction of this unit cannot be set to the given faction
+	 *             except if it equals null | ((faction != null) &&
+	 *             (!canHaveAsFaction(faction)))
 	 */
 	void setFaction(Faction faction) throws IllegalArgumentException {
 		if (faction != null)
@@ -1086,11 +1071,10 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * Check whether this unit has proper materials attached to it.
 	 * 
-	 * @return	false if at least one material is not valid 
-	 * 			or has not this unit as owner
-	 * 			| if (for some material in materials 
-	 * 			|		(!this.canHaveAsMaterial(material) || material.getOwner() != this))
-	 * 			|	then result == false
+	 * @return false if at least one material is not valid or has not this unit
+	 *         as owner | if (for some material in materials |
+	 *         (!this.canHaveAsMaterial(material) || material.getOwner() !=
+	 *         this)) | then result == false
 	 */
 	@SuppressWarnings("unused")
 	private boolean hasProperMaterials() {
@@ -1183,10 +1167,10 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * return the current activity of this unit
-	 * @return	the current activity of this unit
-	 * 			| if (!this.getActivityQueue().isEmpty())
-	 * 			| then result == this.activityQueue.get(0)
-	 * 			| else result == Activity.NONE
+	 * 
+	 * @return the current activity of this unit | if
+	 *         (!this.getActivityQueue().isEmpty()) | then result ==
+	 *         this.activityQueue.get(0) | else result == Activity.NONE
 	 */
 	private Activity getCurrentActivity() {
 		if (!this.getActivityQueue().isEmpty())
@@ -1196,27 +1180,26 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * replace the first activity in the activity queue of this unit by the given activity, if possible
+	 * replace the first activity in the activity queue of this unit by the
+	 * given activity, if possible
 	 * 
-	 * @param	activity
-	 * 			the activity to set
-	 * @post	do nothing in these cases: unit is resting and cannot stop 
-	 * 			resting, unit is attacking and busyTime>0, unit is falling 
-	 * 			and cannot stop falling
-	 * 			|new.getActivityQueue() == this.getActivityQueue()
-	 * @post	if the activityQueue is not empty, remove the activity on position 0
-	 * 			and add activity on position 0 and set the busyTime right
-	 * 			|if (!this.getActivityQueue().isEmpty())
-	 * 			|	then new.getActivityQueue() == [activity] + this.getActivityQueue().subList(1,end)
-	 * 			|			&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
-	 * @post	if the activityQueue is empty, add activity on position 0 and
-	 * 			set the busyTime right
-	 * 			|if (this.getActivityQueue().isEmpty())
-	 * 			|	then new.getActivityQueue == [activity] 
-	 * 			|			&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
+	 * @param activity
+	 *            the activity to set
+	 * @post do nothing in these cases: unit is resting and cannot stop resting,
+	 *       unit is attacking and busyTime>0, unit is falling and cannot stop
+	 *       falling |new.getActivityQueue() == this.getActivityQueue()
+	 * @post if the activityQueue is not empty, remove the activity on position
+	 *       0 and add activity on position 0 and set the busyTime right |if
+	 *       (!this.getActivityQueue().isEmpty()) | then new.getActivityQueue()
+	 *       == [activity] + this.getActivityQueue().subList(1,end) | &&
+	 *       new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
+	 * @post if the activityQueue is empty, add activity on position 0 and set
+	 *       the busyTime right |if (this.getActivityQueue().isEmpty()) | then
+	 *       new.getActivityQueue == [activity] | && new.getBusyTime ==
+	 *       getBusyTimeFor(new.getCurrentActivity)
 	 */
-	//TODO ik snap het nut niet van de eerste if (add-remove-add)
-	//TODO waarom 1 keer else if?
+	// TODO ik snap het nut niet van de eerste if (add-remove-add)
+	// TODO waarom 1 keer else if?
 	private void setActivity(Activity activity) {
 		if (this.getWorld() == null && activity == Activity.NONE)
 			this.activityQueue.add(0, activity);
@@ -1233,20 +1216,20 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * add a new activity in the first place of the activity queue of this unit, if possible
-	 * @param	activity
-	 * 			the activity to insert
-	 * @post	do nothing in these cases: unit is resting and cannot stop 
-	 * 			resting, unit is attacking and busyTime>0, unit is falling 
-	 * 			and cannot stop falling
-	 * 			|if ((this.isResting() && !this.canStopResting) ||
-	 * 			|	 (this.isAttacking() && this.getBusyTime() > 0) ||
-	 * 			|	 (this.isFalling() && !this.canStopFalling()) )
-	 * 			|then new.getActivityQueue() == this.getActivityQueue()
-	 * @post	else add activity on position 0 and set the busyTime right
-	 * 			|else
-	 * 			|new.getActivityQueue() == [activity] + this.getActivityQueue()
-	 * 			|	&& new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
+	 * add a new activity in the first place of the activity queue of this unit,
+	 * if possible
+	 * 
+	 * @param activity
+	 *            the activity to insert
+	 * @post do nothing in these cases: unit is resting and cannot stop resting,
+	 *       unit is attacking and busyTime>0, unit is falling and cannot stop
+	 *       falling |if ((this.isResting() && !this.canStopResting) || |
+	 *       (this.isAttacking() && this.getBusyTime() > 0) || |
+	 *       (this.isFalling() && !this.canStopFalling()) ) |then
+	 *       new.getActivityQueue() == this.getActivityQueue()
+	 * @post else add activity on position 0 and set the busyTime right |else
+	 *       |new.getActivityQueue() == [activity] + this.getActivityQueue() |
+	 *       && new.getBusyTime == getBusyTimeFor(new.getCurrentActivity)
 	 */
 	private void insertActivity(Activity activity) {
 		if (this.isResting() && !this.canStopResting)
@@ -1261,34 +1244,36 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * start a new activity, resetting all parameters if necessary
-	 * @effect	if the activity queue is empty, NONE is included
-	 * 			|if (this.getActivityQueue().isEmpty())
-	 * 			|	then this.setActivity(Activity.NONE)
-	 * @effect	if the unit is working, set workAtCube to null
-	 * 			if the unit is moving, set moveToCube en moveToAdjacent to null
-	 * 			|if (this.isWorking())
-	 * 			|	then this.setWorkAtCube(null)
-	 * 			|if (this.isMoving())
-	 * 			|	then this.setMoveToCube(null), this.setMoveToAdjacent(null)
-	 * @effect	if the activity queue consists of one activity, replace it 
-	 * 			by NONE (also resets busyTime)
-	 * 			|if (this.getActivityQueue().length() == 1)
-	 * 			|	then this.activityQueue.remove(0), 
-	 * 			|			this.setActivity(Activity.NONE)
-	 * @effect	if the activity queue consists of more than one activity, 
-	 * 			remove the first activity and set the busyTime for the next 
-	 * 			not-NONE activity
-	 * 			|if (this.getActivityQueue().length() > 1)
-	 * 			|	then this.activityQueue.remove(0), 
-	 * 			|			this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
+	 * 
+	 * @effect if the activity queue is empty, NONE is included |if
+	 *         (this.getActivityQueue().isEmpty()) | then
+	 *         this.setActivity(Activity.NONE)
+	 * @effect if the unit is working, set workAtCube to null if the unit is
+	 *         moving, set moveToCube en moveToAdjacent to null |if
+	 *         (this.isWorking()) | then this.setWorkAtCube(null) |if
+	 *         (this.isMoving()) | then this.setMoveToCube(null),
+	 *         this.setMoveToAdjacent(null)
+	 * @effect if the activity queue consists of one activity, replace it by
+	 *         NONE (also resets busyTime) |if (this.getActivityQueue().length()
+	 *         == 1) | then this.activityQueue.remove(0), |
+	 *         this.setActivity(Activity.NONE)
+	 * @effect if the activity queue consists of more than one activity, remove
+	 *         the first activity and set the busyTime for the next not-NONE
+	 *         activity |if (this.getActivityQueue().length() > 1) | then
+	 *         this.activityQueue.remove(0), |
+	 *         this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
 	 */
-	//TODO mooiere notatie met backtracking
-	//TODO comments checken
+	// TODO mooiere notatie met backtracking
+	// TODO comments checken
 	public void nextActivity() {
-//		if (this.getTask() != null) {
-//			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
-//				getTask().getActivities().getExecutingStatement().setCompleted(true);
-//		}
+		if (this.getWorld() != null && this.getTask() != null) {
+			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
+				getTask().getActivities().getExecutingStatement().SetHasFullyExecutedToTrue();
+			if (!getTask().hasBeenFullyExecuted()) {
+				getTask().execute(this.getWorld().getCounter());
+			} else
+				nextTask();
+		}
 		while (true) {
 			if (this.getActivityQueue().isEmpty()) {
 				this.setActivity(Activity.NONE);
@@ -1318,22 +1303,21 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * return the busyTime for a given activity
-	 * @param	activity
-	 * 			the activity to calculate the busyTime
-	 * @return	if the given activity equals working, return 500/strength
-	 * 			|if (activity == Activity.WORKING)
-	 * 			|	then result == (500 / this.getStrength())
-	 * @return	if the given activity equals resting, return time to recover one hitpoint
-	 * 			|if (activity == Activity.RESTING)
-	 * 			|	then result == Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness())
-	 * @return	if the given activity equals attacking, return 1.0
-	 * 			|if (activity == Activity.ATTACKING)
-	 * 			|	then result == 1.0
-	 * @return	if the given activity equals none of the above, return 0
-	 * 			|if (activity != Activity.WORKING) && 
-	 * 			|	(activity != Activity.RESTING) && 
-	 * 			|	(activity != Activity.ATTACKING)
-	 * 			|	then result == 0.0
+	 * 
+	 * @param activity
+	 *            the activity to calculate the busyTime
+	 * @return if the given activity equals working, return 500/strength |if
+	 *         (activity == Activity.WORKING) | then result == (500 /
+	 *         this.getStrength())
+	 * @return if the given activity equals resting, return time to recover one
+	 *         hitpoint |if (activity == Activity.RESTING) | then result ==
+	 *         Math.max(this.getBusyTime(), 200 * 0.2 / this.getToughness())
+	 * @return if the given activity equals attacking, return 1.0 |if (activity
+	 *         == Activity.ATTACKING) | then result == 1.0
+	 * @return if the given activity equals none of the above, return 0 |if
+	 *         (activity != Activity.WORKING) && | (activity !=
+	 *         Activity.RESTING) && | (activity != Activity.ATTACKING) | then
+	 *         result == 0.0
 	 */
 	private double getBusyTimeFor(Activity activity) {
 		if (activity == Activity.WORKING)
@@ -1346,24 +1330,22 @@ public class Unit implements ITimeVariableObject {
 			return 0;
 	}
 
-	
 	/**
 	 * a variable to store the activity queue of a unit
 	 */
 	private final List<Activity> activityQueue = new ArrayList<Activity>();
-	
+
 	/**
 	 * sets the busytime of this time variable object to the given seconds
 	 * 
-	 * @post	busyTime of this time variable object will equal the given seconds if it is a positive value,
-	 * 			 else busyTime will equal 0 
+	 * @post busyTime of this time variable object will equal the given seconds
+	 *       if it is a positive value, else busyTime will equal 0
 	 * @param busyTime
 	 */
 	private void setBusyTime(double busyTime) {
 		this.busyTime = Math.max(busyTime, 0);
 	}
 
-	
 	/**
 	 * returns the busytime of this time variable object
 	 */
@@ -1372,7 +1354,8 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * substracts the given seconds off of the busytime of this time variable object.
+	 * substracts the given seconds off of the busytime of this time variable
+	 * object.
 	 * 
 	 * @param seconds
 	 */
@@ -1381,21 +1364,23 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	private double busyTime;
-	
+
 	/**
 	 * returns whether this unit is defending or not.
-	 * @result	whether this unit is defending or not
-	 * 			| result == (this.getCurrentActivity() == Activity.DEFENDING)
+	 * 
+	 * @result whether this unit is defending or not | result ==
+	 *         (this.getCurrentActivity() == Activity.DEFENDING)
 	 */
 	@SuppressWarnings("unused")
 	private boolean isDefending() {
 		return (this.getCurrentActivity() == Activity.DEFENDING);
 	}
-	
+
 	/**
 	 * returns whether this unit is attacking or not.
-	 * @result	whether this unit is attacking or not
-	 * 			| result == (this.getCurrentActivity() == Activity.ATTACKING)
+	 * 
+	 * @result whether this unit is attacking or not | result ==
+	 *         (this.getCurrentActivity() == Activity.ATTACKING)
 	 */
 	public boolean isAttacking() {
 		return (this.getCurrentActivity() == Activity.ATTACKING);
@@ -1403,21 +1388,22 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * returns whether this unit is moving or not.
-	 * @result	whether this unit is moving or not
-	 * 			| result == (this.getCurrentActivity() == Activity.WALKING) ||
-	 *		   	|			(this.getCurrentActivity() == Activity.SPRINTING) ||
-	 *		    |			(this.getCurrentActivity() == Activity.FOLLOWING)
+	 * 
+	 * @result whether this unit is moving or not | result ==
+	 *         (this.getCurrentActivity() == Activity.WALKING) || |
+	 *         (this.getCurrentActivity() == Activity.SPRINTING) || |
+	 *         (this.getCurrentActivity() == Activity.FOLLOWING)
 	 */
 	public boolean isMoving() {
-		return (this.getCurrentActivity() == Activity.WALKING) ||
-			   (this.getCurrentActivity() == Activity.SPRINTING) ||
-			   (this.getCurrentActivity() == Activity.FOLLOWING);
+		return (this.getCurrentActivity() == Activity.WALKING) || (this.getCurrentActivity() == Activity.SPRINTING)
+				|| (this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	/**
 	 * returns whether this unit is walking or not.
-	 * @result	whether this unit is walking or not
-	 * 			| result == (this.getCurrentActivity() == Activity.WALKING)
+	 * 
+	 * @result whether this unit is walking or not | result ==
+	 *         (this.getCurrentActivity() == Activity.WALKING)
 	 */
 	public boolean isWalking() {
 		return (this.getCurrentActivity() == Activity.WALKING);
@@ -1425,30 +1411,33 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * returns whether this unit is sprinting or not.
-	 * @result	whether this unit is sprinting or not
-	 * 			| result == (this.getCurrentActivity() == Activity.SPRINTING)
+	 * 
+	 * @result whether this unit is sprinting or not | result ==
+	 *         (this.getCurrentActivity() == Activity.SPRINTING)
 	 */
 	public boolean isSprinting() {
 		return (this.getCurrentActivity() == Activity.SPRINTING);
 	}
-	
+
 	public boolean isFollowing() {
 		return (this.getCurrentActivity() == Activity.FOLLOWING);
 	}
 
 	/**
 	 * returns whether this unit is falling or not.
-	 * @result	whether this unit is falling or not
-	 * 			| result == (this.getCurrentActivity() == Activity.FALLING)
+	 * 
+	 * @result whether this unit is falling or not | result ==
+	 *         (this.getCurrentActivity() == Activity.FALLING)
 	 */
 	boolean isFalling() {
 		return (this.getCurrentActivity() == Activity.FALLING);
 	}
-	
+
 	/**
 	 * returns whether this unit is working or not.
-	 * @result	whether this unit is working or not
-	 * 			| result == (this.getCurrentActivity() == Activity.WORKING)
+	 * 
+	 * @result whether this unit is working or not | result ==
+	 *         (this.getCurrentActivity() == Activity.WORKING)
 	 */
 	public boolean isWorking() {
 		return (this.getCurrentActivity() == Activity.WORKING);
@@ -1456,8 +1445,9 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * returns whether this unit is resting or not.
-	 * @result	whether this unit is resting or not
-	 * 			| result == (this.getCurrentActivity() == Activity.RESTING)
+	 * 
+	 * @result whether this unit is resting or not | result ==
+	 *         (this.getCurrentActivity() == Activity.RESTING)
 	 */
 	public boolean isResting() {
 		return (this.getCurrentActivity() == Activity.RESTING);
@@ -1465,47 +1455,46 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * returns whether this unit is doing nothing
-	 * @result	whether this unit is doing nothing
-	 * 			| result == (this.getCurrentActivity() == Activity.NONE)
+	 * 
+	 * @result whether this unit is doing nothing | result ==
+	 *         (this.getCurrentActivity() == Activity.NONE)
 	 */
 	boolean isBeingUseless() {
 		return (this.getCurrentActivity() == Activity.NONE);
 	}
 
-	
 	// ADVANCE TIME en helper methods
 
 	/**
 	 * update the attributes of a Unit, based on that Unit's current attributes
 	 * and a given duration 'seconds' in seconds of game time
 	 * 
-	 * @param 	seconds
-	 *          the amount of seconds to advance time
-	 * @effect	reduce the busyTime of the unit with the given seconds if it is
-	 * 			not moving, doing nothing or falling
-	 * @effect	execute the helper method attacking for the given seconds 
-	 * 			if this unit is attacking
-	 * @effect	execute the helper method falling for the given seconds if 
-	 * 			this unit is falling
-	 * @effect	execute the helper method moving for the given seconds if this 
-	 * 			unit is moving and getMoveToAdjacent does not equal null
-	 * @effect	execute the helper method working for the given seconds if this 
-	 * 			unit is working
-	 * @effect	execute the helper method resting for the given seconds if this 
-	 * 			unit is resting
-	 * @effect	execute the helper method actingDefault if current activity is 
-	 * 			NONE and default behaviour is enabled
-	 * @effect	if the unit should fall, insert the activity falling when 
-	 * 			already moving (must be resumed afterwards) or replace the 
-	 * 			current activity by falling when not moving
-	 * @effect	level up untill experiencePoints - 10 * level <= 10
-	 * @effect	die if hitpoints equal zero
-	 * @throws 	IllegalArgumentException
-	 *          the seconds are not in the interval [0, 0.2]
+	 * @param seconds
+	 *            the amount of seconds to advance time
+	 * @effect reduce the busyTime of the unit with the given seconds if it is
+	 *         not moving, doing nothing or falling
+	 * @effect execute the helper method attacking for the given seconds if this
+	 *         unit is attacking
+	 * @effect execute the helper method falling for the given seconds if this
+	 *         unit is falling
+	 * @effect execute the helper method moving for the given seconds if this
+	 *         unit is moving and getMoveToAdjacent does not equal null
+	 * @effect execute the helper method working for the given seconds if this
+	 *         unit is working
+	 * @effect execute the helper method resting for the given seconds if this
+	 *         unit is resting
+	 * @effect execute the helper method actingDefault if current activity is
+	 *         NONE and default behaviour is enabled
+	 * @effect if the unit should fall, insert the activity falling when already
+	 *         moving (must be resumed afterwards) or replace the current
+	 *         activity by falling when not moving
+	 * @effect level up untill experiencePoints - 10 * level <= 10
+	 * @effect die if hitpoints equal zero
+	 * @throws IllegalArgumentException
+	 *             the seconds are not in the interval [0, 0.2]
 	 */
 	public void advanceTime(float seconds) throws IllegalArgumentException {
-		if (! (Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && 
-			   Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
+		if (!(Util.fuzzyGreaterThanOrEqualTo(seconds, 0) && Util.fuzzyLessThanOrEqualTo(seconds, 0.2)))
 			throw new IllegalArgumentException();
 
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling())) {
@@ -1514,7 +1503,7 @@ public class Unit implements ITimeVariableObject {
 
 		if (this.isFalling())
 			falling(seconds);
-		
+
 		if (this.isAttacking())
 			attacking(seconds);
 
@@ -1549,34 +1538,35 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately 
-	 * 			defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * @effect	if busyTime equals zero, initiate the next activity
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @param seconds
+	 *            the seconds to advance time
+	 * @effect if busyTime equals zero, initiate the next activity
 	 */
 	private void attacking(float seconds) {
 		if (this.getBusyTime() == 0)
 			this.nextActivity();
 	}
-	
 
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately 
-	 * 			defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @note	next is a position defined as
-	 * 			new Position(this.getPosition().getRealX(), 
-	 *						 this.getPosition().getRealY(),
-	 *			   Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY * seconds, 0.))
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * @effect	lose 10 hitpoints when falling into a new cube (cannot become
-	 * 			negative)
-	 * @effect	set the position to next if possible, otherwise a fraction of this change
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @note next is a position defined as new
+	 *       Position(this.getPosition().getRealX(),
+	 *       this.getPosition().getRealY(),
+	 *       Math.max(this.getPosition().getRealZ() + World.FALLING_VELOCITY *
+	 *       seconds, 0.))
+	 * @param seconds
+	 *            the seconds to advance time
+	 * @effect lose 10 hitpoints when falling into a new cube (cannot become
+	 *         negative)
+	 * @effect set the position to next if possible, otherwise a fraction of
+	 *         this change
 	 */
 	private void falling(float seconds) {
 		Position next = new Position(this.getPosition().getRealX(), this.getPosition().getRealY(),
@@ -1606,31 +1596,31 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately 
-	 * 			defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * @effect	reduce stamina points with 10*seconds while sprinting if this 
-	 * 			results in a positive number
-	 * @effect	while sprinting, set stamina points to zero and stop sprinting 
-	 * 			if current value reduced with 10*seconds results in a negative 
-	 * 			number
-	 * @effect	set the orientation of the unit in the movement direction
-	 * @effect	if the centre of the next cube is reached, do these things:
-	 * 			set the position to the centre of this target cube, set the 
-	 * 			target cube to null, increment the experience points with 1,
-	 * 			find next cube in path if moving to a cube further away,
-	 * 			stop moving when not pathfinding
-	 * @effect	if the centre of the next cube is not reached yet, set the
-	 * 			position to next if possible, otherwise a fraction of this change
-	 * @note	next is a position defined as
-	 * 			new Position(this.getPosition().getRealX() + xVelocity * seconds,
-	 *						 this.getPosition().getRealY() + yVelocity * seconds,
-	 *						 this.getPosition().getRealZ() + zVelocity * seconds)
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @param seconds
+	 *            the seconds to advance time
+	 * @effect reduce stamina points with 10*seconds while sprinting if this
+	 *         results in a positive number
+	 * @effect while sprinting, set stamina points to zero and stop sprinting if
+	 *         current value reduced with 10*seconds results in a negative
+	 *         number
+	 * @effect set the orientation of the unit in the movement direction
+	 * @effect if the centre of the next cube is reached, do these things: set
+	 *         the position to the centre of this target cube, set the target
+	 *         cube to null, increment the experience points with 1, find next
+	 *         cube in path if moving to a cube further away, stop moving when
+	 *         not pathfinding
+	 * @effect if the centre of the next cube is not reached yet, set the
+	 *         position to next if possible, otherwise a fraction of this change
+	 * @note next is a position defined as new
+	 *       Position(this.getPosition().getRealX() + xVelocity * seconds,
+	 *       this.getPosition().getRealY() + yVelocity * seconds,
+	 *       this.getPosition().getRealZ() + zVelocity * seconds)
 	 */
 	private void moving(float seconds) {
-		
+
 		if (this.isSprinting()) {
 			double stamina = this.getStaminaPoints() - seconds * 10;
 			if (stamina > 0)
@@ -1698,41 +1688,42 @@ public class Unit implements ITimeVariableObject {
 				}
 			}
 		}
-		
+
 		if (this.isFollowing()) {
 			if (this.getFollowUnit() == null || this.getFollowUnit().isDead()) {
 				nextActivity();
 			} else
 				this.setMoveToCube(this.getFollowUnit().getCube());
 		}
-		
+
 	}
 
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * @effect	do nothing if busyTime is not yet zero
-	 * @effect	if busyTime equals zero do one of the following effects, 
-	 * 			initiate the next activity and increase the experience points
-	 * 			by ten points
-	 * @note	in the following 6 effects only the first case for which all 
-	 * 			conditions are met shall be executed (i.e., switch-case semantics)
-	 * @effect	if busyTime equals zero and the unit carries a material that
-	 * 			can be dropped on the workAtCube, add it to the world at the
-	 * 			centre of that cube
-	 * @effect	if busyTime equals zero and the workAtCube is a workshop and at
-	 * 			least one boulder and one log are available on that cube, weight
-	 * 			and toughness increase while consuming these two materials
-	 * @effect	if busyTime equals zero and a boulder is present on the 
-	 * 			workAtCube, pick up the boulder
-	 * @effect	if busyTime equals zero and a log is present on the workAtCube, 
-	 * 			pick up the log
-	 * @effect	if busyTime equals zero and the workAtCube is wood it collapses
-	 * @effect	if busyTime equals zero and the workAtCube is a rock it collapses
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @param seconds
+	 *            the seconds to advance time
+	 * @effect do nothing if busyTime is not yet zero
+	 * @effect if busyTime equals zero do one of the following effects, initiate
+	 *         the next activity and increase the experience points by ten
+	 *         points
+	 * @note in the following 6 effects only the first case for which all
+	 *       conditions are met shall be executed (i.e., switch-case semantics)
+	 * @effect if busyTime equals zero and the unit carries a material that can
+	 *         be dropped on the workAtCube, add it to the world at the centre
+	 *         of that cube
+	 * @effect if busyTime equals zero and the workAtCube is a workshop and at
+	 *         least one boulder and one log are available on that cube, weight
+	 *         and toughness increase while consuming these two materials
+	 * @effect if busyTime equals zero and a boulder is present on the
+	 *         workAtCube, pick up the boulder
+	 * @effect if busyTime equals zero and a log is present on the workAtCube,
+	 *         pick up the log
+	 * @effect if busyTime equals zero and the workAtCube is wood it collapses
+	 * @effect if busyTime equals zero and the workAtCube is a rock it collapses
 	 */
 	private void working(float seconds) {
 		if (this.getBusyTime() == 0) {
@@ -1749,8 +1740,8 @@ public class Unit implements ITimeVariableObject {
 				Boulder boulder = (Boulder) iterBoulder.next();
 				Iterator<Log> iterLog = this.getWorld().getLogsIn(this.getWorkAtCube()).iterator();
 				Log log = (Log) iterLog.next();
-				int extraWeight = (log.getWeight() + boulder.getWeight())/2;
-				int extraToughness = extraWeight/10;
+				int extraWeight = (log.getWeight() + boulder.getWeight()) / 2;
+				int extraToughness = extraWeight / 10;
 				this.setToughness(this.getToughness() + extraToughness);
 				this.setWeight(this.getWeight() + extraWeight);
 				this.getWorld().removeMaterial(boulder);
@@ -1779,18 +1770,19 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * @effect	if the maximum number of hitpoints is not yet reached, increase 
-	 * 			it by seconds * this.getToughness() / (200 * 0.2)
-	 * @effect	if the maximum number of hitpoints is reached and the maximum
-	 * 			number of stamina points is not yet reached, increase it by
-	 * 			seconds * this.getToughness() / (100 * 0.2)
-	 * @effect	if the maximum numbers of both hitpoints and stamina points are
-	 * 			reached, initiate the next activity
-	 * @post	if busyTime equals zero, new.canStopResting equals true
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @param seconds
+	 *            the seconds to advance time
+	 * @effect if the maximum number of hitpoints is not yet reached, increase
+	 *         it by seconds * this.getToughness() / (200 * 0.2)
+	 * @effect if the maximum number of hitpoints is reached and the maximum
+	 *         number of stamina points is not yet reached, increase it by
+	 *         seconds * this.getToughness() / (100 * 0.2)
+	 * @effect if the maximum numbers of both hitpoints and stamina points are
+	 *         reached, initiate the next activity
+	 * @post if busyTime equals zero, new.canStopResting equals true
 	 */
 	private void resting(float seconds) {
 		if (this.getHitpoints() != this.getMaxHitpoints()) {
@@ -1808,16 +1800,16 @@ public class Unit implements ITimeVariableObject {
 		}
 	}
 
-	//TODO vanaf hier comments checken
-	
+	// TODO vanaf hier comments checken
+
 	/**
 	 * helper method for advance time
 	 * 
-	 * @note	this helper method is only used in advance time and seperately defined because of readability
-	 * 			therefore it does not contain formal documentation
-	 * @param 	seconds
-	 * 			the seconds to advance time
-	 * TODO
+	 * @note this helper method is only used in advance time and seperately
+	 *       defined because of readability therefore it does not contain formal
+	 *       documentation
+	 * @param seconds
+	 *            the seconds to advance time TODO
 	 */
 	private void actingDefault(float seconds) {
 
@@ -1828,18 +1820,21 @@ public class Unit implements ITimeVariableObject {
 		else
 			doRandomBehaviour();
 	}
-	
+
 	/**
 	 * TODO
 	 */
 	private void nextTask() {
-		if (getTask().isCompleted()) {
+		if (getTask().hasBeenFullyExecuted()) {
 			getFaction().getScheduler().removeTask(getTask());
 		} else {
 			getTask().setPriority(getTask().getPriority() - 1);
 		}
+		getTask().setUnit(null);
 		setTask(getFaction().getScheduler().getHighestPriorityTaskNotExecuted());
 		getTask().setUnit(this);
+		if (this.getWorld() != null)
+			getTask().execute(this.getWorld().getCounter());
 	}
 
 	/**
@@ -1890,8 +1885,9 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * collect a set of all potential enemies for this unit
-	 * @return	a set of all non-falling units from another faction in same 
-	 * 			or adjacent cubes
+	 * 
+	 * @return a set of all non-falling units from another faction in same or
+	 *         adjacent cubes
 	 */
 	private Set<Unit> getPotentialEnemies() {
 		Set<Cube> sameOrAdjacentCubes = this.getCube().getAllAdjacentCubes(this.getWorld());
@@ -1982,12 +1978,13 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * set moveToAdjacent to the given cube if possible
-	 * @param   cube
-	 * 			the cube to set to
-	 * @post	if the given cube equals null or is valid in the world this
-	 * 			unit belongs to, new.moveToAdjacent will equal the given cube
-	 * 			|if (cube == null || cube.isValidIn(this.getWorld()))
-	 * 			|	then new.getMoveToAdjacent == cube
+	 * 
+	 * @param cube
+	 *            the cube to set to
+	 * @post if the given cube equals null or is valid in the world this unit
+	 *       belongs to, new.moveToAdjacent will equal the given cube |if (cube
+	 *       == null || cube.isValidIn(this.getWorld())) | then
+	 *       new.getMoveToAdjacent == cube
 	 */
 	private void setMoveToAdjacent(Cube cube) {
 		if (cube == null || cube.isValidIn(this.getWorld()))
@@ -1995,8 +1992,8 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * a variable that contains the next adjacent cube in the path to reach
-	 * the moveToCube
+	 * a variable that contains the next adjacent cube in the path to reach the
+	 * moveToCube
 	 */
 	private Cube moveToAdjacent;
 
@@ -2004,32 +2001,36 @@ public class Unit implements ITimeVariableObject {
 	 * returns the movement speed in accordance with the units activity status
 	 * and primary attributes.
 	 * 
-	 * @return	if falling, return 3.0
-	 * 			|if (this.isFalling())
-	 * 			|	then result == 3.0
-	 * @return	if not falling, climbing or sprinting (i.e. ordinary walking),
-	 * 			return 1.5 * (strength+agility)/(2*totalWeight)
-	 * 			
-	 * 			|result == 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight())
-	 * @return	if sprinting, return 2*walking speed
-	 * 			|if (this.isSprinting())
-	 * 			|	then result == 1.5 * (this.getStrength() + this.getAgility()) / (this.getTotalWeight())
-	 * @return	if climbing up, return 0.5*walking speed
-	 * 			|if (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == -1)
-	 * 			|	then result == 0.75 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight())
-	 * @return	if climbing down, return 1.2*walking speed
-	 * 			|if (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == 1)
-	 * 			|	then result == 1.2*1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight())
-	 * @return	if climbing up while sprinting, return 2*0.5*walking speed
-	 * 			|if (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == -1)
-	 * 			|	then result == 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight())
-	 * @return	if climbing down while sprinting, return 2*1.2*walking speed
-	 * 			|if (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == 1)
-	 * 			|	then result == 2.4*1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight())
+	 * @return if falling, return 3.0 |if (this.isFalling()) | then result ==
+	 *         3.0
+	 * @return if not falling, climbing or sprinting (i.e. ordinary walking),
+	 *         return 1.5 * (strength+agility)/(2*totalWeight)
+	 * 
+	 *         |result == 1.5 * (this.getStrength() + this.getAgility()) / (2 *
+	 *         this.getTotalWeight())
+	 * @return if sprinting, return 2*walking speed |if (this.isSprinting()) |
+	 *         then result == 1.5 * (this.getStrength() + this.getAgility()) /
+	 *         (this.getTotalWeight())
+	 * @return if climbing up, return 0.5*walking speed |if
+	 *         (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == -1) |
+	 *         then result == 0.75 * (this.getStrength() + this.getAgility()) /
+	 *         (2 * this.getTotalWeight())
+	 * @return if climbing down, return 1.2*walking speed |if
+	 *         (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == 1) |
+	 *         then result == 1.2*1.5 * (this.getStrength() + this.getAgility())
+	 *         / (2 * this.getTotalWeight())
+	 * @return if climbing up while sprinting, return 2*0.5*walking speed |if
+	 *         (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == -1) |
+	 *         then result == 1.5 * (this.getStrength() + this.getAgility()) /
+	 *         (2 * this.getTotalWeight())
+	 * @return if climbing down while sprinting, return 2*1.2*walking speed |if
+	 *         (this.getCube().getZ() - this.getMoveToAdjacent().getZ() == 1) |
+	 *         then result == 2.4*1.5 * (this.getStrength() + this.getAgility())
+	 *         / (2 * this.getTotalWeight())
 	 */
 	public double getMovementSpeed() {
 		if (this.isFalling())
-			return ITimeVariableObject.FALLING_VELOCITY*(-1);
+			return ITimeVariableObject.FALLING_VELOCITY * (-1);
 		double speed = 1.5 * (this.getStrength() + this.getAgility()) / (2 * this.getTotalWeight());
 		if (this.isSprinting())
 			speed *= 2;
@@ -2046,12 +2047,10 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * start moving to a cube further away.
 	 * 
-	 * @param 	cube
-	 * 			the cube to move to
-	 * @effect	set moveToCube to the given cube
-	 * 			|this.setMoveToCube(cube);
-	 * @effect	find next cube in path
-	 * 			|findNextCubeInPath();
+	 * @param cube
+	 *            the cube to move to
+	 * @effect set moveToCube to the given cube |this.setMoveToCube(cube);
+	 * @effect find next cube in path |findNextCubeInPath();
 	 */
 	public void moveTo(Cube cube) {
 		this.setMoveToCube(cube);
@@ -2062,15 +2061,15 @@ public class Unit implements ITimeVariableObject {
 	 * Moves this unit to the next cube when it's pathfinding to a cube far
 	 * away.
 	 * 
-	 * @effect	initiate the next activity when the moveToCube is reached
-	 * 			|if (this.getCube().equals(this.getMoveToCube()))
-	 * 			|	then this.nextActivity();
-	 * @effect	if the moveToCube is not yet reached, move to the calculated 
-	 * 			next cube(x,y,z) in path and initiate the next activity when 
-	 * 			the moveToCube is reached after this
-	 * 			|if !(this.getCube().equals(this.getMoveToCube()))
-	 * 			|	then (this.moveToAdjacent(x, y, z), if (current == this.getMoveToCube())
-	 *			|	then this.nextActivity())
+	 * @effect initiate the next activity when the moveToCube is reached |if
+	 *         (this.getCube().equals(this.getMoveToCube())) | then
+	 *         this.nextActivity();
+	 * @effect if the moveToCube is not yet reached, move to the calculated next
+	 *         cube(x,y,z) in path and initiate the next activity when the
+	 *         moveToCube is reached after this |if
+	 *         !(this.getCube().equals(this.getMoveToCube())) | then
+	 *         (this.moveToAdjacent(x, y, z), if (current ==
+	 *         this.getMoveToCube()) | then this.nextActivity())
 	 */
 	private void findNextCubeInPath() {
 		if (this.getCube().equals(this.getMoveToCube())) {
@@ -2095,7 +2094,7 @@ public class Unit implements ITimeVariableObject {
 		}
 		Map<Cube, Double> visited = new HashMap<Cube, Double>();
 		Map<Cube, Cube> shortestPath = new HashMap<Cube, Cube>();
-		Queue<CubeDistPair> queue = new PriorityQueue<CubeDistPair>();
+		Queue<DistPair<Cube>> queue = new PriorityQueue<DistPair<Cube>>();
 
 		while (currentDistance != Double.MAX_VALUE) {
 			if (current.equals(this.getMoveToCube())) {
@@ -2118,7 +2117,7 @@ public class Unit implements ITimeVariableObject {
 					if (newDistance < unvisited.get(cube)) {
 						unvisited.put(cube, newDistance);
 						shortestPath.put(cube, current);
-						queue.offer(new CubeDistPair(cube, newDistance));
+						queue.offer(new DistPair<Cube>(cube, newDistance));
 					}
 				}
 			}
@@ -2126,50 +2125,18 @@ public class Unit implements ITimeVariableObject {
 			visited.put(current, currentDistance);
 			unvisited.remove(current);
 
-			while (!queue.isEmpty() && visited.containsKey(queue.peek().getCube()))
+			while (!queue.isEmpty() && visited.containsKey(queue.peek().getThing()))
 				queue.poll();
 
 			// No next node -> no path
 			if (queue.isEmpty())
 				return;
-			CubeDistPair next = queue.poll();
-			current = next.getCube();
+			DistPair<Cube> next = queue.poll();
+			current = next.getThing();
 			currentDistance = next.getDistance();
 		}
 
 		return;
-	}
-
-	private class CubeDistPair implements Comparable<CubeDistPair> {
-
-		private final Double distance;
-		private final Cube cube;
-
-		private CubeDistPair(Cube cube, Double distance) {
-			this.cube = cube;
-			this.distance = distance;
-		}
-
-		private Double getDistance() {
-			return distance;
-		}
-
-		private Cube getCube() {
-			return cube;
-		}
-
-		@Override
-		public int compareTo(CubeDistPair other) {
-			return this.getDistance().compareTo(other.getDistance());
-		}
-		
-		@SuppressWarnings("unused")
-		private CubeDistPair getMinimum(CubeDistPair other) {
-			if (this.getDistance() <= other.getDistance())
-				return this;
-			else
-				return other;
-		}
 	}
 
 	/**
@@ -2182,12 +2149,14 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * set moveToCube to the given cube, if possible
-	 * @param	cube
-	 * 			the cube to set to
-	 * @post	if the given cube equals null or is stable for a unit in the 
-	 * 			world this unit belongs to, new.moveToCube will equal the given cube
-	 * 			|if (cube == null || cube.getCenter().isStableForUnitIn(this.getWorld()))
-	 * 			|	then new.getMoveToCube == cube
+	 * 
+	 * @param cube
+	 *            the cube to set to
+	 * @post if the given cube equals null or is stable for a unit in the world
+	 *       this unit belongs to, new.moveToCube will equal the given cube |if
+	 *       (cube == null ||
+	 *       cube.getCenter().isStableForUnitIn(this.getWorld())) | then
+	 *       new.getMoveToCube == cube
 	 */
 	private void setMoveToCube(Cube cube) {
 		if (cube == null || cube.getCenter().isStableForUnitIn(this.getWorld())) {
@@ -2204,10 +2173,11 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * start sprinting if this unit is already walking and has stamina points
-	 * @effect	if this unit is walking and a positive amount of stamina points,
-	 * 			the activity of this unit is set to sprinting
-	 * 			|if (this.isWalking() && this.getStaminaPoints() > 0)
-	 * 			|	then this.setActivity(Activity.SPRINTING)
+	 * 
+	 * @effect if this unit is walking and a positive amount of stamina points,
+	 *         the activity of this unit is set to sprinting |if
+	 *         (this.isWalking() && this.getStaminaPoints() > 0) | then
+	 *         this.setActivity(Activity.SPRINTING)
 	 */
 	public void startSprinting() {
 		if (this.isWalking() && this.getStaminaPoints() > 0)
@@ -2216,10 +2186,10 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * stop sprinting if this unit is already sprinting
-	 * @effect	if this unit is sprinting,
-	 * 			the activity of this unit is set to sprinting
-	 * 			|if (this.isSprinting())
-	 * 			|	then this.setActivity(Activity.WALKING)
+	 * 
+	 * @effect if this unit is sprinting, the activity of this unit is set to
+	 *         sprinting |if (this.isSprinting()) | then
+	 *         this.setActivity(Activity.WALKING)
 	 */
 	public void stopSprinting() {
 		if (this.isSprinting())
@@ -2228,8 +2198,9 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * check whether this unit should fall in its world
-	 * @return	false if the position of this unit is stable
-	 * 			|result == !this.getPosition().isStableForUnitIn(this.getWorld())
+	 * 
+	 * @return false if the position of this unit is stable |result ==
+	 *         !this.getPosition().isStableForUnitIn(this.getWorld())
 	 */
 	private boolean shouldFall() {
 		return !this.getPosition().isStableForUnitIn(this.getWorld());
@@ -2237,20 +2208,20 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * check whether this unit should fall if it is located in the given cube
-	 * @param 	cube
-	 * 			the cube to check whether a unit located in it should fall
-	 * @return	false if the centre-position of the given cube is stable
-	 * 			|result == !cube.getCenter().isStableForUnitIn(this.getWorld())
+	 * 
+	 * @param cube
+	 *            the cube to check whether a unit located in it should fall
+	 * @return false if the centre-position of the given cube is stable |result
+	 *         == !cube.getCenter().isStableForUnitIn(this.getWorld())
 	 */
 	private boolean shouldStartFallingAt(Cube cube) {
 		return !cube.getCenter().isStableForUnitIn(this.getWorld());
 	}
 
 	/**
-	 * check whether this unit can stop falling
-	 * TODO
+	 * check whether this unit can stop falling TODO
 	 */
-	//TODO is dit niet gewoon het tegengestelde van shouldFall?
+	// TODO is dit niet gewoon het tegengestelde van shouldFall?
 	private boolean canStopFalling() {
 		if (this.isFalling()) {
 			if (this.getCube().getZ() == 0) {
@@ -2262,18 +2233,19 @@ public class Unit implements ITimeVariableObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * this unit will start following the other unit.
-	 * @param	other
-	 * 			the other unit that will be followed by this unit.
+	 * 
+	 * @param other
+	 *            the other unit that will be followed by this unit.
 	 */
 	public void follow(Unit other) {
 		this.setFollowUnit(other);
 		this.setActivity(Activity.FOLLOWING);
 		moveTo(getFollowUnit().getCube());
 	}
-	
+
 	/**
 	 * return the unit that is followed
 	 */
@@ -2284,10 +2256,11 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * set the followUnit to the given unit
-	 * @param 	other
-	 * 			the unit to follow
-	 * @post	the unit to be followed equals the given unit
-	 * 			|new.getFollowUnit() == other
+	 * 
+	 * @param other
+	 *            the unit to follow
+	 * @post the unit to be followed equals the given unit |new.getFollowUnit()
+	 *       == other
 	 */
 	private void setFollowUnit(Unit other) {
 		this.followUnit = other;
@@ -2297,14 +2270,13 @@ public class Unit implements ITimeVariableObject {
 	 * a variable registering the unit that must be followed
 	 */
 	private Unit followUnit;
-	
 
 	// DEFAULT BEHAVIOUR//
 
 	/**
 	 * starts the default behaviour of this unit
-	 * @post	the flag defaultBehaviour equals true
-	 * 			|new.defaultBehaviour == true
+	 * 
+	 * @post the flag defaultBehaviour equals true |new.defaultBehaviour == true
 	 */
 	public void startDefaultBehaviour() {
 		this.defaultBehaviour = true;
@@ -2312,8 +2284,9 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * stops the default behaviour of this unit
-	 * @post	the flag defaultBehaviour equals false
-	 * 			|new.defaultBehaviour == false
+	 * 
+	 * @post the flag defaultBehaviour equals false |new.defaultBehaviour ==
+	 *       false
 	 */
 	public void stopDefaultBehaviour() {
 		this.defaultBehaviour = false;
@@ -2321,8 +2294,9 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * returns whether the default behaviour can be started
-	 * @return	true if the flag defaultBehaviour equals false
-	 * 			|result == (!this.defaultBehaviour)
+	 * 
+	 * @return true if the flag defaultBehaviour equals false |result ==
+	 *         (!this.defaultBehaviour)
 	 */
 	public boolean canStartDefaultBehaviour() {
 		return (!this.defaultBehaviour);
@@ -2338,15 +2312,16 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * this unit starts working at the given cube
 	 * 
-	 * @param	cube
-	 * 			the cube to work at
-	 * @effect	if this unit can work on the given cube, then set the workAtCube 
-	 * 			to the given cube, set the activity of this unit to working and
-	 * 			set the orientation to a visually logic value
-	 * 			|if (this.canHaveAsWorkAtCube(cube))
-	 * 			|	then this.setWorkAtCube(cube), this.setActivity(Activity.WORKING),
-	 * 			|		this.setOrientation(Math.atan2(cube.getCenter().getRealY() - this.getPosition().getRealY(), 
-	 * 			|									   cube.getCenter().getRealX() - this.getPosition().getRealX()));
+	 * @param cube
+	 *            the cube to work at
+	 * @effect if this unit can work on the given cube, then set the workAtCube
+	 *         to the given cube, set the activity of this unit to working and
+	 *         set the orientation to a visually logic value |if
+	 *         (this.canHaveAsWorkAtCube(cube)) | then this.setWorkAtCube(cube),
+	 *         this.setActivity(Activity.WORKING), |
+	 *         this.setOrientation(Math.atan2(cube.getCenter().getRealY() -
+	 *         this.getPosition().getRealY(), | cube.getCenter().getRealX() -
+	 *         this.getPosition().getRealX()));
 	 */
 	public void workAt(Cube cube) {
 		if (this.canHaveAsWorkAtCube(cube)) {
@@ -2367,13 +2342,14 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * check whether this unit can work on the given cube
-	 * @param 	cube
-	 * 			the cube to check if there can be worked on by this unit
-	 * @return	true if the given cube does not equal null, the given cube is
-	 * 			the same or a neighbouring cube to the cube this unit is located
-	 * 			and the cube is workable by this unit
-	 * 			|result == (cube != null && this.getCube().isSameOrNeighbouringCube(cube)
-	 *			|			&& cube.isWorkableCubeInBy(this.getWorld(), this))
+	 * 
+	 * @param cube
+	 *            the cube to check if there can be worked on by this unit
+	 * @return true if the given cube does not equal null, the given cube is the
+	 *         same or a neighbouring cube to the cube this unit is located and
+	 *         the cube is workable by this unit |result == (cube != null &&
+	 *         this.getCube().isSameOrNeighbouringCube(cube) | &&
+	 *         cube.isWorkableCubeInBy(this.getWorld(), this))
 	 */
 	private boolean canHaveAsWorkAtCube(Cube cube) {
 		return (cube != null && this.getCube().isSameOrNeighbouringCube(cube)
@@ -2382,17 +2358,17 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * set the workAtCube to the given cube if possible
-	 * @param 	cube
-	 * 			the cube to set to (may be null)
-	 * @post	if the given cube equals null, the workAtCube will be the given cube
-	 * 			|if (cube != null)
-	 * 			|	then new.getWorkAtCube == cube
-	 * @post	if the given cube does not equal null and this unit cannot have
-	 * 			the given cube as workAtCube, then do nothing
-	 * 			|this.workAtCube == new.workAtCube
-	 * @post	if the given cube does not equal null and this unit can have the
-	 * 			given cube as workAtCube, then workAtCube will equal the given cube
-	 * 			|if (cube != null) && (!this.canHaveAsWorkAtCube(cube))
+	 * 
+	 * @param cube
+	 *            the cube to set to (may be null)
+	 * @post if the given cube equals null, the workAtCube will be the given
+	 *       cube |if (cube != null) | then new.getWorkAtCube == cube
+	 * @post if the given cube does not equal null and this unit cannot have the
+	 *       given cube as workAtCube, then do nothing |this.workAtCube ==
+	 *       new.workAtCube
+	 * @post if the given cube does not equal null and this unit can have the
+	 *       given cube as workAtCube, then workAtCube will equal the given cube
+	 *       |if (cube != null) && (!this.canHaveAsWorkAtCube(cube))
 	 */
 	private void setWorkAtCube(Cube cube) {
 		if (cube != null) {
@@ -2410,8 +2386,8 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * get this unit working
 	 * 
-	 * @effect 	set activity of this unit to working
-	 * 			|this.setActivity(Activity.WORKING)
+	 * @effect set activity of this unit to working
+	 *         |this.setActivity(Activity.WORKING)
 	 */
 	@Deprecated
 	public void work() {
@@ -2423,12 +2399,10 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * get this unit resting
 	 * 
-	 * @effect 	set activity of this unit to resting
-	 * 			|this.setActivity(Activity.RESTING)
-	 * @post	if this unit is already resting, the flag canStopResting 
-	 * 			will equal false
-	 * 			|if (this.isResting())
-	 * 			|	then new.canStopResting == false
+	 * @effect set activity of this unit to resting
+	 *         |this.setActivity(Activity.RESTING)
+	 * @post if this unit is already resting, the flag canStopResting will equal
+	 *       false |if (this.isResting()) | then new.canStopResting == false
 	 */
 	public void rest() {
 		this.setActivity(Activity.RESTING);
@@ -2445,19 +2419,23 @@ public class Unit implements ITimeVariableObject {
 
 	/**
 	 * attack the given unit
-	 * @param 	defender
-	 * 			the unit to be attacked by this unit
-	 * @effect	if it is close enough to the defender and the defender is not 
-	 * 			falling and the defender belongs to another faction, then set 
-	 * 			the activity of this unit to attacking, set the orientation to a
-	 * 			visually logic value and make the other unit defend if setting
-	 * 			the activity of this unit was successfull
-	 * 			|if (this.getCube().isSameOrAdjacentCube(defender.getCube())
-	 * 			|		&& !defender.isFalling() && this.getFaction() != defender.getFaction())
-	 * 			|	then this.setActivity(Activity.ATTACKING), 
-	 * 			|		this.setOrientation(Math.atan2(defender.getPosition().getRealY() - this.getPosition().getRealY(),
-	 * 			|									   defender.getPosition().getRealX() - this.getPosition().getRealX())),
-	 * 			|		(if (this.isAttacking()) then defender.defend(this))
+	 * 
+	 * @param defender
+	 *            the unit to be attacked by this unit
+	 * @effect if it is close enough to the defender and the defender is not
+	 *         falling and the defender belongs to another faction, then set the
+	 *         activity of this unit to attacking, set the orientation to a
+	 *         visually logic value and make the other unit defend if setting
+	 *         the activity of this unit was successfull |if
+	 *         (this.getCube().isSameOrAdjacentCube(defender.getCube()) | &&
+	 *         !defender.isFalling() && this.getFaction() !=
+	 *         defender.getFaction()) | then
+	 *         this.setActivity(Activity.ATTACKING), |
+	 *         this.setOrientation(Math.atan2(defender.getPosition().getRealY()
+	 *         - this.getPosition().getRealY(), |
+	 *         defender.getPosition().getRealX() -
+	 *         this.getPosition().getRealX())), | (if (this.isAttacking()) then
+	 *         defender.defend(this))
 	 */
 	public void attack(Unit defender) {
 		if (this.getCube().isSameOrAdjacentCube(defender.getCube()) && !defender.isFalling()
@@ -2471,10 +2449,10 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * this unit starts defending by dodging, blocking or taking dammage
-	 * TODO
-	 * @param 	attacker
-	 * 			the unit to defend from
+	 * this unit starts defending by dodging, blocking or taking dammage TODO
+	 * 
+	 * @param attacker
+	 *            the unit to defend from
 	 */
 	public void defend(Unit attacker) {
 		boolean succeeded = true;
@@ -2508,14 +2486,14 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * Terminate this unit.
 	 *
-	 * @post	This unit is terminated.
-	 * 			|new.isDead()
-	 * @effect 	The unit is removed from its world and faction
-	 * 			|this.getWorld().removeUnit(this), this.getFaction().removeUnit(this)
-	 * @effect 	The materials the unit was carrying are left behind at the exact
-	 *       	same position the unit has died.
-	 *       	|for each material in this.materials 
-	 *       	|	this.getWorld().addMaterial(material, this.getPosition())
+	 * @post This unit is terminated. |new.isDead()
+	 * @effect The unit is removed from its world and faction
+	 *         |this.getWorld().removeUnit(this),
+	 *         this.getFaction().removeUnit(this)
+	 * @effect The materials the unit was carrying are left behind at the exact
+	 *         same position the unit has died. |for each material in
+	 *         this.materials | this.getWorld().addMaterial(material,
+	 *         this.getPosition())
 	 */
 	void die() {
 		for (Material material : this.materials) {
@@ -2539,8 +2517,8 @@ public class Unit implements ITimeVariableObject {
 	 * Variable registering whether this unit is terminated, initially false
 	 */
 	private boolean isDead = false;
-	
-	//TODO vanaf hier accessrights checken
+
+	// TODO vanaf hier accessrights checken
 
 	/**
 	 * Return the task of this unit.

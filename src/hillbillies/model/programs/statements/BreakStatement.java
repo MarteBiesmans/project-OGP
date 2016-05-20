@@ -26,8 +26,10 @@ public class BreakStatement extends Statement {
 
 	@Override
 	public boolean canExecute(Task task, Counter counter) {
-		// TODO Auto-generated method stub
-		return false;
+		if (counter.getCount() + 1 > counter.getMaxValue() || hasBeenFullyExecuted()) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
