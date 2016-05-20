@@ -1289,7 +1289,7 @@ public class Unit implements ITimeVariableObject {
 					this.setFollowUnit(null);
 				this.activityQueue.remove(0);
 				if (!this.getActivityQueue().isEmpty()) {
-					if (this.getActivityQueue().get(0) == Activity.NONE)
+					if (this.getActivityQueue().get(0) == Activity.NONE || this.getActivityQueue().get(0) == Activity.FALLING)
 						this.activityQueue.remove(0);
 					else {
 						this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)));
