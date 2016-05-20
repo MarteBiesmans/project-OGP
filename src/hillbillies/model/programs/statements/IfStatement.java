@@ -141,6 +141,12 @@ public class IfStatement extends Statement {
 			children.add(getOtherwise());
 		return children;
 	}
+	
+	 @Override
+	 public void reset(Task task) {
+	 this.setHasBeenExecutedOnce(false);
+	 super.reset(task);
+	 }
 
 	// public IfStatement(BooleanExpression condition, Statement ifBody,
 	// Statement elseBody) {
@@ -230,11 +236,7 @@ public class IfStatement extends Statement {
 	//
 	// }
 	//
-	// @Override
-	// public void reset() {
-	// setConditionChecked(false);
-	// super.reset();
-	// }
+
 	//
 
 	//

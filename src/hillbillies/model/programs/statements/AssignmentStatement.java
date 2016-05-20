@@ -57,6 +57,12 @@ public class AssignmentStatement extends Statement {
 	public AssignmentStatement clone() {
 		return new AssignmentStatement(variableName, expression, hasBeenFullyExecuted());
 	}
+	
+	@Override
+	public void reset(Task task) {
+		task.removeGlobalVariable(getVariableName());
+		super.reset(task);
+	}
 
 //	public AssignmentStatement(String variableName, Expression<?> valueExpression) {
 //		setVariableName(variableName);
@@ -64,11 +70,7 @@ public class AssignmentStatement extends Statement {
 //		setValueExpression(valueExpression);
 //	}
 //	
-//	@Override
-//	public void reset() {
-//		getTask().removeGlobalVariable(getVariableName());
-//		super.reset();
-//	}
+
 //
 //	@Override
 //	public void execute() {

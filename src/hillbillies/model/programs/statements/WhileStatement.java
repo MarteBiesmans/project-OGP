@@ -95,6 +95,13 @@ public class WhileStatement extends Statement {
 	public WhileStatement clone() {
 		return new WhileStatement(getBody().clone(), getBodyCopy().clone(), condition, hasBeenFullyExecuted());
 	}
+	
+	@Override
+	public void reset(Task task) {
+		this.setBody(this.getBodyCopy());
+		this.getBody().SetHasFullyExecutedToTrue();
+		super.reset(task);
+	}
 
 //	public WhileStatement(BooleanExpression condition, Statement body) {
 //		setCondition(condition);
@@ -149,11 +156,7 @@ public class WhileStatement extends Statement {
 //		}
 //	}
 //	
-//	@Override
-//	public void reset() {
-//		setConditionChecked(false);
-//		super.reset();
-//	}
+
 //	
 //	public HashSet<Statement> getDirectChildStatements() {
 //		HashSet<Statement> children = new HashSet<Statement>();

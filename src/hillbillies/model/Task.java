@@ -443,4 +443,9 @@ public class Task implements Comparable<Task> {
 			}
 		}
 	}
+	
+	public void reset() {
+		this.setUnit(null);
+		this.getActivities().reset(this);
+	}
 }

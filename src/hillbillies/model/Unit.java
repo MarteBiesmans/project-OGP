@@ -1826,11 +1826,12 @@ public class Unit implements ITimeVariableObject {
 	 */
 	private void nextTask() {
 		if (getTask().hasBeenFullyExecuted()) {
+			getTask().reset();
 			getFaction().getScheduler().removeTask(getTask());
 		} else {
+			getTask().reset();
 			getTask().setPriority(getTask().getPriority() - 1);
 		}
-		getTask().setUnit(null);
 		setTask(getFaction().getScheduler().getHighestPriorityTaskNotExecuted());
 		getTask().setUnit(this);
 		if (this.getWorld() != null)
