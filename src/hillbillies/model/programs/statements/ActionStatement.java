@@ -43,9 +43,4 @@ public abstract class ActionStatement extends Statement {
 		return true;
 	}
 	
-//	@Override
-//	public boolean isMutable() {
-//		return false;
-//	}
-	
 }

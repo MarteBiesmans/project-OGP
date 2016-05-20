@@ -121,41 +121,4 @@ public class SequenceOfStatements extends Statement {
 
 	private Iterator<Statement> iterator = null;
 
-	// public SequenceOfStatements(List<Statement> statements) {
-	// this.statements = statements;
-	// for (Statement statement : statements) {
-	// if(statement == null){
-	// System.out.println("Warning: statement cannot be null.");
-	// } else {
-	// statement.setParentStatement(this);
-	// }
-	// }
-	// statements.removeAll(Collections.singleton(null));
-	// resetIterator();
-	// }
-	//
-	//
-
-	//
-	// private List<Statement> statements;
-	//
-	// private List<Statement> getStatements(){
-	// return statements;
-	// }
-	//
-	//
-	// @Override
-	// public boolean isMutable() {
-	// return true;
-	// }
-	//
-	// public boolean isWellFormed(){
-	// for (Statement statement : statements) {
-	// if(!statement.isWellFormed()){
-	// return false;
-	// }
-	// }
-	// return true;
-	// }
-
 }

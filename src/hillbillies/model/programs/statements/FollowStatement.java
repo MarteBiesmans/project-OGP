@@ -33,23 +33,5 @@ public class FollowStatement extends ActionStatement {
 	public FollowStatement clone() {
 		return new FollowStatement(getUnit(), hasBeenFullyExecuted());
 	}
-
-//	public FollowStatement(UnitExpression expression) {
-//		this.unit = expression;
-//	}
-//	
-//	public UnitExpression getUnit() {
-//		return unit;
-//	}
-//	
-//	private UnitExpression unit;
-//	
-//	@Override
-//	public void execute() {
-//		if(getTask().getUnit() == null){
-//			throw new NullPointerException("this task has no unit");
-//		}
-//		getTask().getUnit().follow(((Unit) getUnit().evaluate(getTask()).getValue()));
-//	}
 	
 }

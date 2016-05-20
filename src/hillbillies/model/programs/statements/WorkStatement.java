@@ -32,22 +32,5 @@ public class WorkStatement extends ActionStatement {
 	public WorkStatement clone() {
 		return new WorkStatement(getCube(), hasBeenFullyExecuted());
 	}
-	
-//	public WorkStatement(CubeExpression expression) {
-//		this.cube = expression;
-//	}
-//	
-//	public CubeExpression getCube() {
-//		return cube;
-//	}
-//
-//	private CubeExpression cube;
-//
-//	public void execute() {
-//		if(getTask().getUnit() == null){
-//			throw new NullPointerException("this task has no unit");
-//		}
-//		getTask().getUnit().workAt((Cube) getCube().evaluate(getTask()).getValue());
-//	}
 
 }
