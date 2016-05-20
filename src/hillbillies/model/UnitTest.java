@@ -503,20 +503,15 @@ public class UnitTest {
 		testWorld.addUnit(testUnit1);
 		Unit testUnit2 = new Unit(1.2, 0.3, 0.9, "Marte", 50, 50, 25, 55, false);
 		testWorld.addUnit(testUnit2);
-		System.out.println(testUnit1.activityQueue);
-		System.out.println(testUnit2.activityQueue);
 		
 		testUnit1.attack(testUnit2);
 		
 		//na 1s (0.2*5) moet het vechten gedaan zijn
 		for (int i=0;i<5;i++) {
-			System.out.println(testUnit1.getCurrentActivity());	
 			testWorld.advanceTime((float)0.2);
 		}
 		
 		//als de busyTime op is, moet de volgende activity in gang gezet worden
-		System.out.println(testUnit1.getPosition());
-		System.out.println(testUnit1.getCurrentActivity());
 		assertTrue(testUnit1.isBeingUseless());
 	}
 	
@@ -545,64 +540,10 @@ public class UnitTest {
 		assertTrue(faller.getHitpoints() == 18);
 	}
 	
-	@Test
-	public void advanceTime_fallingHigher() {
-		int[][][] terrainTypes = new int[5][5][5];
-		terrainTypes[0][1][2] = 1;
-		terrainTypes[1][1][2] = 1;
-		terrainTypes[1][1][3] = 1;
-		terrainTypes[2][1][3] = 1;
-		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
-		System.out.println(testWorld.getTerrainType(new Cube(0,1,2)));
-		
-		Unit worker = new Unit(0.2, 1.3, 3.9, "Ellen", 100, 100, 100, 100, false);
-		testWorld.addUnit(worker);
-		Unit faller = new Unit(2.2, 1.3, 4.9, "Marte", 100, 100, 100, 100, false);
-		testWorld.addUnit(faller);
-		System.out.println(worker.getPosition() + ", " + faller.getPosition());
-		
-		worker.workAt(new Cube(1,1,3));
-		System.out.println(testWorld.getTerrainType(new Cube(0,1,2)));
-		System.out.println("worker: " + worker.getCurrentActivity());
-		System.out.println("faller: " + faller.getCurrentActivity());
-		
-		//na 5s (0.2*25) moet het werken gedaan zijn
-		for (int i=0;i<25;i++)
-			testWorld.advanceTime((float)0.2);
-		
-		System.out.println(testWorld.getTerrainType(new Cube(0,1,2)));
-		System.out.println(worker.getPosition());
-		System.out.println("worker: " + worker.getCurrentActivity());
-		System.out.println("faller: " + faller.getCurrentActivity());
-		
-//		//als het werken gedaan is, collapset de cube en valt de unit
-//		System.out.println(testUnit.getCurrentActivity());
-//		testWorld.advanceTime((float)0.000001);
-//		System.out.println(testUnit.getCurrentActivity());
-//		assertTrue(testUnit.isFalling());
-//		
-//		//na 6 keer advanceTime(0.2) is de unit in de onderste cube gevallen
-//		for (int i=0;i<6;i++) {
-//			testWorld.advanceTime((float)0.2);
-//			System.out.println(testUnit.getPosition());
-//		}
-//		assertTrue(Util.fuzzyEquals(testUnit.getPosition().getRealZ(), 0.5, 1e-5));
-//		//de unit is door 4 cubes gevallen, dus verliest 40 hitpoints
-//		assertTrue(testUnit.getHitpoints() == 160);
-	}
 	
 	@Test
 	public void advanceTime_moving_sprinting() {
 		//TODO
-		int[][][] terrainTypes = new int[5][5][5];
-		World testWorld = new World(terrainTypes, new DefaultTerrainChangeListener());
-		
-		Unit testUnit = new Unit(0.2, 0.3, 0.9, "Ellen", 50, 50, 25, 55, false);
-		testWorld.addUnit(testUnit);
-		
-		testUnit.moveTo(new Cube(1,0,0));
-		testUnit.startSprinting();
-		testWorld.advanceTime((float)0.2);
 	}
 	
 	@Test

@@ -37,8 +37,6 @@ import ogp.framework.util.Util;
  * A class of units involving a position, name, strength, agility, toughness,
  * weight and default behaviour.
  * 
- * TODO mss zijn dit er meer?
- * 
  * @invar The name of each unit must be a valid name for any unit. |
  *        isValidName(getName())
  * @invar The position of each unit must be a valid position for any unit. |
@@ -59,6 +57,13 @@ import ogp.framework.util.Util;
  * @invar The orientation of each unit must be a valid orientation for any unit.
  *        | isValidOrientation(getOrientation())
  * @invar Each unit must have proper materials. | hasProperMaterials()
+ * @invar The task of each unit must be a valid task for any unit. |
+ *        isValidTask(getTask()) || getTask()==null
+ * @invar The world of each unit must be a valid world for any unit. |
+ *        canHaveAsWorld(getWorld()) || getWorld()==null
+ * @invar The faction of each unit must be a valid faction for any unit. |
+ *        canHaveAsFaction(getFaction()) || getFaction()==null
+ *        
  * 
  * 
  * @author Ellen & Marte
@@ -155,8 +160,6 @@ public class Unit implements ITimeVariableObject {
 	 * @throws IllegalArgumentException
 	 *             the given coordinates are not valid
 	 *             |!this.canHaveAsPosition(new Position(x,y,z))
-	 * @invar The task of each unit must be a valid task for any unit. |
-	 *        isValidTask(getTask())
 	 */
 	public Unit(double x, double y, double z, String name, int strength, int agility, int toughness, int weight,
 			boolean enableDefaultBehaviour) throws IllegalArgumentException {
@@ -311,7 +314,7 @@ public class Unit implements ITimeVariableObject {
 		if (this.getCurrentActivity() != Activity.FALLING && this.shouldStartFallingAt(position.getCube())) {
 			this.insertActivity(Activity.FALLING);
 		}
-		if (this.getCurrentActivity() == Activity.FALLING && position.isStableForUnitIn(world)) {
+		if (this.getCurrentActivity() == Activity.FALLING && this.canStopFallingAt(position)) {
 			position = position.getCube().getCenter();
 			this.nextActivity();
 		}
@@ -1176,8 +1179,7 @@ public class Unit implements ITimeVariableObject {
 	 *         (!this.getActivityQueue().isEmpty()) | then result ==
 	 *         this.activityQueue.get(0) | else result == Activity.NONE
 	 */
-	//TODO terug private zetten
-	Activity getCurrentActivity() {
+	private Activity getCurrentActivity() {
 		if (!this.getActivityQueue().isEmpty())
 			return this.activityQueue.get(0);
 		else
@@ -1203,14 +1205,12 @@ public class Unit implements ITimeVariableObject {
 	 *       new.getActivityQueue == [activity] | && new.getBusyTime ==
 	 *       getBusyTimeFor(new.getCurrentActivity)
 	 */
-	// TODO ik snap het nut niet van de eerste if (add-remove-add)
-	// TODO waarom 1 keer else if?
 	private void setActivity(Activity activity) {
 		if (this.getWorld() == null && activity == Activity.NONE)
 			this.activityQueue.add(0, activity);
 		if (this.isResting() && !this.canStopResting)
 			return;
-		else if (this.isAttacking() && this.getBusyTime() > 0)
+		if (this.isAttacking() && this.getBusyTime() > 0)
 			return;
 		if (this.isFalling() && !this.canStopFalling())
 			return;
@@ -1250,6 +1250,7 @@ public class Unit implements ITimeVariableObject {
 	/**
 	 * start a new activity, resetting all parameters if necessary
 	 * 
+	 * @effect	if the unit has a task, the task will be continued
 	 * @effect if the activity queue is empty, NONE is included |if
 	 *         (this.getActivityQueue().isEmpty()) | then
 	 *         this.setActivity(Activity.NONE)
@@ -1268,8 +1269,6 @@ public class Unit implements ITimeVariableObject {
 	 *         this.activityQueue.remove(0), |
 	 *         this.setBusyTime(this.getBusyTimeFor(this.activityQueue.get(0)))
 	 */
-	// TODO mooiere notatie met backtracking
-	// TODO comments checken
 	public void nextActivity() {
 		if (this.getWorld() != null && this.getTask() != null) {
 			if (getTask().getActivities().getExecutingStatement() instanceof ActionStatement)
@@ -1553,7 +1552,6 @@ public class Unit implements ITimeVariableObject {
 	private void attacking(float seconds) {
 		if (this.getBusyTime() == 0) {
 			this.nextActivity();
-			System.out.println("after attacking: " + this.getCurrentActivity());
 		}
 	}
 
@@ -1596,7 +1594,6 @@ public class Unit implements ITimeVariableObject {
 				}
 			}
 		}
-		//TODO zit deze if niet al in setPosition?
 		if (this.canStopFalling()) {
 			this.setPosition(this.getPosition().getCube().getCenter());
 			this.nextActivity();
@@ -1817,7 +1814,7 @@ public class Unit implements ITimeVariableObject {
 	 *       defined because of readability therefore it does not contain formal
 	 *       documentation
 	 * @param seconds
-	 *            the seconds to advance time TODO
+	 *            the seconds to advance time
 	 */
 	private void actingDefault(float seconds) {
 
@@ -1830,7 +1827,7 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * TODO
+	 * unit will start the next task from the scheduler
 	 */
 	private void nextTask() {
 		if (getTask() != null && getTask().hasBeenFullyExecuted()) {
@@ -1913,7 +1910,7 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * TODO
+	 * the unit will increase its level when necessary and randomly agility, strength or toughness
 	 */
 	private void levelUp() {
 		if (this.getAgility() != MAX_VAL_PRIMARY_ATTRIBUTE || this.getStrength() != MAX_VAL_PRIMARY_ATTRIBUTE
@@ -2228,7 +2225,7 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * check whether this unit can stop falling TODO
+	 * check whether this unit can stop falling
 	 */
 	private boolean canStopFalling() {
 		if (this.isFalling()) {
@@ -2241,6 +2238,22 @@ public class Unit implements ITimeVariableObject {
 		}
 		return false;
 	}
+	
+	/**
+	 * check whether this unit can stop falling on the given position
+	 */
+	private boolean canStopFallingAt(Position position) {
+		if (this.isFalling()) {
+			if (position.getCube().getZ() == 0) {
+				return true;
+			}
+			Cube cubeBelow = new Cube(position.getCube().getX(), position.getCube().getY(), position.getCube().getZ() - 1);
+			if (cubeBelow.isPassableIn(this.getWorld()))
+				return true;
+		}
+		return false;
+	}
+	
 
 	/**
 	 * this unit will start following the other unit.
@@ -2457,7 +2470,7 @@ public class Unit implements ITimeVariableObject {
 	}
 
 	/**
-	 * this unit starts defending by dodging, blocking or taking dammage TODO
+	 * this unit starts defending by dodging, blocking or taking dammage
 	 * 
 	 * @param attacker
 	 *            the unit to defend from
@@ -2526,8 +2539,6 @@ public class Unit implements ITimeVariableObject {
 	 */
 	private boolean isDead = false;
 
-	// TODO vanaf hier accessrights checken
-
 	/**
 	 * Return the task of this unit.
 	 */
@@ -2544,7 +2555,7 @@ public class Unit implements ITimeVariableObject {
 	 *            The task to check.
 	 * @return | result == (task != null)
 	 */
-	public static boolean isValidTask(Task task) {
+	private static boolean isValidTask(Task task) {
 		return (task != null);
 	}
 
