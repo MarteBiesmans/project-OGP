@@ -1,4 +1,3 @@
-//TODO comments checken
 package hillbillies.model;
 
 import java.util.*;
@@ -781,7 +780,6 @@ public class World implements ITimeVariableObject {
 	/**
 	 * return a set containing all the materials in this world
 	 */
-	//TODO: tests! (deze is nodig voor de expressions.. sorry :(
 	public Set<Material> getAllMaterials() {
 		return this.materials;
 	}

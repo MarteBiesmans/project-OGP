@@ -1,4 +1,3 @@
-//TODO	comments (formal!)
 package hillbillies.model;
 
 import java.util.HashMap;
@@ -383,9 +382,11 @@ public class Task implements Comparable<Task> {
 			throw new IllegalStateException();
 		schedulers.remove(scheduler);
 		scheduler.getAllTasks().remove(this);
-		if (this.getUnit().getFaction() == scheduler.getFaction())
-			;
-		// TODO: stop met uitvoeren van deze task
+		if (this.getUnit() != null && this.getUnit().getFaction() == scheduler.getFaction()) {
+			this.getUnit().setTask(null);
+			this.getUnit().nextActivity();
+			this.setUnit(null);
+		}
 	}
 
 	public Set<Scheduler> getAllSchedulers() {

@@ -162,7 +162,6 @@ public abstract class Material implements ITimeVariableObject {
 				throw new IllegalArgumentException();
 		}
 		this.owner = owner;
-		//TODO moeten position en world hier niet null worden? (stond ook bij in de comments) 
 	}
 
 	/**

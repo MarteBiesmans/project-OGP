@@ -215,10 +215,10 @@ public class WorldTest {
 		assertEquals(testWorld.getNbUnits(), World.MAX_UNITS);
 	}
 	
-//	@Test
-//	public void addUnit_FullFactions(){
-//		//TODO
-//	}
+	@Test
+	public void addUnit_FullFactions(){
+		//TODO
+	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void addUnit_IllegalPosition1(){

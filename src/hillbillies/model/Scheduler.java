@@ -1,4 +1,3 @@
-//TODO	comments (formal!)
 package hillbillies.model;
 
 import java.util.ArrayList;
