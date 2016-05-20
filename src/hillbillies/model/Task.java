@@ -68,10 +68,29 @@ public class Task implements Comparable<Task> {
 		this.setUnit(null);
 	}
 
+	/**
+	 * check wheter this task is wellFormed
+	 * 
+	 * @return the structure of the statements must be right and they must
+	 *         contain an actionstatement | getActivities().isWellFormed() &&
+	 *         getActivities().containsActionStatement();
+	 */
 	public boolean isWellFormed() {
 		return getActivities().isWellFormed() && getActivities().containsActionStatement();
 	}
 
+	/**
+	 * compares this task to another task
+	 * 
+	 * @param other
+	 *            the task to compare to
+	 * @return -1 if this task has a higher priority than the other task, 0 if
+	 *         they have the same priority and 1 if this task has a lower
+	 *         priority | if (this.getPriority > other.getPriority()) | result
+	 *         == -1
+	 * @return | if (this.getPrioiryt() < other.getPriority()) | result == 1
+	 * @return | else | result == 0
+	 */
 	@Override
 	public int compareTo(Task other) {
 		return Integer.compare(other.getPriority(), this.getPriority());
@@ -92,7 +111,7 @@ public class Task implements Comparable<Task> {
 	 * 
 	 * @param name
 	 *            The name to check.
-	 * @return | result == true
+	 * @return | result == (name != null)
 	 */
 	@Raw
 	public boolean canHaveAsName(String name) {
@@ -169,8 +188,13 @@ public class Task implements Comparable<Task> {
 		return (activities != null);
 	}
 
+	/**
+	 * check whether this task has been fully executed
+	 * 
+	 * @return this.getActivities().hasBeenFullyExecuted()
+	 */
 	public boolean hasBeenFullyExecuted() {
-		return activities.hasBeenFullyExecuted();
+		return getActivities().hasBeenFullyExecuted();
 	}
 
 	/**
@@ -329,8 +353,8 @@ public class Task implements Comparable<Task> {
 	 * @post This task has the given scheduler as one of its schedulers. |
 	 *       new.hasAsScheduler(scheduler)
 	 * @throws IllegalArgumentException
-	 * 			if this task can't have this scheduler as scheduler
-	 * 			| !canHaveAsScheduler(scheduler)
+	 *             if this task can't have this scheduler as scheduler |
+	 *             !canHaveAsScheduler(scheduler)
 	 */
 	public void addScheduler(@Raw Scheduler scheduler) throws IllegalArgumentException {
 		if (!canHaveAsScheduler(scheduler))
@@ -350,8 +374,8 @@ public class Task implements Comparable<Task> {
 	 * @post This task no longer has the given scheduler as one of its
 	 *       schedulers. | ! new.hasAsScheduler(scheduler)
 	 * @throws IllegalStateException
-	 * 				if this task doesn't have this scheduler
-	 * 			| (!this.hasAsScheduler(scheduler)
+	 *             if this task doesn't have this scheduler |
+	 *             (!this.hasAsScheduler(scheduler)
 	 */
 	@Raw
 	public void removeScheduler(Scheduler scheduler) throws IllegalStateException {
@@ -392,9 +416,20 @@ public class Task implements Comparable<Task> {
 		this.getGlobalVariables().put(name, value);
 	}
 
-	public void removeGlobalVariable(String name) {
+	/**
+	 * removes the global variable with the given name
+	 * 
+	 * @param name
+	 *            the name fro mthe global variable to remove
+	 * @throws IllegalStateException
+	 *             if this task doens't have this variable !
+	 *             !hasAsGlobalVariable(name)
+	 * @effect remove the variable from this task |
+	 *         getGlobelVariables().remove(name)
+	 */
+	public void removeGlobalVariable(String name) throws IllegalStateException {
 		if (!hasGlobalVariable(name)) {
-			System.err.println("Variable with the name '" + name + "' doesn't exist!");
+			throw new IllegalStateException();
 		}
 		this.getGlobalVariables().remove(name);
 	}
@@ -451,8 +486,19 @@ public class Task implements Comparable<Task> {
 			}
 		}
 	}
-	
+
+	/**
+	 * resets this task.
+	 * 
+	 * @effect if this task is assigned to a unit, it won't be assigned anymore
+	 *         and the unit will be doing the next activity 
+	 *         | (old this).getUnit().setTask(null) && (old this).getUnit().nextActivity() && this.setUnit(null)
+	 * @effect the activities-statement will be reset
+	 * 			| this.getActivities().reset(this)
+	 */
 	public void reset() {
+		getUnit().setTask(null);
+		getUnit().nextActivity();
 		this.setUnit(null);
 		this.getActivities().reset(this);
 	}
