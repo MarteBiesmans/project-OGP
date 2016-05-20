@@ -1504,6 +1504,11 @@ public class Unit implements ITimeVariableObject {
 		if (!(this.isMoving() || this.isBeingUseless() || this.isFalling())) {
 			this.busyTimeMin(seconds);
 		}
+		
+		if (!this.isResting())
+			this.setRestTimer(this.getRestTimer() + seconds);
+		if (this.getRestTimer() > 180)
+			this.restInterrupt();
 
 		if (this.isFalling())
 			falling(seconds);
@@ -1792,6 +1797,7 @@ public class Unit implements ITimeVariableObject {
 	 * @post if busyTime equals zero, new.canStopResting equals true
 	 */
 	private void resting(float seconds) {
+		this.setRestTimer(0);
 		if (this.getHitpoints() != this.getMaxHitpoints()) {
 			double hitpoints = this.getHitpoints() + seconds * this.getToughness() / (40);
 			this.setHitpoints(Math.min(hitpoints, this.getMaxHitpoints()));
@@ -2430,6 +2436,25 @@ public class Unit implements ITimeVariableObject {
 		if (this.isResting())
 			this.canStopResting = false;
 	}
+	
+	public void restInterrupt() {
+		this.insertActivity(Activity.RESTING);
+		if (this.isResting())
+			this.canStopResting = false;
+	}
+	
+	public double getRestTimer() {
+		return this.restTimer;
+	}
+	
+	public void setRestTimer(double time) {
+		if (time < 0)
+			this.restTimer = 0;
+		else
+			this.restTimer = time;
+	}
+	
+	private double restTimer = 0;
 
 	/**
 	 * a flag registering if this unit can stop resting
